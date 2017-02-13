@@ -1,0 +1,461 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ARGS_MASK	ztypes.h	249;"	d
+ASYNC	ztypes.h	247;"	d
+BACKGROUND	ztypes.h	280;"	d
+BOLD	ztypes.h	271;"	d
+CHILD	object.c	12;"	d	file:
+CHILD3	ztypes.h	206;"	d
+CHILD4	ztypes.h	232;"	d
+COLOUR_FLAG	ztypes.h	140;"	d
+CONFIG_BYTE_SWAPPED	ztypes.h	116;"	d
+CONFIG_COLOUR	ztypes.h	117;"	d
+CONFIG_EMPHASIS	ztypes.h	121;"	d
+CONFIG_MAX_DATA	ztypes.h	119;"	d
+CONFIG_NOSTATUSLINE	ztypes.h	122;"	d
+CONFIG_TANDY	ztypes.h	120;"	d
+CONFIG_TIME	ztypes.h	118;"	d
+CONFIG_WINDOWS	ztypes.h	123;"	d
+DEFAULT_COLS	ztypes.h	25;"	d
+DEFAULT_RIGHT_MARGIN	ztypes.h	27;"	d
+DEFAULT_ROWS	ztypes.h	24;"	d
+DEFAULT_TOP_MARGIN	ztypes.h	28;"	d
+EMPHASIS	ztypes.h	272;"	d
+ERR	getopt.c	4;"	d	file:
+EXIT_FAILURE	ztypes.h	53;"	d
+EXIT_SUCCESS	ztypes.h	49;"	d
+FALSE	ztypes.h	37;"	d
+FILENAME_MAX	ztypes.h	41;"	d
+FIXED_FONT	ztypes.h	273;"	d
+FIXED_FONT_FLAG	ztypes.h	135;"	d
+FOREGROUND	ztypes.h	279;"	d
+FUNCTION	ztypes.h	245;"	d
+GAME_PLAYBACK	ztypes.h	286;"	d
+GAME_RECORD	ztypes.h	285;"	d
+GAME_RESTORE	ztypes.h	282;"	d
+GAME_SAVE	ztypes.h	283;"	d
+GAME_SCRIPT	ztypes.h	284;"	d
+GRAPHICS_FLAG	ztypes.h	137;"	d
+GRAPHICS_FONT	ztypes.h	277;"	d
+H_ALTERNATE_ALPHABET_OFFSET	ztypes.h	176;"	d
+H_CHECKSUM	ztypes.h	146;"	d
+H_CONFIG	ztypes.h	114;"	d
+H_DATA_SIZE	ztypes.h	126;"	d
+H_FILE_SIZE	ztypes.h	145;"	d
+H_FILLER1	ztypes.h	171;"	d
+H_FILLER2	ztypes.h	174;"	d
+H_FILLER3	ztypes.h	178;"	d
+H_FLAGS	ztypes.h	132;"	d
+H_FUNCTION_KEYS_OFFSET	ztypes.h	173;"	d
+H_GLOBALS_OFFSET	ztypes.h	130;"	d
+H_INTERPRETER	ztypes.h	147;"	d
+H_INTERPRETER_VERSION	ztypes.h	162;"	d
+H_MAX_CHAR_HEIGHT	ztypes.h	170;"	d
+H_MAX_CHAR_WIDTH	ztypes.h	169;"	d
+H_MOUSE_POSITION_OFFSET	ztypes.h	177;"	d
+H_OBJECTS_OFFSET	ztypes.h	129;"	d
+H_RELEASE_DATE	ztypes.h	143;"	d
+H_RESTART_SIZE	ztypes.h	131;"	d
+H_SCREEN_BOTTOM	ztypes.h	168;"	d
+H_SCREEN_COLUMNS	ztypes.h	164;"	d
+H_SCREEN_LEFT	ztypes.h	165;"	d
+H_SCREEN_RIGHT	ztypes.h	166;"	d
+H_SCREEN_ROWS	ztypes.h	163;"	d
+H_SCREEN_TOP	ztypes.h	167;"	d
+H_START_PC	ztypes.h	127;"	d
+H_SYNONYMS_OFFSET	ztypes.h	144;"	d
+H_TYPE	ztypes.h	113;"	d
+H_VERSION	ztypes.h	125;"	d
+H_WORDS_OFFSET	ztypes.h	128;"	d
+INTERP_AMIGA	ztypes.h	153;"	d
+INTERP_APPLE_IIC	ztypes.h	158;"	d
+INTERP_APPLE_IIE	ztypes.h	151;"	d
+INTERP_APPLE_IIGS	ztypes.h	159;"	d
+INTERP_ATARI_ST	ztypes.h	154;"	d
+INTERP_CBM_128	ztypes.h	156;"	d
+INTERP_CBM_64	ztypes.h	157;"	d
+INTERP_DEC_20	ztypes.h	150;"	d
+INTERP_GENERIC	ztypes.h	149;"	d
+INTERP_MACINTOSH	ztypes.h	152;"	d
+INTERP_MSDOS	ztypes.h	155;"	d
+INTERP_TANDY	ztypes.h	160;"	d
+MAX_ATTRIBUTE	ztypes.h	274;"	d
+MAX_TEXT_SIZE	ztypes.h	290;"	d
+MIN_ATTRIBUTE	ztypes.h	268;"	d
+NEW_SOUND_FLAG	ztypes.h	141;"	d
+NEXT	object.c	11;"	d	file:
+NEXT3	ztypes.h	205;"	d
+NEXT4	ztypes.h	231;"	d
+NORMAL	ztypes.h	269;"	d
+O3_ATTRIBUTES	ztypes.h	196;"	d
+O3_CHILD	ztypes.h	199;"	d
+O3_NEXT	ztypes.h	198;"	d
+O3_PARENT	ztypes.h	197;"	d
+O3_PROPERTY_OFFSET	ztypes.h	200;"	d
+O3_SIZE	ztypes.h	202;"	d
+O4_ATTRIBUTES	ztypes.h	222;"	d
+O4_CHILD	ztypes.h	225;"	d
+O4_NEXT	ztypes.h	224;"	d
+O4_PARENT	ztypes.h	223;"	d
+O4_PROPERTY_OFFSET	ztypes.h	226;"	d
+O4_SIZE	ztypes.h	228;"	d
+OFF	ztypes.h	261;"	d
+ON	ztypes.h	260;"	d
+P3_MAX_PROPERTIES	ztypes.h	208;"	d
+P4_MAX_PROPERTIES	ztypes.h	234;"	d
+PAGE_MASK	ztypes.h	255;"	d
+PAGE_SHIFT	ztypes.h	256;"	d
+PAGE_SIZE	ztypes.h	254;"	d
+PARENT	object.c	10;"	d	file:
+PARENT3	ztypes.h	204;"	d
+PARENT4	ztypes.h	230;"	d
+PATHNAME_MAX	ztypes.h	45;"	d
+PROCEDURE	ztypes.h	246;"	d
+RECORD_NAME	osdepend.c	19;"	d	file:
+RECORD_NAME	osdepend.c	23;"	d	file:
+REFRESH_FLAG	ztypes.h	136;"	d
+RESET	ztypes.h	262;"	d
+REVERSE	ztypes.h	270;"	d
+RUN	ztypes.h	241;"	d
+SAVE_NAME	osdepend.c	17;"	d	file:
+SAVE_NAME	osdepend.c	21;"	d	file:
+SCREEN	ztypes.h	264;"	d
+SCRIPTING_FLAG	ztypes.h	134;"	d
+SCRIPT_NAME	osdepend.c	18;"	d	file:
+SCRIPT_NAME	osdepend.c	22;"	d	file:
+SEEK_END	ztypes.h	61;"	d
+SEEK_SET	ztypes.h	57;"	d
+SOUND_FLAG	ztypes.h	138;"	d
+STACK_SIZE	ztypes.h	258;"	d
+STATUS_WINDOW	ztypes.h	266;"	d
+STOP	ztypes.h	240;"	d
+STORY_FILE	osdepend.c	48;"	d	file:
+TEXT_FONT	ztypes.h	276;"	d
+TEXT_WINDOW	ztypes.h	265;"	d
+TRUE	ztypes.h	33;"	d
+TYPE_MASK	ztypes.h	250;"	d
+UNDO_AVAILABLE_FLAG	ztypes.h	139;"	d
+UNDO_RESTORE	ztypes.h	288;"	d
+UNDO_SAVE	ztypes.h	287;"	d
+V1	ztypes.h	180;"	d
+V2	ztypes.h	182;"	d
+V3	ztypes.h	186;"	d
+V4	ztypes.h	212;"	d
+V5	ztypes.h	236;"	d
+__ZTYPES_INCLUDED	ztypes.h	9;"	d
+add	math.c	/^void add (zword_t a, zword_t b)$/;"	f
+alternate_alphabet_offset	ztypes.h	/^    zword_t alternate_alphabet_offset;$/;"	m	struct:zheader
+and	math.c	/^void and (zword_t a, zword_t b)$/;"	f
+arith_shift	math.c	/^void arith_shift (zword_t a, zword_t b)$/;"	f
+attributes	ztypes.h	/^    zword_t attributes[2];$/;"	m	struct:zobjectv3
+attributes	ztypes.h	/^    zword_t attributes[3];$/;"	m	struct:zobjectv4
+blank_status_line	ser_screen.c	/^void blank_status_line (void)$/;"	f
+cache	memory.c	/^static cache_entry_t *cache = NULL;$/;"	v	file:
+cache_entry	memory.c	/^typedef struct cache_entry {$/;"	s	file:
+cache_entry_t	memory.c	/^} cache_entry_t;$/;"	t	typeref:struct:cache_entry	file:
+calc_data_pages	memory.c	/^static unsigned int calc_data_pages (void)$/;"	f	file:
+call	control.c	/^int call (int argc, zword_t *argv, int type)$/;"	f
+char_count	text.c	/^static int char_count = 0;$/;"	v	file:
+check_argument	control.c	/^void check_argument (zword_t argc)$/;"	f
+checksum	ztypes.h	/^    zword_t checksum;$/;"	m	struct:zheader
+child	ztypes.h	/^    zbyte_t child;$/;"	m	struct:zobjectv3
+child	ztypes.h	/^    zword_t child;$/;"	m	struct:zobjectv4
+clear_attr	object.c	/^void clear_attr (zword_t obj, zword_t bit)$/;"	f
+clear_line	ser_io.c	/^void clear_line ()$/;"	f
+clear_screen	ser_io.c	/^void clear_screen ()$/;"	f
+clear_status_window	ser_io.c	/^void clear_status_window ()$/;"	f
+clear_text_window	ser_io.c	/^void clear_text_window ()$/;"	f
+close_record	fileio.c	/^void close_record (void)$/;"	f
+close_script	fileio.c	/^void close_script (void)$/;"	f
+close_story	fileio.c	/^void close_story (void)$/;"	f
+codes_to_text	osdepend.c	/^int codes_to_text (int c, char *s)$/;"	f
+compare_je	math.c	/^void compare_je (int count, zword_t *operand)$/;"	f
+compare_jg	math.c	/^void compare_jg (zword_t a, zword_t b)$/;"	f
+compare_jl	math.c	/^void compare_jl (zword_t a, zword_t b)$/;"	f
+compare_parent_object	object.c	/^void compare_parent_object (zword_t obj1, zword_t obj2)$/;"	f
+compare_zero	math.c	/^void compare_zero (zword_t a)$/;"	f
+conditional_jump	operand.c	/^void conditional_jump (int flag)$/;"	f
+config	ztypes.h	/^    zbyte_t config;$/;"	m	struct:zheader
+configure	zip.c	/^void configure (zbyte_t min_version, zbyte_t max_version)$/;"	f
+const	ztypes.h	69;"	d
+create_status_window	ser_io.c	/^void create_status_window ()$/;"	f
+current_code_cachep	memory.c	/^static cache_entry_t *current_code_cachep = NULL;$/;"	v	file:
+current_code_page	memory.c	/^static unsigned int current_code_page = 0;$/;"	v	file:
+current_col	ser_io.c	/^static int current_col = 1;$/;"	v	file:
+current_data_cachep	memory.c	/^static cache_entry_t *current_data_cachep = NULL;$/;"	v	file:
+current_data_page	memory.c	/^static unsigned int current_data_page = 0;$/;"	v	file:
+current_row	ser_io.c	/^static int current_row = 1;$/;"	v	file:
+cursor_saved	ser_io.c	/^static int cursor_saved = OFF;$/;"	v	file:
+data	memory.c	/^    zbyte_t data[PAGE_SIZE];$/;"	m	struct:cache_entry	file:
+data_size	extern.c	/^unsigned int data_size = 0;$/;"	v
+data_size	ztypes.h	/^    zword_t data_size;$/;"	m	struct:zheader
+datap	extern.c	/^zbyte_t *datap = NULL;$/;"	v
+decode_text	text.c	/^void decode_text (unsigned long *address)$/;"	f
+decrement	variable.c	/^void decrement (zword_t variable)$/;"	f
+decrement_check	variable.c	/^void decrement_check (zword_t variable, zword_t target)$/;"	f
+delete_status_window	ser_io.c	/^void delete_status_window ()$/;"	f
+dictionary_offset	input.c	/^static zword_t dictionary_offset = 0;$/;"	v	file:
+dictionary_size	input.c	/^static short dictionary_size = 0;$/;"	v	file:
+display_char	ser_io.c	/^void display_char (c)$/;"	f
+display_status_line	ser_screen.c	/^void display_status_line (void)$/;"	f
+display_string	ser_io.c	/^static void display_string (s)$/;"	f	file:
+divide	math.c	/^void divide (zword_t a, zword_t b)$/;"	f
+encode	text.c	/^void encode (zword_t word_addr, zword_t word_length, zword_t word_offset, zword_t dest_addr)$/;"	f
+encode_text	text.c	/^void encode_text (int len, const char *s, short *buffer)$/;"	f
+entry_size	input.c	/^static unsigned int entry_size = 0;$/;"	v	file:
+erase_line	ser_screen.c	/^void erase_line (zword_t flag)$/;"	f
+erase_window	ser_screen.c	/^void erase_window (zword_t w)$/;"	f
+fatal	osdepend.c	/^void fatal (const char *s)$/;"	f
+file_cleanup	osdepend.c	/^void file_cleanup (const char *file_name, int flag)$/;"	f
+file_size	ztypes.h	/^    zword_t file_size;$/;"	m	struct:zheader
+filler1	ztypes.h	/^    zword_t filler1[3];$/;"	m	struct:zheader
+filler2	ztypes.h	/^    zword_t filler2[2];$/;"	m	struct:zheader
+filler3	ztypes.h	/^    zword_t filler3[4];$/;"	m	struct:zheader
+find_word	input.c	/^static zword_t find_word (int len, const char *cp, long chop)$/;"	f	file:
+fit_line	osdepend.c	/^int fit_line (const char *line_buffer, int pos, int max)$/;"	f
+flags	ztypes.h	/^    zword_t flags;$/;"	m	struct:zheader
+flink	memory.c	/^    struct cache_entry *flink;$/;"	m	struct:cache_entry	typeref:struct:cache_entry::cache_entry	file:
+flush_buffer	text.c	/^void flush_buffer (int flag)$/;"	f
+font	extern.c	/^int font = 1;$/;"	v
+formatting	extern.c	/^int formatting = ON;$/;"	v
+fp	extern.c	/^zword_t fp = STACK_SIZE - 1;$/;"	v
+function_keys_offset	ztypes.h	/^    zword_t function_keys_offset;$/;"	m	struct:zheader
+get_byte	ztypes.h	294;"	d
+get_cursor_position	ser_io.c	/^void get_cursor_position (row, col)$/;"	f
+get_file_name	osdepend.c	/^int get_file_name (char *file_name, char *default_name, int flag)$/;"	f
+get_fp	control.c	/^void get_fp (void)$/;"	f
+get_line	input.c	/^int get_line (char *cbuf, zword_t timeout, zword_t action_routine)$/;"	f
+get_next_property	property.c	/^static zword_t get_next_property (zword_t propp)$/;"	f	file:
+get_object_address	object.c	/^zword_t get_object_address (zword_t obj)$/;"	f
+get_property_addr	property.c	/^static zword_t get_property_addr (zword_t obj)$/;"	f	file:
+get_story_size	fileio.c	/^unsigned int get_story_size (void)$/;"	f
+get_word	ztypes.h	295;"	d
+getopt	getopt.c	/^int getopt (int argc, char *argv[], const char *opts)$/;"	f
+gfp	fileio.c	/^static FILE *gfp = NULL; \/* Game file pointer *\/$/;"	v	file:
+globals_offset	ztypes.h	/^    zword_t globals_offset;$/;"	m	struct:zheader
+h_alternate_alphabet_offset	extern.c	/^zword_t h_alternate_alphabet_offset = 0;$/;"	v
+h_checksum	extern.c	/^zword_t h_checksum = 0;$/;"	v
+h_config	extern.c	/^zbyte_t h_config = 0;$/;"	v
+h_data_size	extern.c	/^zword_t h_data_size = 0;$/;"	v
+h_file_size	extern.c	/^zword_t h_file_size = 0;$/;"	v
+h_flags	extern.c	/^zword_t h_flags = 0;$/;"	v
+h_globals_offset	extern.c	/^zword_t h_globals_offset = 0;$/;"	v
+h_interpreter	extern.c	/^zbyte_t h_interpreter = INTERP_MSDOS;$/;"	v
+h_interpreter_version	extern.c	/^zbyte_t h_interpreter_version = 'B'; \/* Interpreter version 2 *\/$/;"	v
+h_objects_offset	extern.c	/^zword_t h_objects_offset = 0;$/;"	v
+h_restart_size	extern.c	/^zword_t h_restart_size = 0;$/;"	v
+h_start_pc	extern.c	/^zword_t h_start_pc = 0;$/;"	v
+h_synonyms_offset	extern.c	/^zword_t h_synonyms_offset = 0;$/;"	v
+h_type	extern.c	/^zbyte_t h_type = 0;$/;"	v
+h_version	extern.c	/^zword_t h_version = 0;$/;"	v
+h_words_offset	extern.c	/^zword_t h_words_offset = 0;$/;"	v
+halt	interpre.c	/^static int halt = FALSE;$/;"	v	file:
+increment	variable.c	/^void increment (zword_t variable)$/;"	f
+increment_check	variable.c	/^void increment_check (zword_t variable, zword_t target)$/;"	f
+initialize_screen	ser_io.c	/^void initialize_screen ()$/;"	f
+input_character	ser_io.c	/^int input_character (timeout)$/;"	f
+input_line	ser_io.c	/^int input_line (buflen, buffer, timeout, read_size)$/;"	f
+insert_object	object.c	/^void insert_object (zword_t obj1, zword_t obj2)$/;"	f
+interpret	interpre.c	/^int interpret ()$/;"	f
+interpreter	ztypes.h	/^    zbyte_t interpreter;$/;"	m	struct:zheader
+interpreter_state	extern.c	/^int interpreter_state = RUN;$/;"	v
+interpreter_status	extern.c	/^int interpreter_status = 0;$/;"	v
+interpreter_version	ztypes.h	/^    zbyte_t interpreter_version;$/;"	m	struct:zheader
+jump	control.c	/^void jump (zword_t offset)$/;"	f
+line	extern.c	/^char *line = NULL;$/;"	v
+line_pos	text.c	/^static int line_pos = 0;$/;"	v	file:
+lines_written	extern.c	/^int lines_written = 0;$/;"	v
+load	variable.c	/^void load (zword_t variable)$/;"	f
+load_byte	property.c	/^void load_byte (zword_t addr, zword_t offset)$/;"	f
+load_cache	memory.c	/^void load_cache (void)$/;"	f
+load_child_object	object.c	/^void load_child_object (zword_t obj)$/;"	f
+load_next_object	object.c	/^void load_next_object (zword_t obj)$/;"	f
+load_next_property	property.c	/^void load_next_property (zword_t obj, zword_t prop)$/;"	f
+load_operand	operand.c	/^zword_t load_operand (int type)$/;"	f
+load_parent_object	object.c	/^void load_parent_object (zword_t obj)$/;"	f
+load_property	property.c	/^void load_property (zword_t obj, zword_t prop)$/;"	f
+load_property_address	property.c	/^void load_property_address (zword_t obj, zword_t prop)$/;"	f
+load_property_length	property.c	/^void load_property_length (zword_t propp)$/;"	f
+load_variable	operand.c	/^zword_t load_variable (int number)$/;"	f
+load_word	property.c	/^void load_word (zword_t addr, zword_t offset)$/;"	f
+lookup_table	extern.c	/^char lookup_table[3][26];$/;"	v
+main	zip.c	/^int main (int argc, char *argv[])$/;"	f
+max_char_height	ztypes.h	/^    zbyte_t max_char_height;$/;"	m	struct:zheader
+max_char_width	ztypes.h	/^    zbyte_t max_char_width;$/;"	m	struct:zheader
+mouse_position_offset	ztypes.h	/^    zword_t mouse_position_offset;$/;"	m	struct:zheader
+move_data	property.c	/^void move_data (zword_t src, zword_t dst, zword_t count)$/;"	f
+multiply	math.c	/^void multiply (zword_t a, zword_t b)$/;"	f
+new_line	text.c	/^void new_line (void)$/;"	f
+next	ztypes.h	/^    zbyte_t next;$/;"	m	struct:zobjectv3
+next	ztypes.h	/^    zword_t next;$/;"	m	struct:zobjectv4
+next_token	input.c	/^static const char *next_token (const char *s, const char **token, int *length, const char *punctuation)$/;"	f	file:
+not	math.c	/^void not (zword_t a)$/;"	f
+objects_offset	ztypes.h	/^    zword_t objects_offset;$/;"	m	struct:zheader
+open_playback	fileio.c	/^void open_playback (int arg)$/;"	f
+open_record	fileio.c	/^void open_record (void)$/;"	f
+open_script	fileio.c	/^void open_script (void)$/;"	f
+open_story	fileio.c	/^void open_story (const char *storyname)$/;"	f
+optarg	getopt.c	/^const char *optarg;$/;"	v
+opterr	getopt.c	/^int opterr = 1;$/;"	v
+optind	getopt.c	/^int optind = 1;$/;"	v
+optopt	getopt.c	/^int optopt;$/;"	v
+or	math.c	/^void or (zword_t a, zword_t b)$/;"	f
+outc	ser_io.c	/^static void outc (c)$/;"	f	file:
+output_char	ser_screen.c	/^void output_char (int c)$/;"	f
+output_line	ser_screen.c	/^void output_line (const char *s)$/;"	f
+output_new_line	ser_screen.c	/^void output_new_line (void)$/;"	f
+output_string	ser_screen.c	/^void output_string (const char *s)$/;"	f
+outputting	extern.c	/^int outputting = ON;$/;"	v
+page_number	memory.c	/^    int page_number;$/;"	m	struct:cache_entry	file:
+parent	ztypes.h	/^    zbyte_t parent;$/;"	m	struct:zobjectv3
+parent	ztypes.h	/^    zword_t parent;$/;"	m	struct:zobjectv4
+pc	extern.c	/^unsigned long pc = 0;$/;"	v
+playback_key	fileio.c	/^int playback_key (void)$/;"	f
+playback_line	fileio.c	/^int playback_line (int buflen, char *buffer, int *read_size)$/;"	f
+pop_var	variable.c	/^void pop_var (zword_t variable)$/;"	f
+print_address	text.c	/^void print_address (zword_t packed_address)$/;"	f
+print_character	text.c	/^void print_character (zword_t c)$/;"	f
+print_literal	text.c	/^void print_literal (void)$/;"	f
+print_number	text.c	/^void print_number (zword_t num)$/;"	f
+print_object	text.c	/^void print_object (zword_t obj)$/;"	f
+print_offset	text.c	/^void print_offset (zword_t offset)$/;"	f
+print_status	osdepend.c	/^int print_status (int argc, char *argv[])$/;"	f
+print_time	text.c	/^void print_time (int hours, int minutes)$/;"	f
+print_window	ser_screen.c	/^void print_window (int argc, zword_t *argv)$/;"	f
+println_return	text.c	/^void println_return (void)$/;"	f
+process_arguments	osdepend.c	/^void process_arguments ()$/;"	f
+property_mask	extern.c	/^int property_mask = 0;$/;"	v
+property_offset	ztypes.h	/^    zword_t property_offset;$/;"	m	struct:zobjectv3
+property_offset	ztypes.h	/^    zword_t property_offset;$/;"	m	struct:zobjectv4
+property_size_mask	extern.c	/^int property_size_mask = 0;$/;"	v
+push_var	variable.c	/^void push_var (zword_t value)$/;"	f
+read_character	input.c	/^void read_character (int argc, zword_t *argv)$/;"	f
+read_code_byte	memory.c	/^zbyte_t read_code_byte (void)$/;"	f
+read_code_word	memory.c	/^zword_t read_code_word (void)$/;"	f
+read_data_byte	memory.c	/^zbyte_t read_data_byte (unsigned long *addr)$/;"	f
+read_data_word	memory.c	/^zword_t read_data_word (unsigned long *addr)$/;"	f
+read_key	ser_io.c	/^static int read_key ()$/;"	f	file:
+read_line	input.c	/^void read_line (int argc, zword_t *argv)$/;"	f
+read_object	object.c	/^static zword_t read_object (zword_t objp, int field)$/;"	f	file:
+read_page	fileio.c	/^void read_page (int page, void *buffer)$/;"	f
+record_key	fileio.c	/^void record_key (int c)$/;"	f
+record_line	fileio.c	/^void record_line (const char *s)$/;"	f
+record_name	fileio.c	/^static char record_name[FILENAME_MAX + 1] = "";$/;"	v	file:
+recording	extern.c	/^int recording = OFF;$/;"	v
+redirecting	extern.c	/^int redirecting = OFF;$/;"	v
+release_date	ztypes.h	/^    zbyte_t release_date[6];$/;"	m	struct:zheader
+remove_object	object.c	/^void remove_object (zword_t obj)$/;"	f
+replaying	extern.c	/^int replaying = OFF;$/;"	v
+reset_screen	ser_io.c	/^void reset_screen ()$/;"	f
+restart	control.c	/^void restart (void)$/;"	f
+restart_screen	ser_io.c	/^void restart_screen ()$/;"	f
+restart_size	ztypes.h	/^    zword_t restart_size;$/;"	m	struct:zheader
+restore	fileio.c	/^int restore (void)$/;"	f
+ret	control.c	/^void ret (zword_t value)$/;"	f
+rfp	fileio.c	/^static FILE *rfp = NULL; \/* Record file pointer *\/$/;"	v	file:
+right_margin	extern.c	/^int right_margin = DEFAULT_RIGHT_MARGIN;$/;"	v
+ring_bell	ser_io.c	/^void ring_bell () $/;"	f
+rundown	ser_io.c	/^static void rundown ()$/;"	f	file:
+save	fileio.c	/^int save (void)$/;"	f
+save_name	fileio.c	/^static char save_name[FILENAME_MAX + 1] = "";$/;"	v	file:
+save_restore	fileio.c	/^static int save_restore (const char *file_name, int flag)$/;"	f	file:
+saved_col	ser_io.c	/^static int saved_col;$/;"	v	file:
+saved_formatting	text.c	/^static int saved_formatting = ON;$/;"	v	file:
+saved_row	ser_io.c	/^static int saved_row;$/;"	v	file:
+scan_data	property.c	/^void scan_data (int argc, zword_t *argv)$/;"	f
+screen_bottom	ztypes.h	/^    zbyte_t screen_bottom;$/;"	m	struct:zheader
+screen_cols	extern.c	/^int screen_cols = 0;$/;"	v
+screen_columns	ztypes.h	/^    zbyte_t screen_columns;$/;"	m	struct:zheader
+screen_left	ztypes.h	/^    zbyte_t screen_left;$/;"	m	struct:zheader
+screen_right	ztypes.h	/^    zbyte_t screen_right;$/;"	m	struct:zheader
+screen_rows	extern.c	/^int screen_rows = 0;$/;"	v
+screen_rows	ztypes.h	/^    zbyte_t screen_rows;$/;"	m	struct:zheader
+screen_top	ztypes.h	/^    zbyte_t screen_top;$/;"	m	struct:zheader
+screen_window	extern.c	/^int screen_window = TEXT_WINDOW;$/;"	v
+script_char	fileio.c	/^void script_char (int c)$/;"	f
+script_file_valid	fileio.c	/^static int script_file_valid = FALSE;$/;"	v	file:
+script_line	fileio.c	/^void script_line (const char *s)$/;"	f
+script_name	fileio.c	/^static char script_name[FILENAME_MAX + 1] = "";$/;"	v	file:
+script_new_line	fileio.c	/^void script_new_line (void)$/;"	f
+script_string	fileio.c	/^void script_string (const char *s)$/;"	f
+scripting	extern.c	/^int scripting = OFF;$/;"	v
+scripting_disable	extern.c	/^int scripting_disable = OFF;$/;"	v
+scroll_line	ser_io.c	/^void scroll_line ()$/;"	f
+select_status_window	ser_io.c	/^void select_status_window ()$/;"	f
+select_text_window	ser_io.c	/^void select_text_window ()$/;"	f
+select_window	ser_screen.c	/^void select_window (zword_t w)$/;"	f
+separators	input.c	/^static const char *separators = " \\t\\n\\f.,?";$/;"	v	file:
+set_attr	object.c	/^void set_attr (zword_t obj, zword_t bit)$/;"	f
+set_attribute	ser_io.c	/^void set_attribute (attribute)$/;"	f
+set_byte	ztypes.h	296;"	d
+set_colour_attribute	ser_screen.c	/^void set_colour_attribute (zword_t foreground, zword_t background)$/;"	f
+set_colours	osdepend.c	/^void set_colours (int foreground, int background)$/;"	f
+set_cursor_position	ser_screen.c	/^void set_cursor_position (zword_t row, zword_t column)$/;"	f
+set_font	osdepend.c	/^void set_font (int font_type)$/;"	f
+set_font_attribute	ser_screen.c	/^void set_font_attribute (zword_t new_font)$/;"	f
+set_format_mode	text.c	/^void set_format_mode (zword_t flag)$/;"	f
+set_print_modes	text.c	/^void set_print_modes (zword_t type, zword_t option)$/;"	f
+set_status_size	ser_screen.c	/^void set_status_size (zword_t lines)$/;"	f
+set_video_attribute	text.c	/^void set_video_attribute (zword_t mode)$/;"	f
+set_word	ztypes.h	297;"	d
+sfp	fileio.c	/^static FILE *sfp = NULL; \/* Script file pointer *\/$/;"	v	file:
+shift	math.c	/^void shift (zword_t a, zword_t b)$/;"	f
+sound	osdepend.c	/^void sound (int argc, zword_t *argv)$/;"	f
+sp	extern.c	/^zword_t sp = STACK_SIZE;$/;"	v
+stack	extern.c	/^zword_t stack[STACK_SIZE];$/;"	v
+start_pc	ztypes.h	/^    zword_t start_pc;$/;"	m	struct:zheader
+status_active	extern.c	/^int status_active = OFF;$/;"	v
+status_line	extern.c	/^char *status_line = NULL;$/;"	v
+status_pos	extern.c	/^int status_pos = 0;$/;"	v
+status_size	extern.c	/^int status_size = 0;$/;"	v
+store_byte	property.c	/^void store_byte (zword_t addr, zword_t offset, zword_t value)$/;"	f
+store_operand	operand.c	/^void store_operand (zword_t operand)$/;"	f
+store_property	property.c	/^void store_property (zword_t obj, zword_t prop, zword_t value)$/;"	f
+store_variable	operand.c	/^void store_variable (int number, zword_t variable)$/;"	f
+store_word	property.c	/^void store_word (zword_t addr, zword_t offset, zword_t value)$/;"	f
+story_buffer	text.c	/^static int story_buffer = 0;$/;"	v	file:
+story_count	text.c	/^static int story_count = 0;$/;"	v	file:
+story_pos	text.c	/^static int story_pos = 0;$/;"	v	file:
+story_scaler	extern.c	/^int story_scaler = 0;$/;"	v
+story_shift	extern.c	/^int story_shift = 0;$/;"	v
+storybasename	osdepend.c	/^char *storybasename;$/;"	v
+subtract	math.c	/^void subtract (zword_t a, zword_t b)$/;"	f
+synonyms_offset	ztypes.h	/^    zword_t synonyms_offset;$/;"	m	struct:zheader
+test	math.c	/^void test (zword_t a, zword_t b)$/;"	f
+test_attr	object.c	/^void test_attr (zword_t obj, zword_t bit)$/;"	f
+tokenise	input.c	/^void tokenise (int argc, zword_t *argv)$/;"	f
+tokenise_line	input.c	/^static void tokenise_line (zword_t char_buf, zword_t token_buf, zword_t dictionary, zword_t flag)$/;"	f	file:
+top_margin	extern.c	/^int top_margin = DEFAULT_TOP_MARGIN;$/;"	v
+type	ztypes.h	/^    zbyte_t type;$/;"	m	struct:zheader
+undo_datap	extern.c	/^zbyte_t *undo_datap = NULL;$/;"	v
+undo_restore	fileio.c	/^void undo_restore (void)$/;"	f
+undo_save	fileio.c	/^void undo_save (void)$/;"	f
+undo_stack	fileio.c	/^static zword_t undo_stack[STACK_SIZE];$/;"	v	file:
+undo_valid	fileio.c	/^static int undo_valid = FALSE;$/;"	v	file:
+unload_cache	memory.c	/^void unload_cache (void)$/;"	f
+unwind	control.c	/^void unwind (zword_t value, zword_t new_fp)$/;"	f
+update_cache	memory.c	/^static cache_entry_t *update_cache (int page_number)$/;"	f	file:
+v1_lookup_table	control.c	/^static const char *v1_lookup_table[3] = {$/;"	v	file:
+v3_lookup_table	control.c	/^static const char *v3_lookup_table[3] = {$/;"	v	file:
+verify	fileio.c	/^void verify (void)$/;"	f
+version	ztypes.h	/^    zword_t version;$/;"	m	struct:zheader
+wait_for_char	ser_io.c	/^static int wait_for_char (timeout)$/;"	f	file:
+words_offset	ztypes.h	/^    zword_t words_offset;$/;"	m	struct:zheader
+write_char	text.c	/^void write_char (int c)$/;"	f
+write_object	object.c	/^static void write_object (zword_t objp, int field, zword_t value)$/;"	f	file:
+write_string	text.c	/^void write_string (const char *s)$/;"	f
+write_zchar	text.c	/^void write_zchar (int c)$/;"	f
+zbyte_t	ztypes.h	/^typedef unsigned char zbyte_t;  \/* unsigned 1 byte quantity *\/$/;"	t
+zheader	ztypes.h	/^typedef struct zheader {$/;"	s
+zheader_t	ztypes.h	/^} zheader_t;$/;"	t	typeref:struct:zheader
+zip_random	math.c	/^void zip_random (zword_t a)$/;"	f
+zobjectv3	ztypes.h	/^typedef struct zobjectv3 {$/;"	s
+zobjectv3_t	ztypes.h	/^} zobjectv3_t;$/;"	t	typeref:struct:zobjectv3
+zobjectv4	ztypes.h	/^typedef struct zobjectv4 {$/;"	s
+zobjectv4_t	ztypes.h	/^} zobjectv4_t;$/;"	t	typeref:struct:zobjectv4
+zremainder	math.c	/^void zremainder (zword_t a, zword_t b)$/;"	f
+zword_t	ztypes.h	/^typedef unsigned short zword_t; \/* unsigned 2 byte quantity *\/$/;"	t

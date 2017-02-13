@@ -68,7 +68,7 @@ class Mic:
         lastN = [i for i in range(20)]
 
         # calculate the long run average, and thereby the proper threshold
-        for i in range(0, RATE / CHUNK * THRESHOLD_TIME):
+        for i in range(0, int(RATE / CHUNK * THRESHOLD_TIME + 0.5)):
 
             data = stream.read(CHUNK)
             frames.append(data)
@@ -253,7 +253,12 @@ class Mic:
             wav_fp.writeframes(''.join(frames))
             wav_fp.close()
             f.seek(0)
-            return self.active_stt_engine.transcribe(f)
+            candidates = self.active_stt_engine.transcribe(f)
+            if candidates:
+                self._logger.info('Got the following possible transcriptions:')
+                for c in candidates:
+                    self._logger.info(c)
+            return candidates
 
     def say(self, phrase,
             OPTIONS=" -vdefault+m3 -p 40 -s 160 --stdout > say.wav"):
