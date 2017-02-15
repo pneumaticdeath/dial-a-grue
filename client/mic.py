@@ -9,6 +9,9 @@ import audioop
 import pyaudio
 import alteration
 import jasperpath
+import time
+
+from phone import Phone
 
 
 class Mic:
@@ -30,6 +33,7 @@ class Mic:
         self.speaker = speaker
         self.passive_stt_engine = passive_stt_engine
         self.active_stt_engine = active_stt_engine
+        self.phone = Phone.get_phone()
         self._logger.info("Initializing PyAudio. ALSA/Jack error messages " +
                           "that pop up during this process are normal and " +
                           "can usually be safely ignored.")
@@ -210,6 +214,14 @@ class Mic:
         if THRESHOLD is None:
             THRESHOLD = self.fetchThreshold()
 
+        wait_count = 0
+        while not self.phone.ptt_pressed() and wait_count < 120:
+            wait_count += 1
+            time.sleep(0.1)
+
+        if not self.phone.ptt_pressed():
+            return ['',]
+
         self.speaker.play(jasperpath.data('audio', 'beep_hi.wav'))
 
         # prepare recording stream
@@ -236,7 +248,8 @@ class Mic:
             average = sum(lastN) / float(len(lastN))
 
             # TODO: 0.8 should not be a MAGIC NUMBER!
-            if average < THRESHOLD * 0.8:
+            # if average < THRESHOLD * 0.8:
+            if not self.phone.ptt_pressed() and average < THRESHOLD * 0.8:
                 break
 
         self.speaker.play(jasperpath.data('audio', 'beep_lo.wav'))
