@@ -20,7 +20,7 @@ def handle(text, mic, profile):
     text = ''
     while not re.search(r'\bquit\b', text, re.IGNORECASE):
         text = mic.activeListen()
-        if text != '':
+        if text:
             print text
             mic.say(text.lower())
         else:

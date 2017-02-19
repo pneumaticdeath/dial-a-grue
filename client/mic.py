@@ -9,6 +9,7 @@ import audioop
 import pyaudio
 import alteration
 import jasperpath
+import threading
 import time
 
 from phone import Phone
@@ -30,6 +31,7 @@ class Mic:
         acive_stt_engine -- performs STT while Jasper is in active listen mode
         """
         self._logger = logging.getLogger(__name__)
+        self.lock = threading.Lock()
         self.speaker = speaker
         self.passive_stt_engine = passive_stt_engine
         self.active_stt_engine = active_stt_engine
@@ -222,6 +224,8 @@ class Mic:
         if not self.phone.ptt_pressed():
             return ['',]
 
+        self.lock.acquire()
+
         self.speaker.play(jasperpath.data('audio', 'beep_hi.wav'))
 
         # prepare recording stream
@@ -258,6 +262,8 @@ class Mic:
         stream.stop_stream()
         stream.close()
 
+        self.lock.release()
+
         with tempfile.SpooledTemporaryFile(mode='w+b') as f:
             wav_fp = wave.open(f, 'wb')
             wav_fp.setnchannels(1)
@@ -277,4 +283,6 @@ class Mic:
             OPTIONS=" -vdefault+m3 -p 40 -s 160 --stdout > say.wav"):
         # alter phrase before speaking
         phrase = alteration.clean(phrase)
+        self.lock.acquire()
         self.speaker.say(phrase)
+        self.lock.release()
