@@ -190,6 +190,8 @@ class ZorkMachine(object):
     
     def kill(self):
         os.kill(self._pid, 1)
+        pid, status = os.waitpid(self._pid, os.WNOHANG)
+        logging.debug('zvm with pid {0} exited with status {1}'.format(pid, status))
 
     def is_running(self):
         try:
@@ -260,15 +262,22 @@ class ZorkPhone(object):
 
     def talk(self):
         first_block = True
+        saved_text = ''
         try:
             while self.running and self.zvm.is_running() and self.phone.off_hook():
-                zork_said = self.zvm.read()
+                zork_said = saved_text + self.zvm.read()
                 if first_block:
                     # print out the copyright notice, but don't speak it since that doesn't work well.
-                    paragraphs = zork_said.split('\r\n\r\n')
-                    print paragraphs[0]
-                    zork_said = '\r\n\r\n'.join(paragraphs[1:])
-                    first_block = False
+                    pattern = 'West of House'
+                    ind = zork_said.find(pattern)
+                    if ind > 0:
+                        print zork_said[:ind]
+                        zork_said = zork_said[ind:]
+                        first_block = False
+                        saved_text = ''
+                    else:
+                        saved_text = zork_said
+                        continue
 
                 if self.quit_said:
                     quit_sub = 'Do you wish to leave the game? (Y is affirmative): >'
