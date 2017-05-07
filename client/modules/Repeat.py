@@ -1,5 +1,6 @@
 # vim: ai sw=4 expandtab:
 import fcntl
+import logging
 import os
 import pty
 import re
@@ -15,6 +16,7 @@ def handle(text, mic, profile):
     Repeats the user's input
     """
      
+    logging.info('Starting the Repeat module')
     mic.say("I'll repeat what you say until you say quit.")
 
     text = ''
@@ -25,7 +27,9 @@ def handle(text, mic, profile):
             mic.say(text.lower())
         else:
             print "Got nothing"
+
     mic.say("Okay, goodbye!")
+    logging.info('Leaving Repeat module')
 
 def isValid(text):
     """
