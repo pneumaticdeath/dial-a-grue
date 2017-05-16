@@ -51,18 +51,21 @@ class ZorkMachine(object):
         return True
 
 class ZorkPhone(object):
-    def __init__(self, zvm, mic, copyright_beacon=None):
+
+    class StopGame(Exception):
+        pass
+
+    def __init__(self, zvm, mic, munger=None, listen_handlers=[]):
         self.zvm = zvm
         self.mic = mic
-        self.beacon = copyright_beacon
+        self.munger = munger
+        self.listen_handlers = listen_handlers
+        self.talker_handler = None
         self.phone = Phone.get_phone()
         self.running = True
+        self.context = {}
         self.listener = threading.Thread(target=self.listen)
         self.talker = threading.Thread(target=self.talk)
-        self.quit_said = False
-        self.heard_save = False
-        self.heard_restore = False
-        self.waiting_for_quit_confirmation = False
         self.listener.start()
         self.talker.start()
 
@@ -71,33 +74,19 @@ class ZorkPhone(object):
 
         try:
             while self.running and self.zvm.is_running() and self.phone.off_hook():
+                player_said = self.mic.activeListen()
                 if not player_said or player_said == '':
                     logger.info('listen thread got no input')
-                    player_said = self.mic.activeListen()
                     continue
 
-                if player_said.upper() == "QUIT":
-                    logger.debug('so you want to quit, eh?')
-                    self.quit_said = True
-                elif player_said.upper() == "SAVE":
-                    logger.debug('heard save')
-                    self.heard_save = True
-                elif player_said.upper() == "RESTORE":
-                    logger.debug('heard restore')
-                    self.heard_restore = True
-
-                if self.waiting_for_quit_confirmation:
-                    logger.debug('listen thread is waiting for quit confirmation')
-                    self.waiting_for_quit_confirmation = False
-                    if player_said.upper() == "YES":
-                        self.mic.say('That was a good game!')
-                        self.running = False
-                        break
+                for regex, handler in self.listen_handlers:
+                    match = regex.search(player_said)
+                    if match:
+                        logging.debug('handler matched "{0}"'.format(player_said))
+                        handler(player_said, match, self)
 
                 self.zvm.write(player_said + "\n")
 
-                player_said = self.mic.activeListen()
-                logger.debug('listen thread heard "{0}"'.format(player_said))
 
             if self.zvm.is_running(): 
                 try:
@@ -112,51 +101,15 @@ class ZorkPhone(object):
         logger.debug('listen thread exiting')
 
     def talk(self):
-        first_block = True
-        saved_text = ''
         try:
             while self.running and self.zvm.is_running() and self.phone.off_hook():
-                zork_said = saved_text + self.zvm.read()
-                if first_block:
-                    # print out the copyright notice, but don't speak it since that doesn't work well.
-                    if self.beacon is not None:
-                        pattern = self.beacon
-                    else:
-                        pattern = ''
-                    ind = zork_said.find(pattern)
-                    if ind >= 0:
-                        print zork_said[:ind]
-                        zork_said = zork_said[ind:]
-                        first_block = False
-                        saved_text = ''
-                    else:
-                        saved_text = zork_said
-                        continue
+                zork_said = self.zvm.read()
+                if self.talker_handler is not None:
+                    zork_said = self.talker_handler(self, zork_said)
+                    self.talker_handler = None
 
-                if self.quit_said:
-                    quit_sub = 'Do you wish to leave the game? (Y is affirmative): >'
-                    quit_repl = 'Do you wish to leave the game?'
-                    ind = zork_said.find(quit_sub)
-                    if ind >= 0:
-                        zork_said = zork_said[:ind] + quit_repl + zork_said[ind + len(quit_sub):]
-                        self.quit_said = False
-                        self.waiting_for_quit_confirmation = True
-                elif self.heard_save or self.heard_restore:
-                    pattern = 'Enter a file name.'
-                    if pattern in zork_said:
-                        if self.heard_save:
-                            self.announce('Saving')
-                            self.heard_save = False
-                        if self.heard_restore:
-                            self.announce('Loading')
-                            self.heard_restore = False
-                        # save/load from default filename
-                        self.zvm.write('\n')
-                        time.sleep(0.1)
-                        zork_said = self.zvm.read()
-                        if 'Y/N' in zork_said:
-                            self.zvm.write('y\n')
-                            zork_said = 'Overwrote old save'
+                if self.munger is not None:
+                    zork_said = self.munger(zork_said)
 
                 self.announce(zork_said)
             if self.zvm.is_running():
