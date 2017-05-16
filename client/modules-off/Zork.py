@@ -551,7 +551,7 @@ ZORK_WORDS = [
         "SONG",
         "SONGBIRD",
         "SOUTH",
-        "SOUTHERN",
+        "SOUTHEAST",
         "SOUTHWEST",
         "SPILL",
         "SPIN",

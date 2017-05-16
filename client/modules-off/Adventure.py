@@ -1,10 +1,11 @@
 # vim: ai,sw=4,expandtab
-import fcntl
-import os
-import pty
+import logging
 import re
 import time
 from client import jasperpath
+from client.zvm import ZorkMachine, ZorkPhone
+
+logger = logging.getLogger(__name__)
 
 ADV_WORDS = [
         'ANCIENT',
@@ -156,38 +157,76 @@ WORDS = [ 'PLAY', 'ADVENTURE' ] + ADV_WORDS
 
 PRIORITY = 100
 
-class AdvMachine(object):
-  
-    def __init__(self):
-        self._pid,self._fd = pty.fork()
-        if self._pid == 0:
-            # We need to exec adventure4, and it needs to run in its own dir
-            os.chdir(os.path.join(jasperpath.APP_PATH, 'static', 'adventure4'))
-            os.execv('./adventure4',['./adventure4',])
-        else:
-            flags = fcntl.fcntl(self._fd, fcntl.F_GETFL)
-            fcntl.fcntl(self._fd, fcntl.F_SETFL, flags | os.O_NONBLOCK)
-            print "Forked adventure4 in PID %d" % (self._pid,)
+def quit_heard(phone, zork_said):
+    logger.debug('quit_heard handler running')
+    nuke_text = ' (Y is affirmative): >'
+    ind = zork_said.find(nuke_text)
+    if ind >= 0:
+        zork_said = zork_said[:ind] + zork_said[ind + len(nuke_text):]
+        phone.context['state'] = 'waiting_for_quit_confirmation'
+    return zork_said
+   
+def quit_handler(text, match, phone):
+    logger.debug('Heard quit')
+    phone.talker_handler = quit_heard
 
+def save_handler(text, match, phone):
+    logger.debug('Heard save')
+    phone.talker_handler = save_heard
 
-    def read(self):
-        try:
-            return os.read(self._fd, 30000)
-        except OSError:
-            return ''
+def restore_handler(text, match, phone):
+    logger.debug('Heard restore')
+    phone.talker_handler = restore_heard
 
-    def write(self,str):
-        return os.write(self._fd, str)
-    
-    def kill(self):
-        os.kill(self._pid, 1)
+def save_heard(phone, zork_said):
+    logger.debug('save_heard handler running')
+    if 'Enter a file name' in zork_said:
+        phone.announce('Saving')
+        phone.zvm.write('\n')
+        time.sleep(0.1)
+        zork_said = phone.zvm.read()
+        if 'Y/N' in zork_said:
+            phone.zvm.write('y\n')
+            zork_said = 'Overwrote old save'
+    return zork_said
 
-    def is_running(self):
-        try:
-            os.kill(self._pid, 0)
-        except OSError:
-            return False
-        return True
+def restore_heard(phone, zork_said):
+    logger.debug('restore_heard handler running')
+    if 'Enter a file name' in zork_said:
+        phone.announce('Loading')
+        phone.zvm.write('\n')
+        time.sleep(0.1)
+        zork_said = phone.zvm.read()
+    return zork_said
+
+def default_listen_handler(text, match, phone):
+    logger.debug('Default listen handler')
+    if 'state' in phone.context and phone.context['state'] == 'waiting_for_quit_confirmation':
+        return quit_confirm(text, match, phone)
+
+def quit_confirm(text, match, phone):
+    logger.debug('Waiting for quit confirmation')
+    phone.context['state'] = None
+    if text.upper() == 'YES':
+        phone.running = False
+        phone.zvm.write(text+'\n');
+        phone.mic.say('That was a good game');
+        raise phone.StopGame()
+
+listen_handlers = [
+    (re.compile(r'quit', re.IGNORECASE), quit_handler),
+    (re.compile(r'save', re.IGNORECASE), save_handler),
+    (re.compile(r'restore', re.IGNORECASE), restore_handler),
+    (re.compile(r'.'), default_listen_handler),  # The default handler NEEDS to be last.
+]
+
+def textmunge(text):
+    replacements = [(r'Release 1 / Serial number 151001 / ZILF 0\.7 lib J3', ''),
+                    (r'\(y/n\) >\r\n', 'Yes or no.\r\n']
+    for pattern, replacement in replacements:
+        text = re.sub(pattern, replacement, text, re.MULTILINE)
+    #text = '\n'.join([block.replace('\r\n',' ') for block in text.split('\r\n\r\n')])
+    return text
 
 def handle(text, mic, profile):
     """
@@ -196,21 +235,14 @@ def handle(text, mic, profile):
 
     mic.say('Lets play a game of adventure')
 
-    adv = AdvMachine()
-    time.sleep(1)
+    zvm = ZorkMachine('advent.z3')
+    zorkphone = ZorkPhone(zvm, mic, 
+                          munger=textmunge,
+                          listen_handlers=listen_handlers)
+    zorkphone.talker.join()
+    zorkphone.listener.join()
 
-    while adv.is_running():
-        adv_out = adv.read()
-        print adv_out
-        mic.say(adv_out)
-
-        command = mic.activeListen()
-        if command:
-            command += '\n'
-            # print command
-            adv.write(command)
-        else:
-            print 'Didn\'t get anything'
+    mic.say('Thank you for making an old grue very happy.')
 
 def isValid(text):
     """
