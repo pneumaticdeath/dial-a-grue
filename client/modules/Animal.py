@@ -37,7 +37,7 @@ def handle(text, mic, profile):
     keep_playing = 'YES'
     while keep_playing == 'YES':
         game.reset()
-        while game.current_node().endswith('?'):
+        while game.at_question():
             answer = ask_yes_no(game.current_node(), mic)
             if answer == 'NO':
                 games.answer_no()

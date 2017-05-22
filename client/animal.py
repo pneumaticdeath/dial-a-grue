@@ -74,6 +74,9 @@ class Animal(object):
     def current_node(self):
         return self._current_node.node_text
 
+    def at_question(self):
+        return self._current_node.yes_node is not None and self._current_node.no_node is not None
+
     def answer_yes(self):
         if self._current_node.yes_node is not None:
             self._current_node = Node.find(self._current_node.yes_node, self._conn)
@@ -117,7 +120,7 @@ if __name__ == '__main__':
     while keep_playing.startswith('y'):
         question_count=0
         print('Think of an animal!')
-        while game.current_node().endswith('?'):
+        while game.at_question():
             question_count += 1
             answer = read_y_n(game.current_node())
             if answer.startswith('y'):
