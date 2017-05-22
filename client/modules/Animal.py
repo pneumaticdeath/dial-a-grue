@@ -1,9 +1,6 @@
-
 # vim: ai sw=4 expandtab:
-import fcntl
 import logging
 import re
-import time
 from client import jasperpath
 from client.animal import Animal
 
@@ -12,7 +9,7 @@ WORDS = [ 'YES', 'NO', 'PLAY', 'ANIMAL', 'QUIT' ]
 PRIORITY = 50
 
 def ask_yes_no(prompt, mic):
-    valid_choices = ['YES', 'NO']
+    valid_choices = ['YES', 'NO', 'QUIT']
     print('Prompting with "{0}"'.format(prompt))
     answer = None
     while answer not in valid_choices:
