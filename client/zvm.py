@@ -61,7 +61,7 @@ class ZorkPhone(object):
         self.munger = munger
         self.listen_handlers = listen_handlers
         self.talker_handler = None
-        self.phone = Phone.get_phone()
+        self.phone = mic.phone
         self.running = True
         self.context = {}
         self.listener = threading.Thread(target=self.listen)

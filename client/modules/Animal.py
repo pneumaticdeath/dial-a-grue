@@ -1,5 +1,6 @@
 # vim: ai sw=4 expandtab:
 import logging
+import os
 import re
 from client import jasperpath
 from client.animal import Animal
@@ -40,9 +41,9 @@ def handle(text, mic, profile):
         while game.at_question():
             answer = ask_yes_no(game.current_node(), mic)
             if answer == 'NO':
-                games.answer_no()
+                game.answer_no()
             elif answer == 'YES':
-                games.answer_yes()
+                game.answer_yes()
             elif answer == 'QUIT':
                 keep_playing = 'NO'
                 break;

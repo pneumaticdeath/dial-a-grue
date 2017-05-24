@@ -8,14 +8,16 @@ import sys
 class Node(object):
     @classmethod
     def find(cls, node_id, connection):
-        results = connection.execute('SELECT ROWID, node_text, yes_node, no_node FROM animals where ROWID = ?', (node_id,))
-
+        results = connection.execute('SELECT ROWID, node_text, yes_node, no_node '
+                                     'FROM animals where ROWID = ?', (node_id,))
         first = True
         new_node_id = None
         for result in results:
             if first:
                 new_node_id, node_text, yes_node, no_node = result
+                first = False
             else:
+                # This shouldn't be possible
                 logging.warning("Got more than 1 row with ROWID %d" % (node_id))
                 break
         if new_node_id != node_id :
@@ -28,11 +30,11 @@ class Node(object):
             cursor = connection.cursor()
             result = cursor.execute('INSERT INTO animals (node_text) values (?);', (node_text,))
             node_id = cursor.lastrowid
-            connection.commit()        
-            return cls.find(node_id, connection)
         else:
-            result = connection.execute('INSERT INTO animals (rowid, node_text) values (?,?);', (node_id, node_text))
-            return cls.find(node_id, connection)
+            result = connection.execute('INSERT INTO animals (rowid, node_text) values (?,?);',
+                                        (node_id, node_text))
+        connection.commit()        
+        return cls.find(node_id, connection)
 
     @classmethod
     def _create_db(cls, conn):
@@ -101,6 +103,7 @@ class Animal(object):
 
 if __name__ == '__main__':
     import argparse
+    import os
 
     def read_y_n(prompt=''):
         if prompt:
@@ -111,8 +114,9 @@ if __name__ == '__main__':
             answer = sys.stdin.readline().lower().strip()
         return answer
 
+    dbfile_default = os.path.join(os.path.dirname(__file__), '..', 'static', 'animals.db')
     parser = argparse.ArgumentParser('Play a game of Animal')
-    parser.add_argument('--database', default='../static/animals.db', help='Database file')
+    parser.add_argument('--database', default=dbfile_default, help='Database file')
     args = parser.parse_args()
 
     game = Animal(allow_updates=True, dbfile=args.database)

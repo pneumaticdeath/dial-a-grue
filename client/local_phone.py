@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-from gpio_switch import Switch
-
 class Phone(object):
     _PHONE = None
 
@@ -13,18 +11,17 @@ class Phone(object):
         return cls._PHONE
 
     def __init__(self, ptt_pin="XIO-P7", hook_pin="XIO-P6"):
-        self._ptt = Switch(ptt_pin)
-        self._hook = Switch(hook_pin)
+        pass
 
 
     def off_hook(self):
-        return self._hook.is_closed()
+        return True
 
     def on_hook(self):
         return not self.off_hook()
 
     def ptt_pressed(self):
-        return self._ptt.is_closed()
+        return True
 
 if __name__ == '__main__':
     phone = Phone.get_phone()

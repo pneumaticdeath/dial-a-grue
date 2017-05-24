@@ -15,7 +15,7 @@ class Conversation(object):
         self.profile = profile
         self.brain = Brain(mic, profile)
         # self.notifier = Notifier(profile)
-        self.phone = Phone.get_phone()
+        self.phone = mic.phone
 
     def handleForever(self):
         """

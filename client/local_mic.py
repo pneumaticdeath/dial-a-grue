@@ -5,11 +5,13 @@ over the terminal. Useful for debugging. Unlike with the typical Mic
 implementation, Jasper is always active listening with local_mic.
 """
 
+from client.local_phone import Phone
 
 class Mic:
     prev = None
 
     def __init__(self, speaker, passive_stt_engine, active_stt_engine):
+	self.phone = Phone.get_phone()
         return
 
     def passiveListen(self, PERSONA):

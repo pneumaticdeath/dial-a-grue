@@ -20,7 +20,7 @@ def handle(text, mic, profile):
         Easter Egg
     """
 
-    phone = Phone.get_phone()
+    phone = mic.phone
     mp3file = os.path.join(jasperpath.DATA_PATH, 'pitch_dark.mp3')
     pid, fd = pty.fork()
     if pid == 0:
