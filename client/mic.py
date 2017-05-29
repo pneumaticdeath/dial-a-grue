@@ -9,10 +9,13 @@ import audioop
 import pyaudio
 import alteration
 import jasperpath
+import os
+import subprocess
 import threading
 import time
 
 from phone import Phone
+# from local_phone import Phone
 
 
 class Mic:
@@ -41,6 +44,7 @@ class Mic:
                           "can usually be safely ignored.")
         self._audio = pyaudio.PyAudio()
         self._logger.info("Initialization of PyAudio completed.")
+        self._echo = True  # whether to play back what it heard
 
     def __del__(self):
         self._audio.terminate()
@@ -54,9 +58,11 @@ class Mic:
 
         # TODO: Consolidate variables from the next three functions
         THRESHOLD_MULTIPLIER = 1.8
-        RATE = 16000
+        # RATE = 16000
+        RATE = 44100
         # RATE = 8000
-        CHUNK = 1024
+        # CHUNK = 1024
+        CHUNK = 32
 
         # number of seconds to allow to establish threshold
         THRESHOLD_TIME = 1
@@ -66,18 +72,19 @@ class Mic:
                                   channels=1,
                                   rate=RATE,
                                   input=True,
+                                  input_device_index=1,
                                   frames_per_buffer=CHUNK)
 
         # stores the audio data
         frames = []
 
         # stores the lastN score values
-        lastN = [i for i in range(20)]
+        lastN = [i for i in range(int(20480/CHUNK))]
 
         # calculate the long run average, and thereby the proper threshold
         for i in range(0, int(RATE / CHUNK * THRESHOLD_TIME + 0.5)):
 
-            data = stream.read(CHUNK)
+            data = stream.read(CHUNK, False)
             frames.append(data)
 
             # save this data point as a score
@@ -100,8 +107,8 @@ class Mic:
         """
 
         THRESHOLD_MULTIPLIER = 1.8
-        RATE = 16000
-        CHUNK = 1024
+        RATE = 44100
+        CHUNK = 32
 
         # number of seconds to allow to establish threshold
         THRESHOLD_TIME = 1
@@ -114,13 +121,14 @@ class Mic:
                                   channels=1,
                                   rate=RATE,
                                   input=True,
+                                  input_device_index=1,
                                   frames_per_buffer=CHUNK)
 
         # stores the audio data
         frames = []
 
         # stores the lastN score values
-        lastN = [i for i in range(30)]
+        lastN = [i for i in range(int(30720/CHUNK))]
 
         # calculate the long run average, and thereby the proper threshold
         for i in range(0, RATE / CHUNK * THRESHOLD_TIME):
@@ -161,7 +169,7 @@ class Mic:
             return (None, None)
 
         # cutoff any recording before this disturbance was detected
-        frames = frames[-20:]
+        frames = frames[-int(20480/CHUNK):]
 
         # otherwise, let's keep recording for few seconds and save the file
         DELAY_MULTIPLIER = 1
@@ -209,8 +217,10 @@ class Mic:
             Returns a list of the matching options or None
         """
 
-        RATE = 16000
-        CHUNK = 1024
+        TARGET_RATE = 16000
+        RATE = 44100
+        # CHUNK = 1024
+        CHUNK = 32
         LISTEN_TIME = 12
 
         # check if no threshold provided
@@ -234,16 +244,17 @@ class Mic:
                                   channels=1,
                                   rate=RATE,
                                   input=True,
+                                  input_device_index=1,
                                   frames_per_buffer=CHUNK)
 
         frames = []
         # increasing the range # results in longer pause after command
         # generation
-        lastN = [THRESHOLD * 1.2 for i in range(30)]
+        lastN = [THRESHOLD * 1.2 for i in range(int(30720/CHUNK))]
 
         for i in range(0, RATE / CHUNK * LISTEN_TIME):
 
-            data = stream.read(CHUNK)
+            data = stream.read(CHUNK, False)
             frames.append(data)
             score = self.getScore(data)
 
@@ -265,7 +276,7 @@ class Mic:
 
         self.lock.release()
 
-        with tempfile.SpooledTemporaryFile(mode='w+b') as f:
+        with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=False) as f:
             wav_fp = wave.open(f, 'wb')
             wav_fp.setnchannels(1)
             wav_fp.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
@@ -273,11 +284,23 @@ class Mic:
             wav_fp.writeframes(''.join(frames))
             wav_fp.close()
             f.seek(0)
-            candidates = self.active_stt_engine.transcribe(f)
+            if RATE == TARGET_RATE:
+                candidates = self.active_stt_engine.transcribe(f)
+                if self._echo:
+                    self.speaker.play(f.name)
+            else:
+                resampled_file = resample(f.name, TARGET_RATE)
+                f_prime = open(resampled_file)
+                candidates = self.active_stt_engine.transcribe(f_prime)
+                f_prime.close()
+                if self._echo:
+                    self.speaker.play(resampled_file)
+
             if candidates:
                 self._logger.info('Got the following possible transcriptions:')
                 for c in candidates:
                     self._logger.info(c)
+            # f.close()
             return candidates
 
     def say(self, phrase,
@@ -287,3 +310,15 @@ class Mic:
         self.lock.acquire()
         self.speaker.say(phrase)
         self.lock.release()
+
+def resample(filename, rate):
+    ofd, ofn = tempfile.mkstemp(suffix='.wav')
+    os.close(ofd)
+    cmd = ['sox', filename, ofn, 'rate', str(rate)]
+    with tempfile.TemporaryFile() as f:
+        subprocess.call(cmd, stdout=f, stderr=f)
+        f.seek(0)
+        output=f.read()
+        if output:
+            logging.debug('Output of resample was: {0}'.format(output))
+    return ofn
