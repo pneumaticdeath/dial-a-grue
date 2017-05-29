@@ -44,7 +44,7 @@ class Mic:
                           "can usually be safely ignored.")
         self._audio = pyaudio.PyAudio()
         self._logger.info("Initialization of PyAudio completed.")
-        self._echo = True  # whether to play back what it heard
+        self._echo = False  # whether to play back what it heard
 
     def __del__(self):
         self._audio.terminate()
@@ -276,7 +276,7 @@ class Mic:
 
         self.lock.release()
 
-        with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=True) as f:
             wav_fp = wave.open(f, 'wb')
             wav_fp.setnchannels(1)
             wav_fp.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
@@ -295,6 +295,7 @@ class Mic:
                 f_prime.close()
                 if self._echo:
                     self.speaker.play(resampled_file)
+                os.remove(resampled_file)
 
             if candidates:
                 self._logger.info('Got the following possible transcriptions:')
