@@ -49,7 +49,7 @@ def handle(text, mic, profile):
                 break;
         if keep_playing != 'YES':
             break
-        answer = ask_yes_no('Is it a {0}?'.format(game.current_node()), mic)
+        answer = ask_yes_no('I think it\'s a {0}. Is that right?'.format(game.current_node()), mic)
         if answer == 'NO':
             print('Stumped me')
             mic.say('Well, I guess you stumped me')

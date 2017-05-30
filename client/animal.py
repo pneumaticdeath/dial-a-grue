@@ -134,7 +134,7 @@ if __name__ == '__main__':
             else:
                 raise RuntimeError("Got unexpected answer '{0}'".format(answer))
         question_count += 1
-        answer = read_y_n('Is it a {0}?'.format(game.current_node()))
+        answer = read_y_n('I think it\'s a {0}. Is that right?'.format(game.current_node()))
         if answer.startswith('n'):
             print('Well.. I asked you {0} questions and you stumped me.  What was it? '
                   .format(question_count))
