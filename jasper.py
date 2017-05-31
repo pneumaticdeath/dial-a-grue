@@ -121,6 +121,9 @@ class Jasper(object):
 if __name__ == "__main__":
 
     print("*******************************************************")
+    print("*                   Dial a Grue 2.0                   *")
+    print("*           (c) 2016,2017  Mitch Patenaude            *")
+    print("*            Derived in large part from               *")
     print("*             JASPER - THE TALKING COMPUTER           *")
     print("* (c) 2015 Shubhro Saha, Charlie Marsh & Jan Holthuis *")
     print("*******************************************************")
@@ -132,9 +135,9 @@ if __name__ == "__main__":
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
-    if not args.no_network_check and not diagnose.check_network_connection():
-        logger.warning("Network not connected. This may prevent Jasper from " +
-                       "running properly.")
+    #if not args.no_network_check and not diagnose.check_network_connection():
+    #    logger.warning("Network not connected. This may prevent Jasper from " +
+    #                   "running properly.")
 
     if args.diagnose:
         failed_checks = diagnose.run()

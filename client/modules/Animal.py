@@ -38,8 +38,10 @@ def handle(text, mic, profile):
     keep_playing = 'YES'
     while keep_playing == 'YES':
         game.reset()
+        questions_asked = 0
         while game.at_question():
             answer = ask_yes_no(game.current_node(), mic)
+            questions_asked += 1
             if answer == 'NO':
                 game.answer_no()
             elif answer == 'YES':
@@ -50,12 +52,13 @@ def handle(text, mic, profile):
         if keep_playing != 'YES':
             break
         answer = ask_yes_no('I think it\'s a {0}. Is that right?'.format(game.current_node()), mic)
+        questions_asked += 1
         if answer == 'NO':
             print('Stumped me')
-            mic.say('Well, I guess you stumped me')
+            mic.say('Well, after {0} questions I guess you stumped me'.format(questions_asked))
         elif answer == 'YES':
             print('Guessed {0} correctly'.format(game.current_node()))
-            mic.say('Cool, I figured out it was a {0}!'.format(game.current_node()))
+            mic.say('Cool, I figured out it was a {0} in {1} questions!'.format(game.current_node(), questions_asked))
         elif answer == 'QUIT':
             break
         keep_playing = ask_yes_no('Play again?', mic)
