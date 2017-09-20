@@ -50,7 +50,7 @@ WORDS = [
         "RESTORE",
         "SAVE",
         "SECRET",
-        "SELF",
+        # "SELF",
         "SHARD",
         "SHARPEN",
         "SOUTH",
@@ -70,7 +70,8 @@ WORDS = [
         "WITH",
 ]
 
-WORDS += [ 'PLAY', 'MOONGLOW', 'MOON' ]
+PASSIVE_WORDS = [ 'PLAY', 'MOONGLOW', 'MOON' ]
+WORDS += PASSIVE_WORDS
 
 PRIORITY = 100
 
@@ -98,7 +99,7 @@ def textmunge(text):
     replacements = [(r'Release \d+ \(\d+\) Inform v[\d.]+ microform v[\d.]+\r\n', '')]
     for pattern, replacement in replacements:
         text = re.sub(pattern, replacement, text, re.MULTILINE)
-    text = '\n'.join([block.replace('\r\n',' ') for block in text.split('\r\n\r\n')])
+    # text = '\n'.join([block.replace('\r\n',' ') for block in text.split('\r\n\r\n')])
     return text
 
 def handle(text, mic, profile):

@@ -54,10 +54,10 @@ def handle(text, mic, profile):
         answer = ask_yes_no('I think it\'s a {0}. Is that right?'.format(game.current_node()), mic)
         questions_asked += 1
         if answer == 'NO':
-            print('Stumped me')
+            print('Stumped me in {0} questions'.format(questions_asked))
             mic.say('Well, after {0} questions I guess you stumped me'.format(questions_asked))
         elif answer == 'YES':
-            print('Guessed {0} correctly'.format(game.current_node()))
+            print('Guessed {0} correctly in {1} questions'.format(game.current_node(), questions_asked))
             mic.say('Cool, I figured out it was a {0} in {1} questions!'.format(game.current_node(), questions_asked))
         elif answer == 'QUIT':
             break
