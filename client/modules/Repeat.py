@@ -1,8 +1,6 @@
 # vim: ai sw=4 expandtab:
-import fcntl
 import logging
-import os
-import pty
+import pkgutil
 import re
 import time
 from client import jasperpath
@@ -13,6 +11,21 @@ INSTANCE_WORDS = [
         'HELLO',
     ]
 INSTANCE_WORDS.extend(WORDS)
+locations = [jasperpath.PLUGIN_PATH]
+for finder, name, ispkg in pkgutil.walk_packages(locations):
+    if name == __name__:
+        continue
+
+    try:
+        loader = finder.find_module(name)
+        mod = loader.load_module(name)
+    except:
+        logging.warning('Skipped repeat of module %s\'s words', name, exc_info=True)
+    else:
+        if hasattr(mod, 'WORDS'):
+            INSTANCE_WORDS.extend(mod.WORDS)
+        if hasattr(mod, 'INSTANCE_WORDS'):
+            INSTANCE_WORDS.extend(mod.INSTANCE_WORDS)
 
 PRIORITY = 50
 
