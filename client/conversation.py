@@ -8,12 +8,12 @@ from phone import Phone
 
 class Conversation(object):
 
-    def __init__(self, persona, mic, profile):
+    def __init__(self, persona, mic, profile, active_stt_engine=None):
         self._logger = logging.getLogger(__name__)
         self.persona = persona
         self.mic = mic
         self.profile = profile
-        self.brain = Brain(mic, profile)
+        self.brain = Brain(mic, profile, active_stt_engine)
         # self.notifier = Notifier(profile)
         self.phone = mic.phone
 

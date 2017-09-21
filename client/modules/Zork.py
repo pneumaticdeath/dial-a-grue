@@ -7,7 +7,7 @@ from client.zvm import ZorkMachine, ZorkPhone
 
 logger = logging.getLogger(__name__)
 
-ZORK_WORDS = [
+INSTANCE_WORDS = [
         "A",
         "ACROSS",
         # "ACTIVATE",
@@ -684,8 +684,8 @@ ZORK_WORDS = [
         "ZZMGCK",
 ]
 
-# WORDS = [ 'PLAY', 'ZORK' ] + ZORK_WORDS
-WORDS = ZORK_WORDS
+WORDS = [ 'PLAY', 'ZORK' ]
+# WORDS = ZORK_WORDS
 
 PRIORITY = 100
 

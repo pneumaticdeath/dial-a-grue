@@ -7,7 +7,7 @@ from client.zvm import ZorkMachine, ZorkPhone
 
 logger = logging.getLogger(__name__)
 
-WORDS = [
+INSTANCE_WORDS = [
         "ALIEN",
         "BARN",
         "COT",
@@ -70,8 +70,7 @@ WORDS = [
         "WITH",
 ]
 
-PASSIVE_WORDS = [ 'PLAY', 'MOONGLOW', 'MOON' ]
-WORDS += PASSIVE_WORDS
+WORDS = [ 'PLAY', 'MOONGLOW', 'MOON' ]
 
 PRIORITY = 100
 

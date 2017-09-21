@@ -5,7 +5,8 @@ import re
 from client import jasperpath
 from client.animal import Animal
 
-WORDS = [ 'YES', 'NO', 'PLAY', 'ANIMAL', 'QUIT' ]
+WORDS = [ 'PLAY', 'ANIMAL'  ]
+INSTANCE_WORDS = [ 'YES', 'NO', 'QUIT' ]
 
 PRIORITY = 50
 

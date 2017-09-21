@@ -488,6 +488,8 @@ def get_phrases_from_module(module):
     """
     return module.WORDS if hasattr(module, 'WORDS') else []
 
+def get_instance_phrases_from_module(module):
+    return module.INSTANCE_WORDS if hasattr(module, 'INSTANCE_WORDS') else get_phrases_from_module(module)
 
 def get_keyword_phrases():
     """
@@ -507,19 +509,37 @@ def get_keyword_phrases():
     return phrases
 
 
+def get_all_instance_phrases():
+    """
+    Gets passive phrases for all modules.
+
+    Returs:
+      a list of all instance phrases in all modules
+    """
+    modules = brain.Brain.get_modules()
+    return get_phrases(modules, get_instance_phrases_from_module)
+
 def get_all_phrases():
     """
     Gets phrases from all modules.
 
     Returns:
-        A list of phrases in all modules plus additional phrases passed to this
-        function.
+        A list of phrases in all modules
+    """
+    modules = brain.Brain.get_modules()
+    return get_phrases(modules, get_phrases_from_module)
+
+def get_phrases(modules, phrase_extractor):
+    """
+    Gets phrases from given modules.
+
+    Returns:
+        A list of phrases in given modules
     """
     phrases = []
 
-    modules = brain.Brain.get_modules()
     for module in modules:
-        phrases.extend(get_phrases_from_module(module))
+        phrases.extend(phrase_extractor(module))
 
     return sorted(list(set(phrases)))
 

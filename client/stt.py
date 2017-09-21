@@ -53,6 +53,11 @@ class AbstractSTTEngine(object):
         return cls.get_instance('default', phrases)
 
     @classmethod
+    def get_module_instance(cls, module):
+        phrases = vocabcompiler.get_instance_phrases_from_module(module)
+        return cls.get_instance('instance-' + module.__name__, phrases)
+
+    @classmethod
     @abstractmethod
     def is_available(cls):
         return True

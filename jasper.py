@@ -109,6 +109,9 @@ class Jasper(object):
                        stt_passive_engine_class.get_passive_instance(),
                        stt_engine_class.get_active_instance())
 
+        # Squirell away stt_engine_class
+        self.stt_engine_class = stt_engine_class
+
     def run(self):
         if 'first_name' in self.config:
             salutation = ("How can I be of service, %s?"
@@ -118,7 +121,8 @@ class Jasper(object):
         # self.mic.say(salutation)
 
         # conversation = Conversation("JASPER", self.mic, self.config)
-        conversation = Conversation("GREW", self.mic, self.config)
+        # conversation = Conversation("GREW", self.mic, self.config)
+        conversation = Conversation("GREW", self.mic, self.config, self.stt_engine_class)
         conversation.handleForever()
 
 if __name__ == "__main__":

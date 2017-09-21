@@ -2,11 +2,12 @@
 import logging
 import pkgutil
 import jasperpath
+import client.mic
 
 
 class Brain(object):
 
-    def __init__(self, mic, profile):
+    def __init__(self, mic, profile, active_stt_engine=None):
         """
         Instantiates a new Brain object, which cross-references user
         input with a list of modules. Note that the order of brain.modules
@@ -21,7 +22,9 @@ class Brain(object):
 
         self.mic = mic
         self.profile = profile
+        self.active_stt_engine = active_stt_engine
         self.modules = self.get_modules()
+        self.module_mics = dict()
         self._logger = logging.getLogger(__name__)
 
     @classmethod
@@ -70,7 +73,18 @@ class Brain(object):
                     self._logger.debug("'%s' is a valid phrase for module " +
                                        "'%s'", text, module.__name__)
                     try:
-                        module.handle(text, self.mic, self.profile)
+                        if self.active_stt_engine is not None and hasattr(module, 'INSTANCE_WORDS'):
+                            if module.__name__ not in self.module_mics:
+                                self._logger.debug('creating mic for module %s', module.__name__)
+                                self.module_mics[module.__name__] = client.mic.Mic(
+                                    self.mic.speaker,
+                                    self.mic.passive_stt_engine,
+                                    self.active_stt_engine.get_module_instance(module)
+                                )
+                            mic = self.module_mics[module.__name__]
+                        else:
+                            mic = self.mic
+                        module.handle(text, mic, self.profile)
                     except Exception:
                         self._logger.error('Failed to execute module',
                                            exc_info=True)
