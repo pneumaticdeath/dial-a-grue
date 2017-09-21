@@ -8,6 +8,11 @@ import time
 from client import jasperpath
 
 WORDS = [ 'REPEAT', 'AFTER', 'ME' ]
+INSTANCE_WORDS = [
+        'QUIT',
+        'HELLO',
+    ]
+INSTANCE_WORDS.extend(WORDS)
 
 PRIORITY = 50
 

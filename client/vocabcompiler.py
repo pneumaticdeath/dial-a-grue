@@ -511,7 +511,7 @@ def get_keyword_phrases():
 
 def get_all_instance_phrases():
     """
-    Gets passive phrases for all modules.
+    Gets instance phrases for all modules.
 
     Returs:
       a list of all instance phrases in all modules

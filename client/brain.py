@@ -74,6 +74,7 @@ class Brain(object):
                                        "'%s'", text, module.__name__)
                     try:
                         if self.active_stt_engine is not None and hasattr(module, 'INSTANCE_WORDS'):
+                            self._logger.debug('Finding mic with instance words %s', ', '.join(module.INSTANCE_WORDS))
                             if module.__name__ not in self.module_mics:
                                 self._logger.debug('creating mic for module %s', module.__name__)
                                 self.module_mics[module.__name__] = client.mic.Mic(

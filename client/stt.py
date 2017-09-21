@@ -54,7 +54,7 @@ class AbstractSTTEngine(object):
 
     @classmethod
     def get_module_instance(cls, module):
-        phrases = vocabcompiler.get_instance_phrases_from_module(module)
+        phrases = sorted(list(set(vocabcompiler.get_instance_phrases_from_module(module))))
         return cls.get_instance('instance-' + module.__name__, phrases)
 
     @classmethod
