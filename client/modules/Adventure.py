@@ -7,7 +7,7 @@ from client.zvm import ZorkMachine, ZorkPhone
 
 logger = logging.getLogger(__name__)
 
-ADV_WORDS = [
+INSTANCE_WORDS = [
         'ANCIENT',
         'AT',
         'ATTACK',
@@ -70,7 +70,7 @@ ADV_WORDS = [
         'GO',
         'GOLD',
         'GRATE',
-        'GRUE',
+        # 'GRUE',
         'HELLO',
         'HI',
         'HUGE',
@@ -82,6 +82,7 @@ ADV_WORDS = [
         'JEWEL',
         'JEWELED',
         'JEWELS',
+        'KEYS',
         'KILL',
         'LADDER',
         'LAMP',
@@ -128,7 +129,7 @@ ADV_WORDS = [
         'SOUTHEAST',
         'SOUTHWEST',
         'STREAM',
-        'SUPERBRIEF',
+        # 'SUPERBRIEF',
         'SWORD',
         'TABLE',
         'TAKE',
@@ -153,7 +154,7 @@ ADV_WORDS = [
         'YES',
 ]
 
-WORDS = [ 'PLAY', 'ADVENTURE' ] + ADV_WORDS
+WORDS = [ 'PLAY', 'ADVENTURE' ]
 
 PRIORITY = 100
 
@@ -222,7 +223,7 @@ listen_handlers = [
 
 def textmunge(text):
     replacements = [(r'Release 1 / Serial number 151001 / ZILF 0\.7 lib J3', ''),
-                    (r'\(y/n\) >\r\n', 'Yes or no.\r\n']
+                    (r'\(y/n\) >\r\n', 'Yes or no.\r\n')]
     for pattern, replacement in replacements:
         text = re.sub(pattern, replacement, text, re.MULTILINE)
     #text = '\n'.join([block.replace('\r\n',' ') for block in text.split('\r\n\r\n')])
