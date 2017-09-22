@@ -4,7 +4,7 @@ import time
 from client import jasperpath
 from client.utils.eliza import eliza
 
-WORDS = [ 
+INSTANCE_WORDS = [ 
     'THE',
     'DOCTOR',
     'IS',
@@ -32,6 +32,8 @@ WORDS = [
     'WONT',
     'ARE',
 ]
+
+WORDS = [ 'IS', 'THE', 'DOCTOR', 'IN' ]
 
 PRIORITY = 50
 
