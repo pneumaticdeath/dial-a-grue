@@ -25,7 +25,8 @@ def handle(text, mic, profile):
     message = random.choice(messages)
 
     mic.say(message)
-    mic.say('I heard you say "{0}"'.format(text.lower()))
+    if text != '':
+        mic.say('I heard you say "{0}"'.format(text.lower()))
 
 
 def isValid(text):
