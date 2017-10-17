@@ -31,6 +31,7 @@ INSTANCE_WORDS = [
     'WHY',
     'WONT',
     'ARE',
+    'QUIT',
 ]
 
 WORDS = [ 'IS', 'THE', 'DOCTOR', 'IN' ]
