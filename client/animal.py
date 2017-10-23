@@ -4,6 +4,7 @@
 import logging
 import sqlite3
 import sys
+import tree
 
 class Node(object):
     @classmethod
@@ -65,6 +66,7 @@ class Animal(object):
             self._conn = sqlite3.connect(':memory:')
         else:
             self._conn = sqlite3.connect(dbfile)
+        self._tree = tree.Tree(self._conn)
         self.reset()
 
     def reset(self):
@@ -100,6 +102,9 @@ class Animal(object):
             no_node = Node.create(new_animal, self._conn)
         self._current_node.update(new_question, yes_node.node_id, no_node.node_id)
 
+    def search(self, name):
+        return self._tree.search(name)
+
 
 if __name__ == '__main__':
     import argparse
@@ -123,13 +128,16 @@ if __name__ == '__main__':
     keep_playing = 'yes'
     while keep_playing.startswith('y'):
         question_count=0
+        sequence = []
         print('Think of an animal!')
         while game.at_question():
             question_count += 1
             answer = read_y_n(game.current_node())
             if answer.startswith('y'):
+                sequence.append('yes')
                 game.answer_yes()
             elif answer.startswith('n'):
+                sequence.append('no')
                 game.answer_no()
             else:
                 raise RuntimeError("Got unexpected answer '{0}'".format(answer))
@@ -146,14 +154,26 @@ if __name__ == '__main__':
                 new_animal = new_animal[2:]
             elif new_animal.lower().startswith('an '):
                 new_animal = new_animal[3:]
-            print('What is a yes/no question that would distinguish a {0} from a {1}?\n'
-                  .format(game.current_node(), new_animal))
-            new_question = sys.stdin.readline().strip()
-            if not new_question.endswith('?'):
-                new_question += '?'
-            new_answer = read_y_n('And what is the answer for a {0}?'.format(new_animal))
-            game.update(new_animal, new_question, new_answer.startswith('y'))
-            print('Okay, I\'ll know what a {0} is next time!'.format(new_animal))
+            existing = game.search(new_animal)
+            if existing:
+                if new_animal.strip().lower() == game.current_node().lower():
+                    print("That's what I said!")
+                else:
+                    for x in range(min(len(existing[1]),len(sequence))):
+                        searched_answer, searched_node = existing[1][x]
+                        given_answer = sequence[x]
+                        if searched_answer != given_answer:
+                            print('I thought the answer to "{0}" for a {1} is {2}!'.format(searched_node.node_text, new_animal, searched_answer))
+                            break
+            else:
+                print('What is a yes/no question that would distinguish a {0} from a {1}?\n'
+                      .format(game.current_node(), new_animal))
+                new_question = sys.stdin.readline().strip()
+                if not new_question.endswith('?'):
+                    new_question += '?'
+                new_answer = read_y_n('And what is the answer for a {0}?'.format(new_animal))
+                game.update(new_animal, new_question, new_answer.startswith('y'))
+                print('Okay, I\'ll know what a {0} is next time!'.format(new_animal))
         else:
             print('Cool, I managed to guess {0} in only {1} questions'.format(game.current_node(), question_count))
         keep_playing = read_y_n('Would you like to play again?')
