@@ -111,21 +111,25 @@ class Tree(object):
         else:
             self._conn = db
 
-    def walk(self):
+    def walk(self, depth_first=False):
         nodes = []
         nodes.append((1, [], Node.find(1, self._conn)))
         while len(nodes) > 0:
             depth, seq, node = nodes[0]
             nodes = nodes[1:]
             if node.yes_node:
-                nodes.append((depth+1, seq + [('yes', node.node_text)], Node.find(node.yes_node, self._conn)))
-                nodes.append((depth+1, seq + [('no', node.node_text)], Node.find(node.no_node, self._conn)))
+                new_nodes = [(depth+1, seq + [('yes', node.node_text)], Node.find(node.yes_node, self._conn)),
+                             (depth+1, seq + [('no', node.node_text)], Node.find(node.no_node, self._conn))]
+                if depth_first:
+                    nodes = new_nodes + nodes
+                else:
+                    nodes.extend(new_nodes)
             yield depth, seq, node
 
-    def printLeaves(self, verbose=False):
+    def printLeaves(self, verbose=False, depth_first=False):
         nodes = []
         nodes.append((1, [], Node.find(1, self._conn)))
-        for depth, seq, node in self.walk():
+        for depth, seq, node in self.walk(depth_first=depth_first):
             if not node.yes_node:
                 if verbose:
                     d = 0
