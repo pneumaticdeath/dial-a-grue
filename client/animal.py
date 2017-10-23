@@ -111,35 +111,34 @@ class Tree(object):
         else:
             self._conn = db
 
+    def walk(self):
+        nodes = []
+        nodes.append((1, [], Node.find(1, self._conn)))
+        while len(nodes) > 0:
+            depth, seq, node = nodes[0]
+            nodes = nodes[1:]
+            if node.yes_node:
+                nodes.append((depth+1, seq + [('yes', node.node_text)], Node.find(node.yes_node, self._conn)))
+                nodes.append((depth+1, seq + [('no', node.node_text)], Node.find(node.no_node, self._conn)))
+            yield depth, seq, node
+
     def printLeaves(self, verbose=False):
         nodes = []
         nodes.append((1, [], Node.find(1, self._conn)))
-        while len(nodes) > 0:
-            depth, seq, node = nodes[0]
-            nodes = nodes[1:]
-            if node.yes_node:
+        for depth, seq, node in self.walk():
+            if not node.yes_node:
                 if verbose:
-                    nodes.append((depth+1, seq + ['%s%s: yes' % (' ' * depth, node.node_text)], Node.find(node.yes_node, self._conn)))
-                    nodes.append((depth+1, seq + ['%s%s: no' % (' ' * depth, node.node_text)], Node.find(node.no_node, self._conn)))
+                    d = 0
+                    for answer, question in seq:
+                        print('{0}{1}: {2}'.format(' ' * d, question, answer))
+                        d = d+1
+                    print("{0}-> {1}\n".format(' ' * depth, node.node_text))
                 else:
-                    nodes.append((depth+1, seq + ['yes'], Node.find(node.yes_node, self._conn)))
-                    nodes.append((depth+1, seq + ['no'], Node.find(node.no_node, self._conn)))
-            else:
-                if verbose:
-                    print("{0}\n{1}-> {2}\n".format('\n'.join(seq), ' ' * depth, node.node_text))
-                else:
-                    print("{0} {1} {2}".format(depth, ','.join(seq), node.node_text))
+                    print("{0} {1} {2}".format(depth, ','.join([answer for answer, question in seq]), node.node_text))
 
     def search(self, name):
-        nodes = []
-        nodes.append((1, [], Node.find(1, self._conn)))
-        while len(nodes) > 0:
-            depth, seq, node = nodes[0]
-            nodes = nodes[1:]
-            if node.yes_node:
-                nodes.append((depth+1, seq + [('yes',node.node_text)], Node.find(node.yes_node, self._conn)))
-                nodes.append((depth+1, seq + [('no',node.node_text)], Node.find(node.no_node, self._conn)))
-            elif node.node_text.lower().strip() == name.lower().strip():
+        for depth, seq, node in self.walk():
+            if not node.yes_node and node.node_text.lower().strip() == name.lower().strip():
                 return seq
         return []
 
