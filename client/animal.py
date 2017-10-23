@@ -4,7 +4,6 @@
 import logging
 import sqlite3
 import sys
-import tree
 
 class Node(object):
     @classmethod
@@ -66,7 +65,7 @@ class Animal(object):
             self._conn = sqlite3.connect(':memory:')
         else:
             self._conn = sqlite3.connect(dbfile)
-        self._tree = tree.Tree(self._conn)
+        self._tree = Tree(self._conn)
         self.reset()
 
     def reset(self):
@@ -104,6 +103,45 @@ class Animal(object):
 
     def search(self, name):
         return self._tree.search(name)
+
+class Tree(object):
+    def __init__(self, db):
+        if type(db) is str:
+            self._conn = sqlite3.connect(db)
+        else:
+            self._conn = db
+
+    def printLeaves(self, verbose=False):
+        nodes = []
+        nodes.append((1, [], Node.find(1, self._conn)))
+        while len(nodes) > 0:
+            depth, seq, node = nodes[0]
+            nodes = nodes[1:]
+            if node.yes_node:
+                if verbose:
+                    nodes.append((depth+1, seq + ['%s%s: yes' % (' ' * depth, node.node_text)], Node.find(node.yes_node, self._conn)))
+                    nodes.append((depth+1, seq + ['%s%s: no' % (' ' * depth, node.node_text)], Node.find(node.no_node, self._conn)))
+                else:
+                    nodes.append((depth+1, seq + ['yes'], Node.find(node.yes_node, self._conn)))
+                    nodes.append((depth+1, seq + ['no'], Node.find(node.no_node, self._conn)))
+            else:
+                if verbose:
+                    print("{0}\n{1}-> {2}\n".format('\n'.join(seq), ' ' * depth, node.node_text))
+                else:
+                    print("{0} {1} {2}".format(depth, ','.join(seq), node.node_text))
+
+    def search(self, name):
+        nodes = []
+        nodes.append((1, [], Node.find(1, self._conn)))
+        while len(nodes) > 0:
+            depth, seq, node = nodes[0]
+            nodes = nodes[1:]
+            if node.yes_node:
+                nodes.append((depth+1, seq + [('yes',node.node_text)], Node.find(node.yes_node, self._conn)))
+                nodes.append((depth+1, seq + [('no',node.node_text)], Node.find(node.no_node, self._conn)))
+            elif node.node_text.lower().strip() == name.lower().strip():
+                return seq
+        return []
 
 
 if __name__ == '__main__':
@@ -159,11 +197,11 @@ if __name__ == '__main__':
                 if new_animal.strip().lower() == game.current_node().lower():
                     print("That's what I said!")
                 else:
-                    for x in range(min(len(existing[1]),len(sequence))):
-                        searched_answer, searched_node = existing[1][x]
+                    for x in range(min(len(existing),len(sequence))):
+                        searched_answer, searched_node = existing[x]
                         given_answer = sequence[x]
                         if searched_answer != given_answer:
-                            print('I thought the answer to "{0}" for a {1} is {2}!'.format(searched_node.node_text, new_animal, searched_answer))
+                            print('I thought the answer to "{0}" for a {1} is {2}!'.format(searched_node, new_animal, searched_answer))
                             break
             else:
                 print('What is a yes/no question that would distinguish a {0} from a {1}?\n'
