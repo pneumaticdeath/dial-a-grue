@@ -1,0 +1,164 @@
+#!/usr/bin/env python
+# vim: sw=4 ai expandtab
+
+import logging
+import random
+import sys
+
+class Hammurabi(object):
+
+    reign = 10
+    food_per_person = 20
+    seed_per_acre = 0.5
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.year = 1
+        self.population = 100
+        self.immigration = 5
+        self.starved = 0
+        self.total_killed = 0
+        self.running_average_killed = 0
+        self.acreage = 1000
+        self.grain = 2800
+        self.eaten_by_rats = 200
+        self.bushels_per_acre = 3
+        self.land_price = self.newLandPrice()
+        self.plague = False
+        self.overthrown = False
+
+    def newLandPrice(self):
+        return random.randint(17,26)
+
+    def status(self):
+        msg = ''
+        land_per_person = 1.0 * self.acreage/self.population
+        if self.overthrown:
+            msg += 'You starved {0} people in one year!\n'.format(self.starved)
+            msg += 'Due to this extremem mismanagement, you have not only been\n'
+            msg += 'impeached and thrown out of office, but have also been declared\n'
+            msg += 'national fink!\n'
+        else:
+            msg += 'In year {0}, {1} people starved.\n'.format(self.year, self.starved)
+            msg += '{0} people came into the city.\n'.format(self.immigration)
+            if self.plague:
+                msg += 'A horrible plague struck and half the population died!\n'
+            msg += 'The city population is now {0}.\n'.format(self.population)
+            msg += 'The city now owns {0} acres of land.\n'.format(self.acreage)
+            if self.year <= self.reign:
+                msg += 'You harvested {0} bushels per acre.\n'.format(self.bushels_per_acre)
+                msg += 'Rats ate {0} bushels.\n'.format(self.eaten_by_rats)
+                msg += 'You now have {0} bushels in store.\n'.format(self.grain)
+                msg += 'Land is trading at {0} bushels per acre.\n'.format(self.land_price)
+            else:
+                msg += 'You started with 10 acres per person and ended with {0}\n'.format(land_per_person)
+                msg += 'acres per person.  You killed {0} people, or an average\n'.format(self.total_killed)
+                msg += 'or {0} percent of the people per year.\n'.format(self.running_average_killed)
+                if land_per_person < 7 or self.running_average_killed > 33:
+                    msg += 'Due to this extremem mismanagement, you have not only been\n'
+                    msg += 'impeached and thrown out of office, but have also been declared\n'
+                    msg += 'national fink!\n'
+                elif land_per_person < 9 or self.running_average_killed > 10:
+                    msg += 'Your heavy-handed performance smacks of Nero or Ivan the terrible.\n'
+                    msg += 'The (remaining) people find you an unpleasant ruler, and frankly\n'
+                    msg += 'hate your guts!\n'
+                elif land_per_person < 10 or self.running_average_killed > 3:
+                    msg += 'Your performance could have been better, but really wasn\'t so bad.\n'
+                    msg += '{0} people would dearly like to see you assassinated, but we all\n'.format(random.randint(2, int(self.population*0.8)))
+                    msg += 'have our problems.\n'
+                else:
+                    msg += 'A fantastic performance! Charlemagne and Disraeli could not have done\n'
+                    msg += 'better.\n '
+                msg += '\nGoodbye Hammurabi!\n'
+        return msg
+
+    def run(self, land_bought, food, planted):
+        if self.overthrown:
+            raise ValueError('You have been impeached,')
+
+        grain_used = land_bought*self.land_price + food + int(planted*self.seed_per_acre)
+        if grain_used > self.grain:
+           raise ValueError('Think again Hammurabi, you only have {0} bushels of grain.'.format(self.grain))
+
+        land_available = self.acreage + land_bought
+        if land_available < 0:
+            raise ValueError('Think again Hammurabi, you cannot sell more land than you own')
+
+        if planted > self.population*10:
+            raise ValueError('But you only have {0} people to tend the fields'.format(self.population))
+
+        if planted > land_available:
+            raise ValueError('You only have {0} acres to plant'.format(land_available))
+
+        if self.year > self.reign:
+            raise ValueError('Your reign is over')
+
+
+        # Use up the grain
+        self.grain -= grain_used
+
+        # Feed the people
+        people_fed = int(food/self.food_per_person)
+        self.starved = max(self.population-people_fed, 0) # can't starve a negative amount
+        self.total_killed += self.starved
+
+        percent_killed = self.starved*100.0/self.population
+        self.running_average_killed = ((self.year-1)*self.running_average_killed + percent_killed)/self.year
+        if percent_killed >= 45:
+            self.overthrown = True
+
+        # Buy the land
+        self.acreage += land_bought
+
+        # Harvest the crops
+        self.bushels_per_acre = random.randint(1,5)
+        harvest = planted*self.bushels_per_acre
+
+        # Rats run wild
+        r = random.randint(1,5)
+        if r%2 == 1:
+            self.eaten_by_rats = int(self.grain/r)
+        else:
+            self.eaten_by_rats = 0
+        self.grain += harvest - self.eaten_by_rats
+
+        # Have babies
+        self.immigration = int(random.randint(1,5)*(20*self.acreage + self.grain)/self.population/100 + 1)
+        self.population += self.immigration - self.starved
+
+        # Has there been a plague?
+        self.plague = (random.randint(1,20) <= 3) # 15% chance of plague
+        if self.plague:
+            self.population /= 2
+
+        # Set the new price for land
+        self.land_price = self.newLandPrice()
+
+        # Start the next year
+        self.year += 1
+
+
+if __name__ == '__main__':
+    # autoplay a game to test 
+    game = Hammurabi()
+    
+    try:
+        while game.year <= game.reign:
+            print(game.status())
+            plantable = int(min(game.acreage, game.population*10))
+            if game.grain < (game.population*game.food_per_person + plantable*game.seed_per_acre):
+                print('Some people are going to have to do without')
+                food = int(game.population*0.9)*game.food_per_person
+            else:
+                print('Bountiful harvests!')
+                food = int(game.population*game.food_per_person)
+            land = int((game.grain-food-plantable)/game.land_price)
+            plantable = min(plantable, game.acreage+land)
+            print('land bought: {0}     food: {1}      acreage planted: {2}'.format(land, food, plantable))
+            print('')
+            game.run(land, food, plantable)
+    except Exception as e:
+        print(str(e))
+    print(game.status())
