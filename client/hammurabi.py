@@ -10,6 +10,7 @@ class Hammurabi(object):
     reign = 10
     food_per_person = 20
     seed_per_acre = 0.5
+    acres_per_person = 10
 
     def __init__(self):
         self.reset()
@@ -21,7 +22,7 @@ class Hammurabi(object):
         self.starved = 0
         self.total_killed = 0
         self.running_average_killed = 0
-        self.acreage = 1000
+        self.acreage = self.population * self.acres_per_person
         self.grain = 2800
         self.eaten_by_rats = 200
         self.bushels_per_acre = 3
@@ -37,7 +38,7 @@ class Hammurabi(object):
         land_per_person = 1.0 * self.acreage/self.population
         if self.overthrown:
             msg += 'You starved {0} people in one year!\n'.format(self.starved)
-            msg += 'Due to this extremem mismanagement, you have not only been\n'
+            msg += 'Due to this extreme mismanagement, you have not only been\n'
             msg += 'impeached and thrown out of office, but have also been declared\n'
             msg += 'national fink!\n'
         else:
@@ -53,18 +54,18 @@ class Hammurabi(object):
                 msg += 'You now have {0} bushels in store.\n'.format(self.grain)
                 msg += 'Land is trading at {0} bushels per acre.\n'.format(self.land_price)
             else:
-                msg += 'You started with 10 acres per person and ended with {0}\n'.format(land_per_person)
+                msg += 'You started with {0} acres per person and ended with {1}\n'.format(self.acres_per_person, land_per_person)
                 msg += 'acres per person.  You killed {0} people, or an average\n'.format(self.total_killed)
                 msg += 'or {0} percent of the people per year.\n'.format(self.running_average_killed)
-                if land_per_person < 7 or self.running_average_killed > 33:
-                    msg += 'Due to this extremem mismanagement, you have not only been\n'
+                if land_per_person < .7*self.acres_per_person or self.running_average_killed > 33:
+                    msg += 'Due to this extreme mismanagement, you have not only been\n'
                     msg += 'impeached and thrown out of office, but have also been declared\n'
                     msg += 'national fink!\n'
-                elif land_per_person < 9 or self.running_average_killed > 10:
+                elif land_per_person < .9*self.acres_per_person or self.running_average_killed > 10:
                     msg += 'Your heavy-handed performance smacks of Nero or Ivan the terrible.\n'
                     msg += 'The (remaining) people find you an unpleasant ruler, and frankly\n'
                     msg += 'hate your guts!\n'
-                elif land_per_person < 10 or self.running_average_killed > 3:
+                elif land_per_person < self.acres_per_person or self.running_average_killed > 3:
                     msg += 'Your performance could have been better, but really wasn\'t so bad.\n'
                     msg += '{0} people would dearly like to see you assassinated, but we all\n'.format(random.randint(2, int(self.population*0.8)))
                     msg += 'have our problems.\n'
@@ -86,7 +87,7 @@ class Hammurabi(object):
         if land_available < 0:
             raise ValueError('Think again Hammurabi, you cannot sell more land than you own')
 
-        if planted > self.population*10:
+        if planted > self.population*self.acres_per_person:
             raise ValueError('But you only have {0} people to tend the fields'.format(self.population))
 
         if planted > land_available:
@@ -142,20 +143,41 @@ class Hammurabi(object):
 
 if __name__ == '__main__':
     # autoplay a game to test 
+    import argparse
+
+    parser = argparse.ArgumentParser('Rule like Hammurabi')
+    parser.add_argument('--reign', default=Hammurabi.reign, type=int,
+                        help='How many years should you rule')
+    parser.add_argument('--acres-per-person', default=Hammurabi.acres_per_person, type=int,
+                        help='How many acres can each person till')
+    parser.add_argument('--food-per-person', default=Hammurabi.food_per_person, type=int,
+                        help='How much does each person need to eat')
+    parser.add_argument('--seed-per-acre', default=Hammurabi.seed_per_acre, type=int,
+                        help='How much grain is needed to seed an acre of land')
+    args = parser.parse_args()
+
+
+    Hammurabi.reign = args.reign
+    Hammurabi.acres_per_person = args.acres_per_person
+    Hammurabi.food_per_person = args.food_per_person
+    Hammurabi.seed_per_acre = args.seed_per_acre
+
     game = Hammurabi()
+    # game.reset()
     
     try:
         while game.year <= game.reign:
             print(game.status())
-            plantable = int(min(game.acreage, game.population*10))
+            plantable = int(min(game.acreage, game.population*game.acres_per_person))
             if game.grain < (game.population*game.food_per_person + plantable*game.seed_per_acre):
                 print('Some people are going to have to do without')
-                food = int(game.population*0.9)*game.food_per_person
+                food = int(game.population*0.95)*game.food_per_person
             else:
                 print('Bountiful harvests!')
                 food = int(game.population*game.food_per_person)
-            land = int((game.grain-food-plantable)/game.land_price)
+            land = max(int(game.grain-food-plantable*game.seed_per_acre)/game.land_price, int(-0.5*game.acreage))
             plantable = min(plantable, game.acreage+land)
+            food = min(food, int(game.grain - plantable*game.seed_per_acre - land*game.land_price))
             print('land bought: {0}     food: {1}      acreage planted: {2}'.format(land, food, plantable))
             print('')
             game.run(land, food, plantable)
