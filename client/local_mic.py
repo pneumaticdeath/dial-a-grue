@@ -11,7 +11,10 @@ class Mic:
     prev = None
 
     def __init__(self, speaker, passive_stt_engine, active_stt_engine):
-	self.phone = Phone.get_phone()
+        self.phone = Phone.get_phone()
+        self.speaker = speaker
+        self.passive_stt_engine = passive_stt_engine
+        self.active_stt_engine = active_stt_engine
         return
 
     def passiveListen(self, PERSONA):

@@ -166,7 +166,7 @@ if __name__ == '__main__':
     # game.reset()
     
     try:
-        while game.year <= game.reign:
+        while game.year <= game.reign and not game.overthrown:
             print(game.status())
             plantable = int(min(game.acreage, game.population*game.acres_per_person))
             if game.grain < (game.population*game.food_per_person + plantable*game.seed_per_acre):
