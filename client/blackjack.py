@@ -107,11 +107,27 @@ if __name__ == '__main__':
     import sys
     game = Blackjack()
 
-    def read_int():
-        return int(sys.stdin.readline())
-
     def read_word():
         return sys.stdin.readline().strip().lower()
+
+    def read_int():
+        retval = None
+        while retval is None:
+            val = read_word()
+            try:
+                retval = int(val)
+            except ValueError:
+                print('{0} isn\'t a number.'.format(val))
+        return retval
+
+    def read_answer(valid):
+        retval = None
+        while retval is None:
+            retval = read_word()
+            if retval not in valid:
+                print('"{0}" isn\'t one of "{1}" or "{2}"'.format(retval, '", "'.join(valid[:-1]), valid[-1]))
+                retval = None
+        return retval
 
     keep_playing = 'yes'
     while keep_playing == 'yes':
@@ -131,15 +147,10 @@ if __name__ == '__main__':
                     count = game.count(player)
                     if count < 21:
                         print('Hit or stand?')
-                        ans = None
-                        while ans is None:
-                            ans = read_word()
-                            if ans not in ['hit', 'stand']:
-                                print('I don\'t understand "{0}".  Hit or Stand?'.format(ans))
-                                ans = None
+                        ans = read_answer(['hit', 'stand'])
                         if ans == 'hit':
                             card, count = game.hit(player)
-                            print('Player {0} got a {1} for a count of {2}'.format(player, card, count))
+                            print('Player {0} got {1} for a count of {2}'.format(player, card, count))
                         else:
                             print('Player {0} standing at {1}'.format(player, count))
                             done.add(player)
@@ -152,10 +163,10 @@ if __name__ == '__main__':
                         done.add(player)
 
         dealer_count = game.count(0)
-        print('Dealer reveals a {0} which gives a count of {1}'.format(game.hand(0)[0], dealer_count))
+        print('Dealer reveals {0} which gives a count of {1}'.format(game.hand(0)[0], dealer_count))
         while dealer_count < 17:
             card, dealer_count = game.hit(0)
-            print('Dealer is dealt a {0} for a count of {1}'.format(card, dealer_count))
+            print('Dealer is dealt {0} for a count of {1}'.format(card, dealer_count))
         if dealer_count > 21:
             print('Dealer busted!')
             winners = list(filter(lambda x: game.count(x) <= 21, range(1,n+1)))
@@ -181,4 +192,4 @@ if __name__ == '__main__':
                 print('Players {0} and {1} pushed.'.format(', '.join(pushers[0:-1]), pushers[-1]))
 
         print("Play again?")
-        keep_playing = read_word()
+        keep_playing = read_answer(['yes', 'no', 'quit'])
