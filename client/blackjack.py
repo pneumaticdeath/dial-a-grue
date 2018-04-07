@@ -31,6 +31,9 @@ class Card(object):
     def __str__(self):
         return '{0} {1} of {2}'.format('an' if self._rank in [1, 8] else 'a', self.rank, self.suit)
 
+    def __repr__(self):
+        return '{0}({1}, {2})'.format(self.__class__.__name__, self._rank, repr(self.suit))
+
 class Deck(object):
     def __init__(self):
         self.cards = []
@@ -110,7 +113,7 @@ if __name__ == '__main__':
     def read_word():
         return sys.stdin.readline().strip().lower()
 
-    def read_int():
+    def read_int(low_limit=None, high_limit=None):
         retval = None
         while retval is None:
             val = read_word()
@@ -118,6 +121,12 @@ if __name__ == '__main__':
                 retval = int(val)
             except ValueError:
                 print('{0} isn\'t a number.'.format(val))
+            if low_limit is not None and retval < low_limit:
+                print('Too low, try again')
+                retval = None
+            elif high_limit is not None and retval > high_limit:
+                print('Too high, try again')
+                retval = None
         return retval
 
     def read_answer(valid):
@@ -132,7 +141,7 @@ if __name__ == '__main__':
     keep_playing = 'yes'
     while keep_playing == 'yes':
         print('How many players?')
-        n = read_int()
+        n = read_int(low_limit=1, high_limit=10)
         game.deal(n)
         print('Dealer has a face down card and a {0}'.format(str(game.hand(0)[1])))
         done = set()
