@@ -60,6 +60,15 @@ class Deck(object):
         for card in self.cards:
             yield card
 
+class Hand(list):
+    def __str__(self):
+        if len(self) == 0:
+            return 'an empty hand'
+        elif len(self) == 1:
+            return str(self[0])
+        else:
+            return '{0} and {1}'.format(', '.join([str(card) for card in self[:-1]]), self[-1])
+
 def _count(hand):
     aces = 0
     count = 0
@@ -90,7 +99,7 @@ class Blackjack(object):
         if (num_hands * 4) > self.deck.cardsLeft():
             print('Shuffling... because we only have {0} cards left'.format(self.deck.cardsLeft()))
             self.deck.shuffle()
-        self.hands = [[] for _ in range(num_hands)]
+        self.hands = [Hand() for _ in range(num_hands)]
         for c in range(2):
             for h in range(num_hands):
                 self.hands[h].append(self.deck.deal())
@@ -148,10 +157,9 @@ if __name__ == '__main__':
         while len(done) < n:
             for player in range(1,n+1):
                 if player not in done:
-                    print('Player {0} has {1} and {2} with a count of {3}'.format(
+                    print('Player {0} has {1} with a count of {2}'.format(
                         player,
-                        ', '.join([str(game.hand(player)[i]) for i in range(len(game.hand(player))-1)]),
-                        game.hand(player)[-1],
+                        str(game.hand(player)),
                         game.count(player)))
                     count = game.count(player)
                     if count < 21:
