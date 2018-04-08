@@ -3,7 +3,7 @@ import logging
 import os
 import re
 from client import jasperpath
-from client.animal import Animal
+from client.games.animal import Animal
 
 WORDS = [ 'PLAY', 'ANIMAL'  ]
 INSTANCE_WORDS = [ 'YES', 'NO', 'QUIT' ]

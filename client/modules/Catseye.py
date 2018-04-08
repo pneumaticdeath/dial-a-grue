@@ -3,7 +3,7 @@ import logging
 import re
 # import time
 from client import jasperpath
-from client.zvm import ZorkMachine, ZorkPhone
+from client.games.zvm import ZorkMachine, ZorkPhone
 
 logger = logging.getLogger(__name__)
 
