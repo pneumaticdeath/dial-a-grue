@@ -117,7 +117,6 @@ class Blackjack(object):
 
 if __name__ == '__main__':
     import sys
-    game = Blackjack()
 
     def read_word():
         return sys.stdin.readline().strip().lower()
@@ -147,6 +146,7 @@ if __name__ == '__main__':
                 retval = None
         return retval
 
+    game = Blackjack()
     keep_playing = 'yes'
     while keep_playing == 'yes':
         print('How many players?')
@@ -157,11 +157,11 @@ if __name__ == '__main__':
         while len(done) < n:
             for player in range(1,n+1):
                 if player not in done:
+                    count = game.count(player)
                     print('Player {0} has {1} with a count of {2}'.format(
                         player,
                         str(game.hand(player)),
-                        game.count(player)))
-                    count = game.count(player)
+                        count))
                     if count < 21:
                         print('Hit or stand?')
                         ans = read_answer(['hit', 'stand'])
@@ -174,6 +174,8 @@ if __name__ == '__main__':
                     if count == 21:
                         if len(game.hand(player)) == 2:
                             print('Blackjack!')
+                        else:
+                            print('Player {0} standing at 21'.format(player))
                         done.add(player)
                     if count > 21: 
                         print('Busted!')
