@@ -119,48 +119,53 @@ class Dealer(object):
         return new_card, self.count(player)
 
 def read_line():
-    return sys.stdin.readline().strip().lower()
-
-def read_int(low_limit=None, high_limit=None, input_func=read_line):
-    retval = None
-    while retval is None:
-        val = input_func()
-        try:
-            retval = int(val)
-        except ValueError:
-            print('{0} isn\'t a number.'.format(val))
-        if low_limit is not None and retval < low_limit:
-            print('Too low, try again')
-            retval = None
-        elif high_limit is not None and retval > high_limit:
-            print('Too high, try again')
-            retval = None
-    return retval
-
-def read_answer(valid, input_func=read_line):
-    retval = None
-    while retval is None:
-        retval = input_func()
-        if retval in valid:
-            return retval
-        matches = list(filter(lambda x: x.startswith(retval), valid))
-        if len(matches) > 1:
-            print('"{0}" is ambiguous, could match "{1}" or "{2}"'.format(retval, '", "'.join(matches[:-1]), matches[-1]))
-            retval = None
-        elif len(matches) == 0:
-            print('"{0}" isn\'t one of "{1}" or "{2}"'.format(retval, '", "'.join(valid[:-1]), valid[-1]))
-            retval = None
-    return matches[0]
+    return sys.stdin.readline()
 
 def myprint(str):
     print(str)
 
+def read_int(low_limit=None, high_limit=None, input_func=read_line, output_func=myprint):
+    retval = None
+    while retval is None:
+        val = input_func().strip().lower()
+        try:
+            retval = int(val)
+            if low_limit is not None and retval < low_limit:
+                output_func('Too low, Please choose a number of {0} or greater'.format(low_limit))
+                retval = None
+            elif high_limit is not None and retval > high_limit:
+                output_func('Too high, Please choose a number of {0} or less'.format(high_limit))
+                retval = None
+        except ValueError:
+            output_func('{0} isn\'t a number.'.format(val))
+    return retval
+
+def read_answer(valid, input_func=read_line, output_func=myprint):
+    retval = None
+    while retval is None:
+        retval = input_func().strip().lower()
+        if retval in valid:
+            return retval
+        matches = list(filter(lambda x: x.startswith(retval), valid))
+        if len(matches) > 1:
+            output_func('"{0}" is ambiguous, could match "{1}" or "{2}"'.format(retval, '", "'.join(matches[:-1]), matches[-1]))
+            retval = None
+        elif len(matches) == 0:
+            output_func('"{0}" isn\'t one of "{1}" or "{2}"'.format(retval, '", "'.join(valid[:-1]), valid[-1]))
+            retval = None
+    return matches[0]
+
 def play(input_func=read_line, output_func=myprint):
+    '''
+plays a game of blackjack with up to 10 players.
+Pass input_func and output_func with appropriate vectors for other implementations.
+    '''
+
     dealer = Dealer()
     keep_playing = 'yes'
     while keep_playing == 'yes':
         output_func('How many players?')
-        n = read_int(low_limit=1, high_limit=10, input_func=input_func)
+        n = read_int(low_limit=1, high_limit=10, input_func=input_func, output_func=output_func)
         dealer.deal(n)
         output_func('Dealer has a face down card and a {0}'.format(str(dealer.hand(0)[1])))
         done = set()
@@ -174,7 +179,7 @@ def play(input_func=read_line, output_func=myprint):
                         count))
                     if count < 21:
                         output_func('Hit or stand?')
-                        ans = read_answer(['hit', 'stand'], input_func=input_func)
+                        ans = read_answer(['hit', 'stand'], input_func=input_func, output_func=output_func)
                         if ans == 'hit':
                             card, count = dealer.hit(player)
                             output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
@@ -222,7 +227,7 @@ def play(input_func=read_line, output_func=myprint):
                 output_func('Players {0} and {1} pushed.'.format(', '.join(pushers[0:-1]), pushers[-1]))
 
         output_func("Play again?")
-        keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func)
+        keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func, output_func=output_func)
 
 if __name__ == '__main__':
     play()
