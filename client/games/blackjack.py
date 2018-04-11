@@ -115,42 +115,42 @@ class Blackjack(object):
         self.hands[player].append(new_card)
         return new_card, self.count(player)
 
+def read_line():
+    return sys.stdin.readline().strip().lower()
+
+def read_int(low_limit=None, high_limit=None, input_func=read_line):
+    retval = None
+    while retval is None:
+        val = input_func()
+        try:
+            retval = int(val)
+        except ValueError:
+            print('{0} isn\'t a number.'.format(val))
+        if low_limit is not None and retval < low_limit:
+            print('Too low, try again')
+            retval = None
+        elif high_limit is not None and retval > high_limit:
+            print('Too high, try again')
+            retval = None
+    return retval
+
+def read_answer(valid, input_func=read_line):
+    retval = None
+    while retval is None:
+        retval = input_func()
+        if retval in valid:
+            return retval
+        matches = list(filter(lambda x: x.startswith(retval), valid))
+        if len(matches) > 1:
+            print('"{0}" is ambiguous, could match "{1}" or "{2}"'.format(retval, '", "'.join(matches[:-1]), matches[-1]))
+            retval = None
+        elif len(matches) == 0:
+            print('"{0}" isn\'t one of "{1}" or "{2}"'.format(retval, '", "'.join(valid[:-1]), valid[-1]))
+            retval = None
+    return matches[0]
+
 if __name__ == '__main__':
     import sys
-
-    def read_word():
-        return sys.stdin.readline().strip().lower()
-
-    def read_int(low_limit=None, high_limit=None):
-        retval = None
-        while retval is None:
-            val = read_word()
-            try:
-                retval = int(val)
-            except ValueError:
-                print('{0} isn\'t a number.'.format(val))
-            if low_limit is not None and retval < low_limit:
-                print('Too low, try again')
-                retval = None
-            elif high_limit is not None and retval > high_limit:
-                print('Too high, try again')
-                retval = None
-        return retval
-
-    def read_answer(valid):
-        retval = None
-        while retval is None:
-            retval = read_word()
-            if retval in valid:
-                return retval
-            matches = list(filter(lambda x: x.startswith(retval), valid))
-            if len(matches) > 1:
-                print('"{0}" is ambiguous, could match "{1}" or "{2}"'.format(retval, '", "'.join(matches[:-1]), matches[-1]))
-                retval = None
-            elif len(matches) == 0:
-                print('"{0}" isn\'t one of "{1}" or "{2}"'.format(retval, '", "'.join(valid[:-1]), valid[-1]))
-                retval = None
-        return matches[0]
 
     game = Blackjack()
     keep_playing = 'yes'
