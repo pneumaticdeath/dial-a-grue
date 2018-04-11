@@ -86,7 +86,7 @@ def _count(hand):
             count += 1
     return count
 
-class Blackjack(object):
+class Dealer(object):
     def __init__(self):
         self.deck = Deck()
         self.deck.shuffle()
@@ -152,33 +152,33 @@ def read_answer(valid, input_func=read_line):
 if __name__ == '__main__':
     import sys
 
-    game = Blackjack()
+    dealer = Dealer()
     keep_playing = 'yes'
     while keep_playing == 'yes':
         print('How many players?')
         n = read_int(low_limit=1, high_limit=10)
-        game.deal(n)
-        print('Dealer has a face down card and a {0}'.format(str(game.hand(0)[1])))
+        dealer.deal(n)
+        print('Dealer has a face down card and a {0}'.format(str(dealer.hand(0)[1])))
         done = set()
         while len(done) < n:
             for player in range(1,n+1):
                 if player not in done:
-                    count = game.count(player)
+                    count = dealer.count(player)
                     print('Player {0} has {1} with a count of {2}'.format(
                         player,
-                        str(game.hand(player)),
+                        dealer.hand(player),
                         count))
                     if count < 21:
                         print('Hit or stand?')
                         ans = read_answer(['hit', 'stand'])
                         if ans == 'hit':
-                            card, count = game.hit(player)
+                            card, count = dealer.hit(player)
                             print('Player {0} got {1} for a count of {2}'.format(player, card, count))
                         else:
                             print('Player {0} standing at {1}'.format(player, count))
                             done.add(player)
                     if count == 21:
-                        if len(game.hand(player)) == 2:
+                        if len(dealer.hand(player)) == 2:
                             print('Blackjack!')
                         else:
                             print('Player {0} standing at 21'.format(player))
@@ -188,19 +188,19 @@ if __name__ == '__main__':
                         done.add(player)
                     print('')
 
-        dealer_count = game.count(0)
-        print('Dealer reveals {0} which gives a count of {1}'.format(game.hand(0)[0], dealer_count))
+        dealer_count = dealer.count(0)
+        print('Dealer reveals {0} which gives a count of {1}'.format(dealer.hand(0)[0], dealer_count))
         while dealer_count < 17:
-            card, dealer_count = game.hit(0)
+            card, dealer_count = dealer.hit(0)
             print('Dealer is dealt {0} for a count of {1}'.format(card, dealer_count))
         if dealer_count > 21:
             print('Dealer busted!')
-            winners = list(filter(lambda x: game.count(x) <= 21, range(1,n+1)))
+            winners = list(filter(lambda x: dealer.count(x) <= 21, range(1,n+1)))
             pushers = []
         else:
             print('Dealer standing at {0}'.format(dealer_count))
-            winners = list(filter(lambda x: game.count(x) <= 21 and game.count(x) > dealer_count, range(1,n+1)))
-            pushers = list(filter(lambda x: game.count(x) == dealer_count, range(1,n+1)))
+            winners = list(filter(lambda x: dealer.count(x) <= 21 and dealer.count(x) > dealer_count, range(1,n+1)))
+            pushers = list(filter(lambda x: dealer.count(x) == dealer_count, range(1,n+1)))
 
         winners = [str(p) for p in winners]
         pushers = [str(p) for p in pushers]
