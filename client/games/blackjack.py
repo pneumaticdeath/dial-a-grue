@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # vim: sw=4 ai expandtab
+# Blackjack game
+# Copyright 2018, Mitch Patenaude
 
 import logging
 import random

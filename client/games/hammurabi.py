@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # vim: sw=4 ai expandtab
+# Hammurabi game (based on the game HAMURABI by David Ahl
+# published in "Basic Computer Games" (C) 1978)
+# Copyright 2018, Mitch Patenaude
 
 import logging
 import random

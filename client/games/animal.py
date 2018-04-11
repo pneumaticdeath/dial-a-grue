@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 # vim: sw=4 ai expandtab
+# Guess the Animal (based on the game ANIMAL by Arthur Luehrmann, Nathan Teichholz,
+# and Steve North, published in "Basic Computer Games" (C) 1978)
+# Rewritten in Python by Mitch Patenaude
+# Copyright 2017, 2018, Mitch Patenaude
 
 import logging
 import sqlite3
