@@ -150,7 +150,7 @@ if __name__ == '__main__':
             answer = sys.stdin.readline().lower().strip()
         return answer
 
-    dbfile_default = os.path.join(os.path.dirname(__file__), '..', 'static', 'animals.db')
+    dbfile_default = os.path.join(os.path.dirname(__file__), '..', '..', 'static', 'animals.db')
     parser = argparse.ArgumentParser('Play a game of Animal')
     parser.add_argument('--database', default=dbfile_default, help='Database file')
     args = parser.parse_args()
