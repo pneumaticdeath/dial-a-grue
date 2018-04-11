@@ -3,6 +3,7 @@
 
 import logging
 import random
+import sys
 
 class Card(object):
     suits = ['clubs', 'hearts', 'diamonds', 'spades']
@@ -149,56 +150,57 @@ def read_answer(valid, input_func=read_line):
             retval = None
     return matches[0]
 
-if __name__ == '__main__':
-    import sys
+def myprint(str):
+    print(str)
 
+def play(input_func=read_line, output_func=myprint):
     dealer = Dealer()
     keep_playing = 'yes'
     while keep_playing == 'yes':
-        print('How many players?')
-        n = read_int(low_limit=1, high_limit=10)
+        output_func('How many players?')
+        n = read_int(low_limit=1, high_limit=10, input_func=input_func)
         dealer.deal(n)
-        print('Dealer has a face down card and a {0}'.format(str(dealer.hand(0)[1])))
+        output_func('Dealer has a face down card and a {0}'.format(str(dealer.hand(0)[1])))
         done = set()
         while len(done) < n:
             for player in range(1,n+1):
                 if player not in done:
                     count = dealer.count(player)
-                    print('Player {0} has {1} with a count of {2}'.format(
+                    output_func('Player {0} has {1} with a count of {2}'.format(
                         player,
                         dealer.hand(player),
                         count))
                     if count < 21:
-                        print('Hit or stand?')
-                        ans = read_answer(['hit', 'stand'])
+                        output_func('Hit or stand?')
+                        ans = read_answer(['hit', 'stand'], input_func=input_func)
                         if ans == 'hit':
                             card, count = dealer.hit(player)
-                            print('Player {0} got {1} for a count of {2}'.format(player, card, count))
+                            output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
                         else:
-                            print('Player {0} standing at {1}'.format(player, count))
+                            output_func('Player {0} standing at {1}'.format(player, count))
                             done.add(player)
                     if count == 21:
                         if len(dealer.hand(player)) == 2:
-                            print('Blackjack!')
+                            output_func('Blackjack!')
                         else:
-                            print('Player {0} standing at 21'.format(player))
+                            output_func('Player {0} standing at 21'.format(player))
                         done.add(player)
                     if count > 21: 
-                        print('Busted!')
+                        output_func('Busted!')
                         done.add(player)
                     print('')
 
         dealer_count = dealer.count(0)
-        print('Dealer reveals {0} which gives a count of {1}'.format(dealer.hand(0)[0], dealer_count))
+        output_func('Dealer reveals {0} which gives a count of {1}'.format(dealer.hand(0)[0], dealer_count))
         while dealer_count < 17:
             card, dealer_count = dealer.hit(0)
-            print('Dealer is dealt {0} for a count of {1}'.format(card, dealer_count))
+            output_func('Dealer is dealt {0} for a count of {1}'.format(card, dealer_count))
         if dealer_count > 21:
-            print('Dealer busted!')
+            output_func('Dealer busted!')
             winners = list(filter(lambda x: dealer.count(x) <= 21, range(1,n+1)))
             pushers = []
         else:
-            print('Dealer standing at {0}'.format(dealer_count))
+            output_func('Dealer standing at {0}'.format(dealer_count))
             winners = list(filter(lambda x: dealer.count(x) <= 21 and dealer.count(x) > dealer_count, range(1,n+1)))
             pushers = list(filter(lambda x: dealer.count(x) == dealer_count, range(1,n+1)))
 
@@ -206,16 +208,19 @@ if __name__ == '__main__':
         pushers = [str(p) for p in pushers]
 
         if not winners and not pushers:
-            print('All players lost')
+            output_func('All players lost')
         else:
             if len(winners) == 1:
-                print('Player {0} won!'.format(winners[0]))
+                output_func('Player {0} won!'.format(winners[0]))
             elif len(winners) > 1:
-                print('Players {0} and {1} won!'.format(', '.join(winners[0:-1]), winners[-1]))
+                output_func('Players {0} and {1} won!'.format(', '.join(winners[0:-1]), winners[-1]))
             if len(pushers) == 1:
-                print('Player {0} pushed.'.format(pushers[0]))
+                output_func('Player {0} pushed.'.format(pushers[0]))
             elif len(pushers) > 1:
-                print('Players {0} and {1} pushed.'.format(', '.join(pushers[0:-1]), pushers[-1]))
+                output_func('Players {0} and {1} pushed.'.format(', '.join(pushers[0:-1]), pushers[-1]))
 
-        print("Play again?")
-        keep_playing = read_answer(['yes', 'no', 'quit'])
+        output_func("Play again?")
+        keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func)
+
+if __name__ == '__main__':
+    play()
