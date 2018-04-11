@@ -141,10 +141,16 @@ if __name__ == '__main__':
         retval = None
         while retval is None:
             retval = read_word()
-            if retval not in valid:
+            if retval in valid:
+                return retval
+            matches = list(filter(lambda x: x.startswith(retval), valid))
+            if len(matches) > 1:
+                print('"{0}" is ambiguous, could match "{1}" or "{2}"'.format(retval, '", "'.join(matches[:-1]), matches[-1]))
+                retval = None
+            elif len(matches) == 0:
                 print('"{0}" isn\'t one of "{1}" or "{2}"'.format(retval, '", "'.join(valid[:-1]), valid[-1]))
                 retval = None
-        return retval
+        return matches[0]
 
     game = Blackjack()
     keep_playing = 'yes'
@@ -180,6 +186,7 @@ if __name__ == '__main__':
                     if count > 21: 
                         print('Busted!')
                         done.add(player)
+                    print('')
 
         dealer_count = game.count(0)
         print('Dealer reveals {0} which gives a count of {1}'.format(game.hand(0)[0], dealer_count))
