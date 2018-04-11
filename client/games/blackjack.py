@@ -167,7 +167,7 @@ Pass input_func and output_func with appropriate vectors for other implementatio
         output_func('How many players?')
         n = read_int(low_limit=1, high_limit=10, input_func=input_func, output_func=output_func)
         dealer.deal(n)
-        output_func('Dealer has a face down card and a {0}'.format(str(dealer.hand(0)[1])))
+        output_func('Dealer has a face down card and {0}'.format(str(dealer.hand(0)[1])))
         done = set()
         while len(done) < n:
             for player in range(1,n+1):
