@@ -100,7 +100,6 @@ class Dealer(object):
         # hand #0 is the dealer
         num_hands = num_players + 1
         if (num_hands * 4) > self.deck.cardsLeft():
-            print('Shuffling... because we only have {0} cards left'.format(self.deck.cardsLeft()))
             self.deck.shuffle()
         self.hands = [Hand() for _ in range(num_hands)]
         for c in range(2):
@@ -168,34 +167,33 @@ Pass input_func and output_func with appropriate vectors for other implementatio
         n = read_int(low_limit=1, high_limit=10, input_func=input_func, output_func=output_func)
         dealer.deal(n)
         output_func('Dealer has a face down card and {0}'.format(str(dealer.hand(0)[1])))
-        done = set()
-        while len(done) < n:
-            for player in range(1,n+1):
-                if player not in done:
-                    count = dealer.count(player)
-                    output_func('Player {0} has {1} with a count of {2}'.format(
-                        player,
-                        dealer.hand(player),
-                        count))
-                    if count < 21:
-                        output_func('Hit or stand?')
-                        ans = read_answer(['hit', 'stand'], input_func=input_func, output_func=output_func)
-                        if ans == 'hit':
-                            card, count = dealer.hit(player)
-                            output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
-                        else:
-                            output_func('Player {0} standing at {1}'.format(player, count))
-                            done.add(player)
-                    if count == 21:
-                        if len(dealer.hand(player)) == 2:
-                            output_func('Blackjack!')
-                        else:
-                            output_func('Player {0} standing at 21'.format(player))
-                        done.add(player)
-                    if count > 21: 
-                        output_func('Busted!')
-                        done.add(player)
-                    print('')
+        for player in range(1,n+1):
+            count = dealer.count(player)
+            output_func('Player {0} has {1} with a count of {2}'.format(
+                player,
+                dealer.hand(player),
+                count))
+            done = False
+            while not done:
+                if count < 21:
+                    output_func('Hit or stand?')
+                    ans = read_answer(['hit', 'stand'], input_func=input_func, output_func=output_func)
+                    if ans == 'hit':
+                        card, count = dealer.hit(player)
+                        output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
+                    else:
+                        output_func('Player {0} standing at {1}'.format(player, count))
+                        done = True
+                if count == 21:
+                    if len(dealer.hand(player)) == 2:
+                        output_func('Blackjack!')
+                    else:
+                        output_func('Player {0} standing at 21'.format(player))
+                    done = True
+                if count > 21:
+                    output_func('Busted!')
+                    done = True
+            output_func('')
 
         dealer_count = dealer.count(0)
         output_func('Dealer reveals {0} which gives a count of {1}'.format(dealer.hand(0)[0], dealer_count))
