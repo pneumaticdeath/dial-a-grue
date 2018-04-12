@@ -4,7 +4,9 @@ import re
 from client.games import blackjack
 
 WORDS = [ 'PLAY', 'BLACKJACK'  ]
-INSTANCE_WORDS = [ 'HIT', 'STAND', 'ONE', 'TWO', 'THREE', 'YES', 'NO', 'QUIT' ]
+NUMBERS = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN']
+INSTANCE_WORDS = [ 'HIT', 'STAND', 'YES', 'NO', 'QUIT' ] + NUMBERS
+
 
 PRIORITY = 50
 
@@ -14,13 +16,11 @@ def handle(text, mic, profile):
     """
 
     def in_func():
-        retval = mic.activeListen().lower().split(' ')[0]
-        if retval == 'one':
-            return '1'
-        elif retval == 'two':
-            return '2'
-        elif retval == 'three':
-            return '3'
+        retval = mic.activeListen().upper().split(' ')[0]
+        if retval in NUMBERS:
+            for i in range(len(NUMBERS)):
+                if retval == NUMBERS[i]:
+                    return str(i)
         else:
             return retval
 
