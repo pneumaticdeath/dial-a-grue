@@ -12,7 +12,7 @@ class Phone(object):
 
         return cls._PHONE
 
-    def __init__(self, ptt_pin="XIO-P7", hook_pin="XIO-P6"):
+    def __init__(self, ptt_pin="XIO-P5", hook_pin="XIO-P4"):
         self._ptt = Switch(ptt_pin)
         self._hook = Switch(hook_pin)
 
