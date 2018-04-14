@@ -7,6 +7,16 @@ import logging
 import random
 import sys
 
+def mk_print_list(l, conjunction='and'):
+    '''Makes a list of elements with of the form "a, b, c <conjucntion> d"'''
+
+    if len(l) == 0:
+        return ''
+    if len(l) == 1:
+        return str(l[0])
+    else:
+        return '{0} {1} {2}'.format(', '.join([str(w) for w in l[:-1]]), conjunction, l[-1])
+
 class Card(object):
     suits = ['clubs', 'hearts', 'diamonds', 'spades']
 
@@ -67,10 +77,8 @@ class Hand(list):
     def __str__(self):
         if len(self) == 0:
             return 'an empty hand'
-        elif len(self) == 1:
-            return str(self[0])
         else:
-            return '{0} and {1}'.format(', '.join([str(card) for card in self[:-1]]), self[-1])
+            return mk_print_list(self)
 
 def _count(hand):
     aces = 0
@@ -147,10 +155,10 @@ def read_answer(valid, input_func=read_line, output_func=myprint):
             return retval
         matches = list(filter(lambda x: x.startswith(retval), valid))
         if len(matches) > 1:
-            output_func('"{0}" is ambiguous, could match "{1}" or "{2}"'.format(retval, '", "'.join(matches[:-1]), matches[-1]))
+            output_func('{0} is ambiguous, could match {1}'.format(retval, mk_print_list(matches, 'or')))
             retval = None
         elif len(matches) == 0:
-            output_func('"{0}" isn\'t one of "{1}" or "{2}"'.format(retval, '", "'.join(valid[:-1]), valid[-1]))
+            output_func('{0} isn\'t one of {1}'.format(retval,mk_print_list(valid, 'or')))
             retval = None
     return matches[0]
 
@@ -175,10 +183,15 @@ Pass input_func and output_func with appropriate vectors for other implementatio
                 count))
             done = False
             while not done:
+                options = ['hit', 'stand']
+                if len(dealer.hand(player)) == 2 and dealer.hand(player)[0].rank == dealer.hand(player)[1].rank:
+                    options.append('double')
                 if count < 21:
-                    output_func('Hit or stand?')
-                    ans = read_answer(['hit', 'stand'], input_func=input_func, output_func=output_func)
-                    if ans == 'hit':
+                    output_func('{0}?'.format(mk_print_list(options, 'or')))
+                    ans = read_answer(options, input_func=input_func, output_func=output_func)
+                    if ans == 'double':
+                        output_func('don\'t know how yet')
+                    elif ans == 'hit':
                         card, count = dealer.hit(player)
                         output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
                     else:
@@ -209,8 +222,8 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             winners = list(filter(lambda x: dealer.count(x) <= 21 and dealer.count(x) > dealer_count, range(1,n+1)))
             pushers = list(filter(lambda x: dealer.count(x) == dealer_count, range(1,n+1)))
 
-        winners = [str(p) for p in winners]
-        pushers = [str(p) for p in pushers]
+        # winners = [str(p) for p in winners]
+        # pushers = [str(p) for p in pushers]
 
         if not winners and not pushers:
             output_func('All players lost')
@@ -218,11 +231,11 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             if len(winners) == 1:
                 output_func('Player {0} won!'.format(winners[0]))
             elif len(winners) > 1:
-                output_func('Players {0} and {1} won!'.format(', '.join(winners[0:-1]), winners[-1]))
+                output_func('Players {0} won!'.format(mk_print_list(winners)))
             if len(pushers) == 1:
                 output_func('Player {0} pushed.'.format(pushers[0]))
             elif len(pushers) > 1:
-                output_func('Players {0} and {1} pushed.'.format(', '.join(pushers[0:-1]), pushers[-1]))
+                output_func('Players {0} pushed.'.format(mk_print_list(winners)))
 
         output_func("Play again?")
         keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func, output_func=output_func)
