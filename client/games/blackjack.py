@@ -183,14 +183,18 @@ Pass input_func and output_func with appropriate vectors for other implementatio
                 count))
             done = False
             while not done:
-                options = ['hit', 'stand']
+                options = ['hit', 'stand', 'double']
                 if len(dealer.hand(player)) == 2 and dealer.hand(player)[0].rank == dealer.hand(player)[1].rank:
-                    options.append('double')
+                    options.append('split')
                 if count < 21:
                     output_func('{0}?'.format(mk_print_list(options, 'or')))
                     ans = read_answer(options, input_func=input_func, output_func=output_func)
-                    if ans == 'double':
+                    if ans == 'split':
                         output_func('don\'t know how yet')
+                    elif ans == 'double':
+                        card, count = dealer.hit(player)
+                        output_func('Player {0} doubles down and gets {1} for a count of {2}'.format(player, card, count))
+                        done = True
                     elif ans == 'hit':
                         card, count = dealer.hit(player)
                         output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
@@ -200,7 +204,7 @@ Pass input_func and output_func with appropriate vectors for other implementatio
                 if count == 21:
                     if len(dealer.hand(player)) == 2:
                         output_func('Blackjack!')
-                    else:
+                    elif not done: # deal with the edge case where they've just doubled down
                         output_func('Player {0} standing at 21'.format(player))
                     done = True
                 if count > 21:
@@ -222,9 +226,6 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             winners = list(filter(lambda x: dealer.count(x) <= 21 and dealer.count(x) > dealer_count, range(1,n+1)))
             pushers = list(filter(lambda x: dealer.count(x) == dealer_count, range(1,n+1)))
 
-        # winners = [str(p) for p in winners]
-        # pushers = [str(p) for p in pushers]
-
         if not winners and not pushers:
             output_func('All players lost')
         else:
@@ -235,7 +236,7 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             if len(pushers) == 1:
                 output_func('Player {0} pushed.'.format(pushers[0]))
             elif len(pushers) > 1:
-                output_func('Players {0} pushed.'.format(mk_print_list(winners)))
+                output_func('Players {0} pushed.'.format(mk_print_list(pushers)))
 
         output_func("Play again?")
         keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func, output_func=output_func)

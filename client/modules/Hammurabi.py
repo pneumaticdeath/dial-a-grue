@@ -38,7 +38,7 @@ def get_number(prompt, mic, all_value=None):
                 retval = None
         except ValueError as e:
             print(e)
-            mic.say(str(e))
+            mic.say('I didn\'t understand that number')
     return retval
 
 def get_yes_no(prompt, mic):

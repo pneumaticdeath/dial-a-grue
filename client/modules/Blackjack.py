@@ -5,7 +5,7 @@ from client.games import blackjack
 
 WORDS = [ 'PLAY', 'BLACKJACK'  ]
 NUMBERS = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'ELEVEN', 'TWELVE']
-INSTANCE_WORDS = [ 'HIT', 'STAND', 'YES', 'NO', 'QUIT' ] + NUMBERS
+INSTANCE_WORDS = [ 'HIT', 'STAND', 'DOUBLE', 'SPLIT', 'YES', 'NO', 'QUIT' ] + NUMBERS
 
 
 PRIORITY = 50

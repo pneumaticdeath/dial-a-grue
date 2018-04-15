@@ -57,9 +57,9 @@ class Hammurabi(object):
                 msg += 'You now have {0} bushels in store.\n'.format(self.grain)
                 msg += 'Land is trading at {0} bushels per acre.\n'.format(self.land_price)
             else:
-                msg += 'You started with {0} acres per person and ended with {1}\n'.format(self.acres_per_person, land_per_person)
+                msg += 'You started with {0} acres per person and ended with {1:.2f}\n'.format(self.acres_per_person, land_per_person)
                 msg += 'acres per person.  You killed {0} people, or an average\n'.format(self.total_killed)
-                msg += 'or {0} percent of the people per year.\n'.format(self.running_average_killed)
+                msg += 'or {0:.2f} percent of the people per year.\n'.format(self.running_average_killed)
                 if land_per_person < .7*self.acres_per_person or self.running_average_killed > 33:
                     msg += 'Due to this extreme mismanagement, you have not only been\n'
                     msg += 'impeached and thrown out of office, but have also been declared\n'
