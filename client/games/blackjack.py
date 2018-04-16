@@ -86,15 +86,14 @@ def _count(hand):
     for card in hand:
         if card._rank == 1:
             aces += 1
+            count += 11
         elif card._rank >= 10:
             count += 10
         else:
             count += card._rank
     for x in range(aces):
-        if count < 11:
-            count += 11
-        else:
-            count += 1
+        if count > 21:
+            count -= 10
     return count
 
 class Dealer(object):
