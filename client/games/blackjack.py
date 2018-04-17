@@ -108,21 +108,31 @@ class Dealer(object):
         num_hands = num_players + 1
         if (num_hands * 4) > self.deck.cardsLeft():
             self.deck.shuffle()
-        self.hands = [Hand() for _ in range(num_hands)]
+        self.hands = [[Hand()] for _ in range(num_hands)]
         for c in range(2):
             for h in range(num_hands):
-                self.hands[h].append(self.deck.deal())
+                self.hands[h][0].append(self.deck.deal())
 
-    def hand(self, player):
-        return self.hands[player]
+    def hand(self, player, hand=0):
+        return self.hands[player][hand]
 
-    def count(self, player):
-        return _count(self.hand(player));
+    def num_hands(self, player):
+        return len(self.hands[player])
 
-    def hit(self, player):
+    def count(self, player, hand=0):
+        return _count(self.hand(player, hand));
+
+    def hit(self, player, hand=0):
         new_card = self.deck.deal()
-        self.hands[player].append(new_card)
-        return new_card, self.count(player)
+        self.hands[player][hand].append(new_card)
+        return new_card, self.count(player, hand)
+
+    def split(self, player, hand):
+        new_hand = Hand()
+        new_hand.append(self.hands[player][hand][1])
+        self.hands[player][hand][1] = self.deck.deal()
+        self.hands[player].append(new_hand)
+        self.hit(player, -1)
 
 def read_line():
     return sys.stdin.readline()
@@ -161,6 +171,8 @@ def read_answer(valid, input_func=read_line, output_func=myprint):
             retval = None
     return matches[0]
 
+ordinal = {1: 'first', 2: 'second', 3: 'third', 4: 'fourth'}
+
 def play(input_func=read_line, output_func=myprint):
     '''
 plays a game of blackjack with up to 10 players.
@@ -175,55 +187,90 @@ Pass input_func and output_func with appropriate vectors for other implementatio
         dealer.deal(n)
         output_func('Dealer has a face down card and {0}'.format(str(dealer.hand(0)[1])))
         for player in range(1,n+1):
-            count = dealer.count(player)
-            output_func('Player {0} has {1} with a count of {2}'.format(
-                player,
-                dealer.hand(player),
-                count))
-            done = False
-            while not done:
-                options = ['hit', 'stand', 'double']
-                if len(dealer.hand(player)) == 2 and dealer.hand(player)[0].rank == dealer.hand(player)[1].rank:
-                    options.append('split')
-                if count < 21:
-                    output_func('{0}?'.format(mk_print_list(options, 'or')))
-                    ans = read_answer(options, input_func=input_func, output_func=output_func)
-                    if ans == 'split':
-                        output_func('don\'t know how yet')
-                    elif ans == 'double':
-                        card, count = dealer.hit(player)
-                        output_func('Player {0} doubles down and gets {1} for a count of {2}'.format(player, card, count))
+            hand_num = 0
+            while hand_num < dealer.num_hands(player):
+                count = dealer.count(player, hand_num)
+                output_func('{0}layer {1} has {2} with a count of {3}'.format(
+                    '{0} hand of p'.format(ordinal[hand_num +1].capitalize()) if hand_num > 0 else 'P',
+                    player,
+                    dealer.hand(player, hand_num),
+                    count))
+                done = False
+                while not done:
+                    options = ['hit', 'stand', 'double']
+                    if len(dealer.hand(player, hand_num)) == 2 and dealer.hand(player, hand_num)[0].rank == dealer.hand(player, hand_num)[1].rank:
+                        options.append('split')
+                    if count < 21:
+                        output_func('{0}?'.format(mk_print_list(options, 'or')))
+                        ans = read_answer(options, input_func=input_func, output_func=output_func)
+                        if ans == 'split':
+                            dealer.split(player, hand_num)
+                            count = dealer.count(player, hand_num)
+                            output_func('{0} hand of player {1} now has {2} with a count of {3}'.format(
+                                ordinal[hand_num + 1].capitalize(),
+                                player,
+                                dealer.hand(player, hand_num),
+                                count))
+                            continue
+                        elif ans == 'double':
+                            card, count = dealer.hit(player, hand_num)
+                            output_func('Player {0} doubles down and gets {1} for a count of {2}'.format(player, card, count))
+                            done = True
+                        elif ans == 'hit':
+                            card, count = dealer.hit(player, hand_num)
+                            output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
+                        else:
+                            output_func('Player {0} standing at {1}'.format(player, count))
+                            done = True
+                    if count == 21:
+                        if len(dealer.hand(player, hand_num)) == 2:
+                            output_func('Blackjack!')
+                        elif not done: # deal with the edge case where they've just doubled down
+                            output_func('Player {0} standing at 21'.format(player))
                         done = True
-                    elif ans == 'hit':
-                        card, count = dealer.hit(player)
-                        output_func('Player {0} got {1} for a count of {2}'.format(player, card, count))
-                    else:
-                        output_func('Player {0} standing at {1}'.format(player, count))
+                    if count > 21:
+                        output_func('Busted!')
                         done = True
-                if count == 21:
-                    if len(dealer.hand(player)) == 2:
-                        output_func('Blackjack!')
-                    elif not done: # deal with the edge case where they've just doubled down
-                        output_func('Player {0} standing at 21'.format(player))
-                    done = True
-                if count > 21:
-                    output_func('Busted!')
-                    done = True
-            output_func('')
+                hand_num += 1
+                output_func('')
+
 
         dealer_count = dealer.count(0)
         output_func('Dealer reveals {0} which gives a count of {1}'.format(dealer.hand(0)[0], dealer_count))
         while dealer_count < 17:
             card, dealer_count = dealer.hit(0)
             output_func('Dealer is dealt {0} for a count of {1}'.format(card, dealer_count))
+
+        winners = []
+        pushers = []
+
         if dealer_count > 21:
             output_func('Dealer busted!')
-            winners = list(filter(lambda x: dealer.count(x) <= 21, range(1,n+1)))
-            pushers = []
+            for player in range(1, n+1):
+                if dealer.num_hands(player) == 1:
+                    if dealer.count(player) <= 21:
+                        winners.append(player)
+                else:
+                    for hand_num in range(dealer.num_hands(player)):
+                        if dealer.count(player, hand_num) <= 21:
+                            winners.append('{0} {1} hand'.format(player, ordinal[hand_num + 1]))
         else:
             output_func('Dealer standing at {0}'.format(dealer_count))
-            winners = list(filter(lambda x: dealer.count(x) <= 21 and dealer.count(x) > dealer_count, range(1,n+1)))
-            pushers = list(filter(lambda x: dealer.count(x) == dealer_count, range(1,n+1)))
+            for player in range(1, n+1):
+                if dealer.num_hands(player) == 1:
+                    c = dealer.count(player)
+                    if c <= 21 and c > dealer_count:
+                        winners.append(player)
+                    elif c == dealer_count:
+                        pushers.append(player)
+                else:
+                    for hand_num in range(dealer.num_hands(player)):
+                        c = dealer.count(player, hand_num)
+                        if  c <= 21 and c > dealer_count:
+                            winners.append('{0} {1} hand'.format(player, ordinal[hand_num + 1]))
+                        elif c == dealer_count:
+                            pushers.append('{0} {1} hand'.format(player, ordinal[hand_num + 1]))
+
 
         if not winners and not pushers:
             output_func('All players lost')
