@@ -7,7 +7,7 @@
 import random
 import sys
 
-map = {
+dodecahedron_map = {
     1: (2, 3, 11),
     2: (1, 5, 18),
     3: (1, 4, 6),
@@ -30,11 +30,11 @@ map = {
     20: (11, 18, 19),
 }
 
-def test_adjancency():
+def test_adjancency(test_map):
     'Make sure the graph is bidirectional'
-    for room, neighbors in map.items():
+    for room, neighbors in test_map.items():
         for adj_room in neighbors:
-            assert room in map[adj_room], '{room} connects to {adj_room} but not vice versea'.format(room=room, adj_room=adj_room)
+            assert room in test_map[adj_room], '{room} connects to {adj_room} but not vice versea'.format(room=room, adj_room=adj_room)
 
 def mk_print_list(l, conjunction='and'):
     '''Makes a list of elements with of the form "a, b, c <conjucntion> d"'''
@@ -47,12 +47,13 @@ def mk_print_list(l, conjunction='and'):
         return '{0} {1} {2}'.format(', '.join([str(w) for w in l[:-1]]), conjunction, l[-1])
 
 class Wumpus(object):
-    def __init__(self):
+    def __init__(self, map=dodecahedron_map):
+        self.map = map
         self.new_game()
 
     def new_game(self):
         # initial rooms are (player, wumpus, 2 bats, 2 pits)
-        self.init_rooms = random.sample(map.keys(), 6)
+        self.init_rooms = random.sample(self.map.keys(), 6)
         self.restart()
 
     def restart(self):
@@ -70,12 +71,12 @@ class Wumpus(object):
             return 'Your game is over because {0}'.format(self.game_over_msg)
 
         msgs = ['You are in room {0}'.format(self.player)]
-        msgs.append('there are passages to rooms {0}'.format(mk_print_list(map[self.player])))
+        msgs.append('there are passages to rooms {0}'.format(mk_print_list(self.map[self.player])))
 
         wumpus_near = False
         pit_near = False
         bat_near = False
-        for room in map[self.player]:
+        for room in self.map[self.player]:
             if room == self.wumpus:
                 wumpus_near = True
             if room in self.pits:
@@ -94,7 +95,7 @@ class Wumpus(object):
         if self.game_over:
             return 'Your game is over because {0}'.format(self.game_over_msg)
 
-        if destination not in map[self.player]:
+        if destination not in self.map[self.player]:
             return 'That room isn\'t connected to this one.'
 
         self.player = destination
@@ -102,7 +103,7 @@ class Wumpus(object):
 
         while self.player in self.bats:
             # bat might carry you to the other bat
-            self.player = random.choice(map.keys())
+            self.player = random.choice(self.map.keys())
             msgs.append('a bat carries you off to room {0}'.format(self.player))
             
         if self.player == self.wumpus:
@@ -137,8 +138,8 @@ class Wumpus(object):
             if room == prior_room:
                 msgs.append('It can\'t return to room {0} because your arrows aren\'t that crooked'.format(room))
                 break
-            if room not in map[current_room]:
-                new_room = random.choice(map[current_room])
+            if room not in self.map[current_room]:
+                new_room = random.choice(self.map[current_room])
                 msgs.append('There is no way for the arrow to get to room {0}, so it flies into {2} instead'.format(room, new_room))
                 room = new_room
             else:
@@ -178,18 +179,18 @@ class Wumpus(object):
         return mk_print_list(msgs)
 
     def _move_wumpus(self):
-        wumpus_move_choices = list(map[self.wumpus])
+        wumpus_move_choices = list(self.map[self.wumpus])
         wumpus_move_choices.append(self.wumpus)
         self.wumpus = random.choice(wumpus_move_choices)
 
 if __name__ == '__main__':
-    test_adjancency()
+    test_adjancency(dodecahedron_map)
 
     wumpus = Wumpus()
     while not wumpus.game_over:
         look = wumpus.look()
         print(look)
-        dest = random.choice(map[wumpus.player])
+        dest = random.choice(wumpus.map[wumpus.player])
         if ' smell the wumpus' in look and random.randint(1,3) != 1:
             print('shooting at {0}'.format(dest))
             print(wumpus.shoot([dest]))
