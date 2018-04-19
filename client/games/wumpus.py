@@ -70,8 +70,7 @@ class Wumpus(object):
         if self.game_over:
             return 'Your game is over because {0}'.format(self.game_over_msg)
 
-        msgs = ['You are in room {0}'.format(self.player)]
-        msgs.append('there are passages to rooms {0}'.format(mk_print_list(self.map[self.player])))
+        msgs = ['In room {0} there are passages to rooms {1}'.format(self.player, mk_print_list(self.map[self.player]))]
 
         wumpus_near = False
         pit_near = False
