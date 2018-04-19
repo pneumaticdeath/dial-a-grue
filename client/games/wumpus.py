@@ -69,7 +69,8 @@ class Wumpus(object):
         if self.game_over:
             return 'Your game is over because {0}'.format(self.game_over_msg)
 
-        msg = 'You are in room {0} in the cave.  There are passages to rooms {1}. '.format(self.player, mk_print_list(map[self.player]))
+        msgs = ['You are in room {0}'.format(self.player)]
+        msgs.append('there are passages to rooms {0}'.format(mk_print_list(map[self.player])))
 
         wumpus_near = False
         pit_near = False
@@ -81,15 +82,13 @@ class Wumpus(object):
                 pit_near = True
             if room in self.bats:
                 bat_near = True
-        warnings = []
         if bat_near:
-            warnings.append('you hear bats nearby')
+            msgs.append('you hear bats nearby')
         if pit_near:
-            warnings.append('you feel a breeze')
+            msgs.append('you feel a breeze')
         if wumpus_near:
-            warnings.append('you can smell the wumpus')
-        msg += mk_print_list(warnings).capitalize()
-        return msg
+            msgs.append('you can smell the wumpus')
+        return mk_print_list(msgs)
 
     def move(self, destination):
         if self.game_over:
@@ -104,17 +103,17 @@ class Wumpus(object):
         while self.player in self.bats:
             # bat might carry you to the other bat
             self.player = random.choice(map.keys())
-            msgs.append('a super bat carries you off to room {0}'.format(self.player))
+            msgs.append('a bat carries you off to room {0}'.format(self.player))
             
         if self.player == self.wumpus:
             self._move_wumpus()
             if self.player == self.wumpus:
-                msgs.append('you are devoured by the hungry wumpus')
+                msgs.append('you are eaten by the hungry wumpus')
                 self.game_over = True
                 self.game_over_msg = 'you have been eaten'
             else:
-                msgs.append('you startle the wumpus who runs off')
-        if self.player in self.pits:
+                msgs.append('you startle the wumpus, who runs off')
+        if self.player in self.pits and not self.game_over:
             msgs.append('you fall to your death in a deep pit')
             self.game_over = True
             self.game_over_msg = 'you fell to your death'
@@ -163,7 +162,7 @@ class Wumpus(object):
         if self.player == self.wumpus:
             self.game_over = True
             self.game_over_msg = 'you have been eaten'
-            msgs.append('the wumpus stumbles into your room and devours you')
+            msgs.append('the wumpus stumbles into your room and eats you')
             return mk_print_list(msgs)
         else:
             msgs.append('you hear the wumpus move')
