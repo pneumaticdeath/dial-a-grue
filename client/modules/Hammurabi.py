@@ -20,6 +20,18 @@ INSTANCE_WORDS = [
 
 PRIORITY = 50
 
+instructions = [
+    'Welcome to Hammurabi!',
+    'You are going to rule the ancient city of Babylon for {reign} years',
+    'Every year, you must decide how much grain to feed your people,',
+    'how much land to plant with seed, and how much land to buy or sell.',
+    'Each person consumes {food_per_person} bushels of grain per year.',
+    'You need {seed_per_acre} bushels for each acre you wish to plant with seed,',
+    'and each person can till at most {acres_per_person} acres.',
+    'The price of land will vary, so buy low and sell high.',
+    'Rats may eat some or all of the grain you try to store each year.',
+]
+
 def get_number(prompt, mic, all_value=None):
     retval = None
     while retval is None:
@@ -62,6 +74,15 @@ def handle(text, mic, profile):
 
     Hammurabi.reign = 5
     mic.say('Welcome to Hammurabi\'s Babylon.  You will reign for {0} years.'.format(Hammurabi.reign))
+
+    print('Instructions?')
+    answer = get_yes_no('Would you like instructions?', mic)
+    if answer == 'YES':
+        fmt_dict = {'reign': Hammurabi.reign, 'food_per_person': Hammurabi.food_per_person, 
+                    'acres_per_person': Hammurabi.acres_per_person, 'seed_per_acre': Hammurabi.seed_per_acre,}
+        for line in instructions:
+            print(line.format(**fmt_dict))
+            mic.say(line.format(**fmt_dict))
 
     game = Hammurabi()
     
@@ -114,8 +135,9 @@ def handle(text, mic, profile):
         except ValueError as e:
             print(str(e))
             mic.say(str(e))
-    print(game.status())
-    mic.say(game.status())
+    status = game.status() #Ending status can be somewhat random, so save it.
+    print(status)
+    mic.say(status)
 
     logging.info('Leaving Hammurabi module')
 
