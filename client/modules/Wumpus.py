@@ -55,6 +55,18 @@ def handle(text, mic, profile):
         print(string)
         mic.say(string)
      
+    def ask_y_n(prompt):
+        answer = None
+        while answer is None:
+            output(prompt)
+            words = None
+            while not words:
+                words = input()
+            answer = words[0]
+            if answer not in ['YES', 'NO']:
+                output('{0} wasn\'t a yes or no'.format(answer))
+                answer = None
+        return answer
 
     logging.info('Starting the Wumpus module')
     mic.say('Let\'s Hunt the Wumpus!')
@@ -81,6 +93,13 @@ def handle(text, mic, profile):
                 output('Couldn\'t make out where to shoot')
         else:
             output('what?')
+
+        if game.game_over and not game.wumpus_killed:
+            again = ask_y_n('Would you like to try again?')
+            if again == 'YES':
+                game.restart()
+                output(game.look())
+
 
     mic.say('Thanks for Hunting the Wumpus!')
     logging.info('Leaving Wumpus module')

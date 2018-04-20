@@ -130,31 +130,31 @@ class Wumpus(object):
             return 'Can\'t shoot that far'
 
         self.arrows -= 1
-        msgs = []
+        msgs = ['You fire your arrow']
         current_room = self.player
         prior_room = None
-        for room in path:
-            if room == prior_room:
-                msgs.append('It can\'t return to room {0} because your arrows aren\'t that crooked'.format(room))
+        for next_room in path:
+            if next_room == prior_room:
+                msgs.append('it\'s unable to return to room {0} because your arrows aren\'t that crooked'.format(next_room))
                 break
-            if room not in self.map[current_room]:
+            if next_room not in self.map[current_room]:
                 new_room = random.choice(self.map[current_room])
-                msgs.append('There is no way for the arrow to get to room {0}, so it flies into {2} instead'.format(room, new_room))
-                room = new_room
+                msgs.append('there is no passage to room {0}, so it flies into {1} instead'.format(next_room, new_room))
+                next_room = new_room
             else:
-                msgs.append('The arrow flies to room {0}'.format(room))
+                msgs.append('it flies to room {0}'.format(next_room))
 
-            prior_room, current_room = current_room, room
+            prior_room, current_room = current_room, next_room
             if current_room == self.wumpus:
                 self.wumpus_killed = True
                 self.game_over = True
                 self.game_over_msg = 'you killed the Wumpus!'
-                msgs.append('the arrow finds its mark and strikes the wumpus down!')
+                msgs.append('finds its mark, striking the wumpus down!')
                 return mk_print_list(msgs)
             elif current_room == self.player:
                 self.game_over = True
                 self.game_over_msg = 'you shot yourself'
-                msgs.append('you shot yourself and lose')
+                msgs.append('you shot yourself')
                 return mk_print_list(msgs)
 
         # shooting an arrow awakens the wumpus
