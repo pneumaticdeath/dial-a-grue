@@ -244,9 +244,11 @@ Pass input_func and output_func with appropriate vectors for other implementatio
                     count))
                 done = False
                 while not done:
-                    options = ['hit', 'stand', 'double']
-                    if len(dealer.hand(player, hand_num)) == 2 and dealer.hand(player, hand_num)[0].rank == dealer.hand(player, hand_num)[1].rank:
-                        options.append('split')
+                    options = ['hit', 'stand']
+                    if len(dealer.hand(player, hand_num)) == 2:
+                        options.append('double')
+                        if dealer.hand(player, hand_num)[0].rank == dealer.hand(player, hand_num)[1].rank:
+                            options.append('split')
                     if count < 21:
                         output_func('{0}?'.format(mk_print_list(options, 'or')))
                         ans = read_answer(options, input_func=input_func, output_func=output_func)
