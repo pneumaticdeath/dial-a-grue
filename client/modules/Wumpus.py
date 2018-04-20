@@ -31,6 +31,24 @@ INSTANCE_WORDS = [ 'LOOK', 'FIRE', 'SHOOT', 'MOVE', 'GO', 'YES', 'NO' ] + NUMBER
 
 PRIORITY = 50
 
+instructions = [
+    'Welcome to Hunt the Wumpus!',
+    'In this game you are hunting the wiley (and smelly) wumpus.',
+    'It is in one of the twenty rooms in this cave system.',
+    'In two other rooms exist deep pits where you would fall to your death',
+    'You can detect the presence of a cave by the breeze is causes in nearby rooms.',
+    'In two other rooms reside bats, which if disturbed, will carry you off to another room.',
+    'In order to kill the wumpus you must shoot it with one of your very crooked arrows.',
+    'The arrows can be shot through up to 5 rooms, but that will wake the wumpus and it might move.',
+    'There are many ways to die in the caves.  You can fall to your death, shoot yourself,',
+    'run out of arrows, or be eaten by the wumpus.',
+    'To move to a room say Move or Go followed by the room number.',
+    'To shoot your arrows say Fire or Shoot followed by a list of room numbers.',
+    'Now let\'s hunt the wumpus!',
+]
+
+    
+
 def handle(text, mic, profile):
     """
     plays Hunt the Wumpus
@@ -72,6 +90,11 @@ def handle(text, mic, profile):
     mic.say('Let\'s Hunt the Wumpus!')
 
     game = wumpus.Wumpus()
+
+    answer = ask_y_n('Would you like instructions?')
+    if answer == 'YES':
+        for line in instructions:
+            output(line)
 
     output(game.look())
     while not game.game_over:
