@@ -55,7 +55,9 @@ def handle(text, mic, profile):
     """
 
     def input():
-        heard = mic.activeListen().upper()
+        heard = None
+        while not heard:
+            heard = mic.activeListen().upper()
         parsed_words = []
         for word in heard.split(' '):
             if word in NUMBERS:
@@ -99,8 +101,6 @@ def handle(text, mic, profile):
     output(game.look())
     while not game.game_over:
         commands = input()
-        # if 'LOOK' in commands:
-        #    output(game.look())
         if 'MOVE' in commands or 'GO' in commands:
             if type(commands[-1]) is int:
                 output(game.move(commands[-1]))
@@ -114,6 +114,8 @@ def handle(text, mic, profile):
                 output(game.look())
             else:
                 output('Couldn\'t make out where to shoot')
+        elif 'LOOK' in commands:
+            output(game.look())
         else:
             output('what?')
 
