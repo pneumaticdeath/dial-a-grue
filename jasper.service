@@ -1,0 +1,13 @@
+[Unit]
+Description=Dial-a-Grue jasper instance
+After=network.target auditd.service
+
+[Service]
+EnvironmentFile=-/etc/default/jasper
+ExecStart=/home/chip/jasper/jasper.sh
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=jasper.service
