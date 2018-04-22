@@ -97,11 +97,12 @@ def handle(text, mic, profile):
             mic.say('Let\'s try that again!')
 
         print('Feed?')
-        people_fed = get_number('How many people do you want to feed?', mic, game.population)
+        people_fed = get_number('How many of your {0} people do you want to feed?'.format(game.population), mic, game.population)
         feed = people_fed*game.food_per_person
 
         print('Plant?')
-        plant = get_number('How many acres would you like to plant?', mic, min(game.acreage, game.population*game.acres_per_person))
+        land_plantable = min(game.acreage, game.population*game.acres_per_person)
+        plant = get_number('How many of your {0} acres would you like to plant?'.format(land_plantable), mic, land_plantable)
 
         print('Real estate?')
         land = int((game.grain-feed-plant*game.seed_per_acre)/game.land_price)
@@ -121,6 +122,7 @@ def handle(text, mic, profile):
                 land = land_bought
 
         print('Sanity Check...')
+        # recalculate based on purchase or sale of land
         land_plantable = min(game.acreage + land, game.population*game.acres_per_person)
         if plant > land_plantable:
             print('Not enough land..')
