@@ -211,15 +211,16 @@ def read_answer(valid, input_func=read_line, output_func=myprint):
 
 ordinal = {1: 'first', 2: 'second', 3: 'third', 4: 'fourth'}
 
-def play(input_func=read_line, output_func=myprint):
+def play(input_func=read_line, output_func=myprint, min_players=1, max_players=7):
     '''
 plays a game of blackjack with up to 10 players.
 Pass input_func and output_func with appropriate vectors for other implementations.
     '''
 
-    output_func('How many players?')
-    n = read_int(low_limit=1, high_limit=10, input_func=input_func, output_func=output_func)
+    output_func('How many players? (between {0} and {1})'.format(min_players, max_players))
+    n = read_int(low_limit=min_players, high_limit=max_players, input_func=input_func, output_func=output_func)
     dealer = Dealer(n)
+    output_func('Starting with {0} {1}.'.format(n, 'player' if n == 1 else 'players'))
     output_func('Everybody starts with ${0}.  Standard bet is ${1}'.format(dealer.initial_balance, dealer.min_bet))
 
     keep_playing = 'yes'
@@ -385,4 +386,4 @@ Pass input_func and output_func with appropriate vectors for other implementatio
 
 
 if __name__ == '__main__':
-    play()
+    play(max_players=10)
