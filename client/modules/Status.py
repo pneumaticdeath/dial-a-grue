@@ -4,13 +4,14 @@ import re
 import subprocess
 
 WORDS = [ 'CHECK', 'STATUS'  ]
+
 INSTANCE_WORDS = WORDS
 
 PRIORITY = 50
 
 def handle(text, mic, profile):
     """
-    Check battery status
+    Check the battery status
     """
 
     def output(string):
@@ -46,7 +47,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "Check Status"
+    "Check status"
     """
 
     return bool(re.search(r'\bstatus\b', text, re.IGNORECASE))

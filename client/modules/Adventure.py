@@ -231,7 +231,7 @@ def textmunge(text):
 
 def handle(text, mic, profile):
     """
-    Actually plays the game
+    Play Collosal Cave Adventure
     """
 
     mic.say('Lets play a game of adventure')
@@ -247,7 +247,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "PLAY ADVENTURE"
+    "Play adventure"
     """
 
     return bool(re.search(r'\bplay adventure\b', text, re.IGNORECASE))

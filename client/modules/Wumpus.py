@@ -51,7 +51,7 @@ instructions = [
 
 def handle(text, mic, profile):
     """
-    plays Hunt the Wumpus
+    Hunt the smelly Wumpus
     """
 
     def input():
@@ -131,7 +131,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "Hunt the WUMPUS"
+    "Hunt the Wumpus"
     """
 
     return bool(re.search(r'\bwumpus\b', text, re.IGNORECASE))

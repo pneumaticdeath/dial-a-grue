@@ -25,7 +25,7 @@ def ask_yes_no(prompt, mic):
 
 def handle(text, mic, profile):
     """
-    Repeats the user's input
+    Play guess the animal
     """
      
     logging.info('Starting the Animal module')
@@ -68,7 +68,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "Play Animal"
+    "Play Animal"
     """
 
     return bool(re.search(r'\banimal\b', text, re.IGNORECASE))

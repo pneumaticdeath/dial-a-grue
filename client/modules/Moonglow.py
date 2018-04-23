@@ -103,7 +103,7 @@ def textmunge(text):
 
 def handle(text, mic, profile):
     """
-    Actually plays the game
+    Play a game of Moonglow
     """
 
     mic.say('Lets play a game of moon glow')
@@ -119,7 +119,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "PLAY MOONGLOW"
+    "Play moonglow"
     """
 
     return bool(re.search(r'\bplay moon', text, re.IGNORECASE))

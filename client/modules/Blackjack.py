@@ -12,7 +12,7 @@ PRIORITY = 50
 
 def handle(text, mic, profile):
     """
-    plays Blackjack
+    Play Blackjack
     """
 
     def in_func():
@@ -39,7 +39,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "Play Blackjack"
+    "Play Blackjack"
     """
 
     return bool(re.search(r'\bblackjack\b', text, re.IGNORECASE))

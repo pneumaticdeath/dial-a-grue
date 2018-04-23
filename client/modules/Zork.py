@@ -761,7 +761,7 @@ listen_handlers = [
 
 def handle(text, mic, profile):
     """
-    Actually plays the game
+    Play a game of zork
     """
 
     mic.say('Lets play a game of zork')
@@ -777,7 +777,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "PLAY ZORK"
+    "Play Zork"
     """
 
     # return bool(re.search(r'\bplay zork\b', text, re.IGNORECASE))

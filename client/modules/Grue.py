@@ -16,10 +16,7 @@ PRIORITY = 0
 logger = logging.getLogger(__name__)
 
 def handle(text, mic, profile):
-    """
-        Easter Egg
-    """
-
+    # Easter egg
     phone = mic.phone
     mp3file = os.path.join(jasperpath.DATA_PATH, 'pitch_dark.mp3')
     pid, fd = pty.fork()

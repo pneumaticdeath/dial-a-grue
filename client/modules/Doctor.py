@@ -41,7 +41,7 @@ PRIORITY = 50
 
 def handle(text, mic, profile):
     """
-    The doctor is in!
+    Be psychoanalyzed
     """
     therapist = eliza()
      
@@ -61,7 +61,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to any phrase with the word "DOCTOR"
+    "Is the doctor in?"
     """
 
     return bool(re.search(r'\bdoctor\b', text, re.IGNORECASE))

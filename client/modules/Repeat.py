@@ -6,10 +6,12 @@ import time
 from client import jasperpath
 
 WORDS = [ 'REPEAT', 'AFTER', 'ME' ]
+
 INSTANCE_WORDS = [
         'QUIT',
         'HELLO',
     ]
+
 INSTANCE_WORDS.extend(WORDS)
 locations = [jasperpath.PLUGIN_PATH]
 for finder, name, ispkg in pkgutil.walk_packages(locations):
@@ -31,7 +33,7 @@ PRIORITY = 50
 
 def handle(text, mic, profile):
     """
-    Repeats the user's input
+    have what you say repeated
     """
      
     logging.info('Starting the Repeat module')
@@ -51,7 +53,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "REPEAT AFTER ME"
+    "Repeat after me"
     """
 
     return bool(re.search(r'\brepeat\b', text, re.IGNORECASE))

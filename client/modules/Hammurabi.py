@@ -67,7 +67,7 @@ def get_yes_no(prompt, mic):
 
 def handle(text, mic, profile):
     """
-    Plays a game of Hammurabi
+    Rule Babylon like Hammurabi
     """
      
     logging.info('Starting the Hammurabi module')
@@ -145,7 +145,7 @@ def handle(text, mic, profile):
 
 def isValid(text):
     """
-    Responds to the phrase "Play Hammurabi"
+    "Play hammurabi"
     """
 
     return bool(re.search(r'\bhammurabi\b', text, re.IGNORECASE))
