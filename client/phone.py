@@ -26,6 +26,12 @@ class Phone(object):
     def ptt_pressed(self):
         return self._ptt.is_closed()
 
+class Hangup(Exception):
+    pass
+
+def get_phone():
+    return Phone.get_phone()
+
 if __name__ == '__main__':
     phone = Phone.get_phone()
     if phone.off_hook():

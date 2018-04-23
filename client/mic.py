@@ -14,8 +14,8 @@ import subprocess
 import threading
 import time
 
-from phone import Phone
-# from local_phone import Phone
+import phone
+# import local_phone as phone
 
 
 class Mic:
@@ -38,7 +38,7 @@ class Mic:
         self.speaker = speaker
         self.passive_stt_engine = passive_stt_engine
         self.active_stt_engine = active_stt_engine
-        self.phone = Phone.get_phone()
+        self.phone = phone.get_phone()
         self._logger.info("Initializing PyAudio. ALSA/Jack error messages " +
                           "that pop up during this process are normal and " +
                           "can usually be safely ignored.")
@@ -231,6 +231,8 @@ class Mic:
         while not self.phone.ptt_pressed() and wait_count < 120:
             wait_count += 1
             time.sleep(0.1)
+            if self.phone.on_hook():
+                raise phone.Hangup
 
         if not self.phone.ptt_pressed():
             return ['',]

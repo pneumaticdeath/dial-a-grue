@@ -86,6 +86,8 @@ class Brain(object):
                         else:
                             mic = self.mic
                         module.handle(text, mic, self.profile)
+                    except phone.Hangup:
+                        self._logger.info('Module got hangup')
                     except Exception:
                         self._logger.error('Failed to execute module',
                                            exc_info=True)
