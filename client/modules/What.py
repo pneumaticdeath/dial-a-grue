@@ -7,7 +7,7 @@ from client import jasperpath
 WORDS = [ 'WHAT', 'CAN', 'YOU', 'DO' ]
 INSTANCE_WORDS = WORDS
 
-PRIORITY = 0
+PRIORITY = 100
 
 def handle(text, mic, profile):
     mic.say('What can I do?!?')
