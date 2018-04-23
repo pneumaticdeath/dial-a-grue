@@ -3,7 +3,7 @@ import logging
 import time
 # from notifier import Notifier
 from brain import Brain
-from phone import Phone
+import phone
 
 
 class Conversation(object):
@@ -36,7 +36,10 @@ class Conversation(object):
                     time.sleep(0.1)
                     continue
 
-                input = self.mic.activeListenToAllOptions()
+                try:
+                    input = self.mic.activeListenToAllOptions()
+                except phone.Hangup:
+                    pass
 
                 if input:
                     self.brain.query(input)

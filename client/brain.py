@@ -3,6 +3,7 @@ import logging
 import pkgutil
 import jasperpath
 import client.mic
+import phone
 
 
 class Brain(object):
