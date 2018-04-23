@@ -5,7 +5,7 @@ After=network.target auditd.service
 [Service]
 EnvironmentFile=-/etc/default/jasper
 ExecStart=/home/chip/jasper/jasper.sh
-KillMode=process
+ExecStop=/usr/bin/pkill -f jasper.py
 Restart=on-failure
 
 [Install]
