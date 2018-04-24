@@ -232,7 +232,7 @@ class Mic:
             wait_count += 1
             time.sleep(0.1)
             if self.phone.on_hook():
-                raise phone.Hangup
+                raise phone.Hangup()
 
         if not self.phone.ptt_pressed():
             return ['',]
@@ -313,6 +313,8 @@ class Mic:
         self.lock.acquire()
         self.speaker.say(phrase)
         self.lock.release()
+        if self.phone.on_hook():
+            raise phone.Hangup()
 
 def resample(filename, rate):
     ofd, ofn = tempfile.mkstemp(suffix='.wav')

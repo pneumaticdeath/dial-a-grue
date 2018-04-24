@@ -27,8 +27,11 @@ class Conversation(object):
             while self.phone.on_hook():
                 time.sleep(1)
 
-            self.mic.say("How can I be of service? Please hold down the "
-                         "PTT button to talk.")
+            try:
+                self.mic.say("How can I be of service? Please hold down the "
+                             "PTT button to talk.")
+            except phone.Hangup:
+                print('Got HUP')
 
             while self.phone.off_hook():
 
@@ -39,7 +42,7 @@ class Conversation(object):
                 try:
                     input = self.mic.activeListenToAllOptions()
                 except phone.Hangup:
-                    pass
+                    print('Got HUP')
 
                 if input:
                     self.brain.query(input)
