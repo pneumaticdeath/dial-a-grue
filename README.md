@@ -1,35 +1,31 @@
-jasper-client
+Dial-a-Grue
 =============
 
-[![Build Status](https://travis-ci.org/jasperproject/jasper-client.svg?branch=master)](https://travis-ci.org/jasperproject/jasper-client) [![Coverage Status](https://img.shields.io/coveralls/jasperproject/jasper-client.svg)](https://coveralls.io/r/jasperproject/jasper-client) [![Codacy Badge](https://www.codacy.com/project/badge/3a50e1bc2261419894d76b7e2c1ac694)](https://www.codacy.com/app/jasperproject/jasper-client)
+The code to drive the Dial-a-Grue project.  It was derived from the Jasper voice computing platform. Jasper is an open source platform for developing always-on, voice-controlled applications.
 
-Client code for the Jasper voice computing platform. Jasper is an open source platform for developing always-on, voice-controlled applications.
+Learn more about Dial-a-Grue at [dial-a-grue.com](https://dial-a-grue.com/gory/), my build blog.
 
-Learn more at [jasperproject.github.io](http://jasperproject.github.io/), where we have assembly and installation instructions, as well as extensive documentation. For the relevant disk image, please visit [SourceForge](http://sourceforge.net/projects/jasperproject/).
+Learn more about the jasper project at [jasperproject.github.io](http://jasperproject.github.io/), where we have assembly and installation instructions, as well as extensive documentation. For the relevant disk image, please visit [SourceForge](http://sourceforge.net/projects/jasperproject/).
 
 ## Contributing
 
-If you'd like to contribute to Jasper, please read through our **[Contributing Guide](CONTRIBUTING.md)**, which outlines the philosophies to preserve, tests to run, and more. We highly recommend reading through this guide before writing any code.
+If you'd like to contribute to Dial-a-Grue, you can clone and send me PR's.  Keep in mind that currently the code is tightly coupled with the hardware is runs on, but as I build more that will likely change.
 
-The Contributing Guide also outlines some prospective features and areas that could use love. However, for a more thorough overview of Jasper's direction and goals, check out the **[Product Roadmap](https://github.com/jasperproject/jasper-client/wiki/Roadmap)**.
+If you'd like to contribute to Jasper, please read through Their **[Contributing Guide](https://github.com/jasperproject/jasper-client/blob/master/CONTRIBUTING.md)**, which outlines the philosophies to preserve, tests to run, and more. They highly recommend reading through this guide before writing any code.
 
-Thanks in advance for any and all work you contribute to Jasper!
+## Support & Contact
 
-## Support
+If you run into an issue or require technical support, please first look through the closed and open **[GitHub Issues](https://github.com/pneumaticdeath/jasper-client/issues)**, as you may find a solution there. You can also raise new issues.
 
-If you run into an issue or require technical support, please first look through the closed and open **[GitHub Issues](https://github.com/jasperproject/jasper-client/issues)**, as you may find a solution there (or some useful advice, at least).
-
-If you're still having trouble, the next place to look would be the new **[Google Group support forum](https://groups.google.com/forum/#!forum/jasper-support-forum)** or join the `#jasper` IRC channel on **chat.freenode.net**. If your problem remains unsolved, feel free to create a post there describing the issue, the steps you've taken to debug it, etc.
-
-## Contact
-
-Jasper's core developers are [Shubhro Saha](http://www.shubhro.com), [Charles Marsh](http://www.crmarsh.com) and [Jan Holthuis](http://homepage.ruhr-uni-bochum.de/Jan.Holthuis/).  All of them can be reached by email at [saha@princeton.edu](mailto:saha@princeton.edu), [crmarsh@princeton.edu](mailto:crmarsh@princeton.edu) and [jan.holthuis@ruhr-uni-bochum.de](mailto:jan.holthuis@ruhr-uni-bochum.de) respectively. However, for technical support and other problems, please go through the channels mentioned above.
-
-For a complete list of code contributors, please see [AUTHORS.md](AUTHORS.md).
+If you're still having trouble, the next step is to [email me](mailto:dialagrue@gmail.com).
 
 ## License
 
+*Copyright (c) 2016-2018, Mitch Patenaude*
+
 *Copyright (c) 2014-2015, Charles Marsh, Shubhro Saha & Jan Holthuis. All rights reserved.*
+
+Dial-a-Grue specific code and modifications is covered uner the MIT license.  Other files, just as the z-code for various games, is owned by their respeictive authors.
 
 Jasper is covered by the MIT license, a permissive free software license that lets you do anything you want with the source code, as long as you provide back attribution and ["don't hold \[us\] liable"](http://choosealicense.com). For the full license text see the [LICENSE.md](LICENSE.md) file.
 
