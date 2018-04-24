@@ -231,7 +231,7 @@ def textmunge(text):
 
 def handle(text, mic, profile):
     """
-    Play Collosal Cave Adventure
+    Play Colossal Cave Adventure
     """
 
     mic.say('Lets play a game of adventure')
