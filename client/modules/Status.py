@@ -7,7 +7,7 @@ WORDS = [ 'CHECK', 'STATUS'  ]
 
 INSTANCE_WORDS = WORDS
 
-PRIORITY = 50
+PRIORITY = 101
 
 def handle(text, mic, profile):
     """
@@ -18,7 +18,7 @@ def handle(text, mic, profile):
         print(string)
         mic.say(string)
 
-    output('Checking battery status')
+    output('Checking phone status')
 
     status_output = subprocess.check_output('/usr/bin/battery.sh')
     status = {}
