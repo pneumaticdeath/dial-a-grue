@@ -36,7 +36,7 @@ instructions = [
     'In this game you are hunting the wiley (and smelly) wumpus.',
     'It is in one of the twenty rooms in this cave system.',
     'In two other rooms exist deep pits where you would fall to your death',
-    'You can detect the presence of a cave by the breeze is causes in nearby rooms.',
+    'You can detect the presence of a pit by the breeze is causes in nearby rooms.',
     'In two other rooms reside bats, which if disturbed, will carry you off to another room.',
     'In order to kill the wumpus you must shoot it with one of your very crooked arrows.',
     'The arrows can be shot through up to 5 rooms, but that will wake the wumpus and it might move.',
