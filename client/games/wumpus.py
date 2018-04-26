@@ -6,6 +6,7 @@
 
 import random
 import sys
+from utils import mk_print_list
 
 dodecahedron_map = {
     1: (2, 3, 11),
@@ -35,16 +36,6 @@ def test_adjancency(test_map):
     for room, neighbors in test_map.items():
         for adj_room in neighbors:
             assert room in test_map[adj_room], '{room} connects to {adj_room} but not vice versea'.format(room=room, adj_room=adj_room)
-
-def mk_print_list(l, conjunction='and'):
-    '''Makes a list of elements with of the form "a, b, c <conjucntion> d"'''
-
-    if len(l) == 0:
-        return ''
-    if len(l) == 1:
-        return str(l[0])
-    else:
-        return '{0} {1} {2}'.format(', '.join([str(w) for w in l[:-1]]), conjunction, l[-1])
 
 class Wumpus(object):
     def __init__(self, map=dodecahedron_map):
