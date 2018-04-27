@@ -25,7 +25,7 @@ def handle(text, mic, profile):
     for kvp in status_output.split('\n'):
         if kvp.strip():
             key, value = [s.strip() for s in kvp.split('=')]
-            print('{0}={1}'.format(key,value))
+            # print('{0}={1}'.format(key,value))
             status[key] = value
 
     if status.get('BAT_EXIST') == '1':
