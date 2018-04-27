@@ -1,6 +1,15 @@
 #!/usr/bin/env python
+# vim: sw=4 ai expandtab
 
 from gpio_switch import Switch
+import os
+
+if 'ntc' in os.uname()[2]:
+    PTT_PIN='XIO-P5'
+    HOOK_PIN='XIO-P4'
+else:
+    PTT_PIN=22
+    HOOK_PIN=23
 
 class Phone(object):
     _PHONE = None
@@ -12,7 +21,7 @@ class Phone(object):
 
         return cls._PHONE
 
-    def __init__(self, ptt_pin="XIO-P5", hook_pin="XIO-P4"):
+    def __init__(self, ptt_pin=PTT_PIN, hook_pin=HOOK_PIN):
         self._ptt = Switch(ptt_pin)
         self._hook = Switch(hook_pin)
 

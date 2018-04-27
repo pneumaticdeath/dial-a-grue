@@ -1,8 +1,15 @@
 #!/usr/bin/python
+# vim: sw=4 ai expandtab
 
 import atexit
-from CHIP_IO import GPIO
+import os
 import time
+
+if 'ntc' in os.uname()[2]:
+    from CHIP_IO import GPIO
+else:
+    from RPi import GPIO
+    GPIO.setmode(GPIO.BCM)
 
 atexit.register(GPIO.cleanup)
 
@@ -14,7 +21,7 @@ class Switch(object):
 
         try:
             # TODO(mitch): figure out why this throws exceptions sometimes
-            GPIO.setup(self.pin, GPIO.IN)
+            GPIO.setup(self.pin, GPIO.IN, GPIO.PUD_UP)
         except Exception as e:
             print "Got exception %s when trying to initialize %s" % (str(e), self.pin)
             pass
