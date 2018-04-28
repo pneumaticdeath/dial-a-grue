@@ -25,7 +25,7 @@ If you're still having trouble, the next step is to [email me](mailto:dialagrue@
 
 *Copyright (c) 2014-2015, Charles Marsh, Shubhro Saha & Jan Holthuis. All rights reserved.*
 
-Dial-a-Grue specific code and modifications are released under the MIT license.  Other files, just as the z-code for various games, is owned by their respeictive authors.
+Dial-a-Grue specific code and modifications are released under the MIT license.  Other files, just as the z-code for various games, are owned by their respeictive authors.
 
 Jasper is covered by the MIT license, a permissive free software license that lets you do anything you want with the source code, as long as you provide back attribution and ["don't hold \[us\] liable"](http://choosealicense.com). For the full license text see the [LICENSE.md](LICENSE.md) file.
 
