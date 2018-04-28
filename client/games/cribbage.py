@@ -37,19 +37,19 @@ def sublists(input_list, size):
 _n_kind_score = {2: 2, 3: 6, 4: 12}
 
 card_names = {
-    'ace': 'aces', 
-    '2': 'deuces',
-    '3': 'threes',
-    '4': 'fours',
-    '5': 'fives',
-    '6': 'sixes',
-    '7': 'sevens',
-    '8': 'eights',
-    '9': 'nines',
-    '10': 'tens',
-    'jack': 'jacks',
-    'queen': 'queens',
-    'king': 'kings',
+    'ace': 'ace',
+    '2': 'deuce',
+    '3': 'three',
+    '4': 'four',
+    '5': 'five',
+    '6': 'sixe',
+    '7': 'seven',
+    '8': 'eight',
+    '9': 'nine',
+    '10': 'ten',
+    'jack': 'jack',
+    'queen': 'queen',
+    'king': 'king',
 }
 
 def is_run(cardlist):
@@ -75,6 +75,18 @@ def sum_cards(cardlist):
 def count_hand(hand, crib_card, is_crib=False):
     msgs = []
     count = 0
+
+    # Check for 15s
+    num_15s = 0
+    for sublist_size in range(5, 1, -1):
+        for sublist in sublists([crib_card] + hand, sublist_size):
+            if sum_cards(sublist) == 15:
+                num_15s += 1
+    if num_15s > 0:
+        count += 2*num_15s
+        msgs.append(('{} fifteen{}'.format(num_15s, '' if num_15s == 1 else 's'), None, 2*num_15s))
+
+    # Check for flush
     suits = set()
     for card in hand:
         suits.add(card.suit)
@@ -100,9 +112,9 @@ def count_hand(hand, crib_card, is_crib=False):
                 score =  _n_kind_score[sublist_size]
                 count += score
                 if sublist_size == 2:
-                    msgs.append(('pair', card_names[str(rankset.pop())], 2))
+                    msgs.append(('pair', card_names[str(rankset.pop())] + 's', 2))
                 else:
-                    msgs.append(('{} of a kind'.format(sublist_size), card_names[str(rankset.pop())], score))
+                    msgs.append(('{} of a kind'.format(sublist_size), card_names[str(rankset.pop())] + 's', score))
                     # Now prevent subsets 
                     for size_prime in range(sublist_size-1, 1, -1):
                         for sublist_prime in sublists(sublist, size_prime):
@@ -118,21 +130,11 @@ def count_hand(hand, crib_card, is_crib=False):
                 continue
             if is_run(sublist):
                 count += sublist_size
-                msgs.append(('run of {}'.format(sublist_size), '{} to {}'.format(sublist[0].rank,sublist[-1].rank), sublist_size))
+                msgs.append(('run of {}'.format(sublist_size), '{} to {}'.format(card_names[sublist[0].rank],card_names[sublist[-1].rank]), sublist_size))
                 if sublist_size > 3:
                     for x in range(3,sublist_size):
                         for y in range(sublist_size-x+1):
                             run_exclusions.add(tuple(sublist[y:y+x]))
-
-    # Check for 15s
-    num_15s = 0
-    for sublist_size in range(5, 1, -1):
-        for sublist in sublists([crib_card] + hand, sublist_size):
-            if sum_cards(sublist) == 15:
-                num_15s += 1
-    if num_15s > 0:
-        count += 2*num_15s
-        msgs.append(('{} fifteens'.format(num_15s), None, 2*num_15s))
 
     # Check for nobs
     if crib_card.rank != 'jack':
