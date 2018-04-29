@@ -178,16 +178,21 @@ class Cribbage(object):
         return player_card, ai_card
 
     def dealHands(self):
+        self.player.hand = Hand()
+        self.ai.hand = Hand()
+        self.crib = Hand()
+        self.crib_card = None
         self.deck.shuffle()
         for _ in xrange(6):
             self.player.hand.append(self.deck.deal())
             self.ai.hand.append(self.deck.deal())
-        self.crib = Hand()
-        self.crib_card = None
 
     def pickCribCard(self):
         self.crib_card = self.deck.deal()
         return self.crib_card
+
+    def switchCrib(self):
+        self.players_crib = not self.players_crib
 
 def pick_best_discards(hand, tmp_crib, discards=None, best_score=-1):
     for card1, card2 in sublists(hand, 2):
@@ -219,45 +224,58 @@ if __name__ == '__main__':
 
     player_card, ai_card = game.chooseFirstCrib()
     print('Player cuts a {} and computer cuts a {}'.format(player_card, ai_card))
-    print('It\'s {}\'s first crib.'.format('player' if game.players_crib else 'computer'))
 
-    game.dealHands()
-    print('You got {:s}'.format(game.player.hand))
+    hand_num = 0
+    while game.player.score < 121 and game.ai.score < 121:
+        hand_num += 1
+        print('')
+        print('Hand #{}'.format(hand_num))
 
-    # player_discards = random.sample(game.player.hand, 2)
-    player_discards = pick_best_discards(game.player.hand, game.deck.randomCut())
+        print('It\'s {}\'s crib.'.format('player' if game.players_crib else 'computer'))
+        game.dealHands()
+        print('You got {:s}'.format(game.player.hand))
 
-    ai_discards = pick_best_discards(game.ai.hand, game.deck.randomCut())
+        # player_discards = random.sample(game.player.hand, 2)
+        player_discards = pick_best_discards(game.player.hand, game.deck.randomCut())
 
-    print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
-    for card in player_discards:
-        game.crib.append(game.player.hand.discard(card))
-    print('Leaving you with {}'.format(game.player.hand))
+        ai_discards = pick_best_discards(game.ai.hand, game.deck.randomCut())
 
-    for card in ai_discards:
-        game.crib.append(game.ai.hand.discard(card))
+        print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
+        for card in player_discards:
+            game.crib.append(game.player.hand.discard(card))
+        print('Leaving you with {}'.format(game.player.hand))
 
-    game.pickCribCard()
+        for card in ai_discards:
+            game.crib.append(game.ai.hand.discard(card))
 
-    print('crib card: {:s}'.format(game.crib_card))
-    print('')
-    print('Player hand:')
-    player_score = dump(game.player.hand, game.crib_card, False)
-    print('')
-    print('Computer hand:')
-    ai_score = dump(game.ai.hand, game.crib_card, False)
-    print('')
-    print('Crib:')
-    crib_score = dump(game.crib, game.crib_card, True)
+        game.pickCribCard()
 
-    if game.players_crib:
-        player_score += crib_score
-    else:
-        ai_score += crib_score
+        print('crib card: {:s}'.format(game.crib_card))
+        print('')
+        print('Player hand:')
+        player_score = dump(game.player.hand, game.crib_card, False)
+        print('')
+        print('Computer hand:')
+        ai_score = dump(game.ai.hand, game.crib_card, False)
+        print('')
+        print('Crib:')
+        crib_score = dump(game.crib, game.crib_card, True)
 
-    if player_score == ai_score:
+        if game.players_crib:
+            player_score += crib_score
+        else:
+            ai_score += crib_score
+
+        game.player.score += player_score
+        game.ai.score += ai_score
+
+        print('scores: player {} computer {}'.format(game.player.score, game.ai.score))
+
+        game.switchCrib()
+
+    if game.player.score == game.ai.score:
         print('Tie')
-    elif player_score > ai_score:
+    elif game.player.score > game.ai.score:
         print('Player wins')
     else:
         print('Computer wins')
