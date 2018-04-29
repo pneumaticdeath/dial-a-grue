@@ -194,8 +194,11 @@ class Cribbage(object):
     def switchCrib(self):
         self.players_crib = not self.players_crib
 
-def pick_best_discards(hand, deck, discards=None, best_score=-1, sample_size=10):
-    sample_crib_cards = random.sample(deck.cards[deck.index:], sample_size)
+def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_size=10, full_deck=cards.Deck()):
+    deck = filter(lambda x: x not in hand, full_deck.cards)
+    sample_crib_cards = random.sample(deck, sample_size+2)
+    crib_extras = sample_crib_cards[sample_size:]
+    sample_cirb_cards = sample_crib_cards[:sample_size]
     for card1, card2 in sublists(hand, 2):
         new_score=0
         for tmp_crib in sample_crib_cards:
@@ -203,7 +206,11 @@ def pick_best_discards(hand, deck, discards=None, best_score=-1, sample_size=10)
             tmp_hand.discard(card1)
             tmp_hand.discard(card2)
             score, msgs = count_hand(tmp_hand, tmp_crib, False)
-            new_score += score
+            crib_score, msgs = count_hand(Hand([card1, card2] + crib_extras), tmp_crib, True)
+            if my_crib:
+                new_score += score + crib_score
+            else:
+                new_score += score - crib_score
         if new_score > best_score:
             discards = [card1, card2]
             best_score = new_score
@@ -240,9 +247,9 @@ if __name__ == '__main__':
         print('You got {:s}'.format(game.player.hand))
 
         # player_discards = random.sample(game.player.hand, 2)
-        player_discards = pick_best_discards(game.player.hand, game.deck, sample_size=5)
+        player_discards = pick_best_discards(game.player.hand, game.players_crib)
 
-        ai_discards = pick_best_discards(game.ai.hand, game.deck)
+        ai_discards = pick_best_discards(game.ai.hand, not game.players_crib)
 
         print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
         for card in player_discards:
