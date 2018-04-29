@@ -53,7 +53,7 @@ card_names = {
     '3': 'three',
     '4': 'four',
     '5': 'five',
-    '6': 'sixe',
+    '6': 'six',
     '7': 'seven',
     '8': 'eight',
     '9': 'nine',
@@ -194,12 +194,16 @@ class Cribbage(object):
     def switchCrib(self):
         self.players_crib = not self.players_crib
 
-def pick_best_discards(hand, tmp_crib, discards=None, best_score=-1):
+def pick_best_discards(hand, deck, discards=None, best_score=-1, sample_size=10):
+    sample_crib_cards = random.sample(deck.cards[deck.index:], sample_size)
     for card1, card2 in sublists(hand, 2):
-        tmp_hand = Hand(hand[:])
-        tmp_hand.discard(card1)
-        tmp_hand.discard(card2)
-        new_score = count_hand(tmp_hand, tmp_crib, False)
+        new_score=0
+        for tmp_crib in sample_crib_cards:
+            tmp_hand = Hand(hand[:])
+            tmp_hand.discard(card1)
+            tmp_hand.discard(card2)
+            score, msgs = count_hand(tmp_hand, tmp_crib, False)
+            new_score += score
         if new_score > best_score:
             discards = [card1, card2]
             best_score = new_score
@@ -236,9 +240,9 @@ if __name__ == '__main__':
         print('You got {:s}'.format(game.player.hand))
 
         # player_discards = random.sample(game.player.hand, 2)
-        player_discards = pick_best_discards(game.player.hand, game.deck.randomCut())
+        player_discards = pick_best_discards(game.player.hand, game.deck, sample_size=5)
 
-        ai_discards = pick_best_discards(game.ai.hand, game.deck.randomCut())
+        ai_discards = pick_best_discards(game.ai.hand, game.deck)
 
         print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
         for card in player_discards:
@@ -252,11 +256,18 @@ if __name__ == '__main__':
 
         print('crib card: {:s}'.format(game.crib_card))
         print('')
-        print('Player hand:')
-        player_score = dump(game.player.hand, game.crib_card, False)
-        print('')
-        print('Computer hand:')
-        ai_score = dump(game.ai.hand, game.crib_card, False)
+        if game.players_crib:
+            print('Computer hand:')
+            ai_score = dump(game.ai.hand, game.crib_card, False)
+            print('')
+            print('Player hand:')
+            player_score = dump(game.player.hand, game.crib_card, False)
+        else:
+            print('Player hand:')
+            player_score = dump(game.player.hand, game.crib_card, False)
+            print('')
+            print('Computer hand:')
+            ai_score = dump(game.ai.hand, game.crib_card, False)
         print('')
         print('Crib:')
         crib_score = dump(game.crib, game.crib_card, True)
@@ -266,9 +277,16 @@ if __name__ == '__main__':
         else:
             ai_score += crib_score
 
-        game.player.score += player_score
-        game.ai.score += ai_score
+        if game.players_crib:
+            game.ai.score += ai_score
+            if game.ai.score < 121:
+                game.player.score += player_score
+        else:
+            game.player.score += player_score
+            if game.player.score < 121:
+                game.ai.score += ai_score
 
+        print('')
         print('scores: player {} computer {}'.format(game.player.score, game.ai.score))
 
         game.switchCrib()
@@ -277,5 +295,13 @@ if __name__ == '__main__':
         print('Tie')
     elif game.player.score > game.ai.score:
         print('Player wins')
+        if game.ai.score < 61:
+            print('Double Skunk!')
+        elif game.ai.score < 91:
+            print('Skunk!')
     else:
         print('Computer wins')
+        if game.player.score < 61:
+            print('Double Skunk!')
+        elif game.player.score < 91:
+            print('Skunk!')
