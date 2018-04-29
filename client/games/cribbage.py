@@ -212,6 +212,7 @@ if __name__ == '__main__':
                 print('{} of {} for {}'.format(x, y, z))
             else:
                 print('{} for {}'.format(x, z))
+        return s
 
 
     game = Cribbage()
@@ -241,11 +242,22 @@ if __name__ == '__main__':
     print('crib card: {:s}'.format(game.crib_card))
     print('')
     print('Player hand:')
-    dump(game.player.hand, game.crib_card, False)
+    player_score = dump(game.player.hand, game.crib_card, False)
     print('')
     print('Computer hand:')
-    dump(game.ai.hand, game.crib_card, False)
+    ai_score = dump(game.ai.hand, game.crib_card, False)
     print('')
     print('Crib:')
-    dump(game.crib, game.crib_card, True)
+    crib_score = dump(game.crib, game.crib_card, True)
 
+    if game.players_crib:
+        player_score += crib_score
+    else:
+        ai_score += crib_score
+
+    if player_score == ai_score:
+        print('Tie')
+    elif player_score > ai_score:
+        print('Player wins')
+    else:
+        print('Computer wins')
