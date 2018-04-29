@@ -38,6 +38,9 @@ class Card(object):
     def __repr__(self):
         return '{0}({1}, {2})'.format(self.__class__.__name__, self._rank, repr(self.suit))
 
+    def __eq__(self, other):
+        return self._rank == other._rank and self.suit == other.suit
+
 class Deck(object):
     def __init__(self):
         self.cards = []
@@ -57,10 +60,12 @@ class Deck(object):
         self.index += 1
         return card
 
+    def randomCut(self):
+        return random.choice(self.cards[self.index:])
+
     def cardsLeft(self):
         return len(self.cards) - self.index
 
     def __iter__(self):
         for card in self.cards:
             yield card
-
