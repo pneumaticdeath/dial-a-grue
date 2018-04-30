@@ -221,6 +221,14 @@ class Cribbage(object):
     def switchCrib(self):
         self.players_crib = not self.players_crib
 
+    @property
+    def crib_player(self):
+        return self.player if self.players_crib else self.ai
+
+    @property
+    def noncrib_player(self):
+        return self.ai if self.players_crib else self.player
+
     def startPegging(self):
         self.resetPegging()
         self.player.startPegging()
@@ -323,13 +331,7 @@ if __name__ == '__main__':
             print('')
             print('Hand #{}'.format(hand_num))
 
-            if game.players_crib:
-                crib_player = game.player
-                noncrib_player = game.ai
-            else:
-                crib_player = game.ai
-                noncrib_player = game.player
-            print('It\'s {}\'s crib.'.format(crib_player.name))
+            print('It\'s {}\'s crib.'.format(game.crib_player.name))
 
             game.dealHands()
             game.player.hand.sortByRank()
@@ -352,8 +354,8 @@ if __name__ == '__main__':
             game.pickCribCard()
             print('crib card: {:s}'.format(game.crib_card))
             if game.crib_card.rank == 'jack':
-                crib_player.scores(2)
-                print('{} scores 2 for his heels'.format(crib_player.name.capitalize()))
+                game.crib_player.scores(2)
+                print('{} scores 2 for his heels'.format(game.crib_player.name.capitalize()))
 
             # Pegging
             print('')
@@ -394,16 +396,16 @@ if __name__ == '__main__':
             # Count hands
             print('')
             print('{}\'s hand:'.format('Computer' if game.players_crib else 'Player'))
-            score = dump(noncrib_player.hand, game.crib_card, False)
-            noncrib_player.scores(score)
+            score = dump(game.noncrib_player.hand, game.crib_card, False)
+            game.noncrib_player.scores(score)
             print('')
             print('{}\'s hand:'.format('Computer' if not game.players_crib else 'Player'))
-            score = dump(crib_player.hand, game.crib_card, False)
-            crib_player.scores(score)
+            score = dump(game.crib_player.hand, game.crib_card, False)
+            game.crib_player.scores(score)
             print('')
             print('Crib:')
             score = dump(game.crib, game.crib_card, True)
-            crib_player.scores(score)
+            game.crib_player.scores(score)
 
             game.switchCrib()
 
