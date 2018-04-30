@@ -160,7 +160,6 @@ def count_hand(hand, crib_card, is_crib=False):
                             n_kind_exclusion.add(frozenset(sublist_prime))
 
     # Check for runs of <n>
-    run_found = False
     run_exclusions = set()
     for sublist_size in range(5, 2, -1):
         for sublist in sublists([crib_card] + hand, sublist_size):
@@ -339,12 +338,12 @@ if __name__ == '__main__':
             # player_discards = random.sample(game.player.hand, 2)
             player_discards = pick_best_discards(game.player.hand, game.players_crib)
 
-            ai_discards = pick_best_discards(game.ai.hand, not game.players_crib)
-
             print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
             for card in player_discards:
                 game.crib.append(game.player.hand.discard(card))
             print('Leaving you with {}'.format(game.player.hand))
+
+            ai_discards = pick_best_discards(game.ai.hand, not game.players_crib)
 
             for card in ai_discards:
                 game.crib.append(game.ai.hand.discard(card))
