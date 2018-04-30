@@ -59,7 +59,7 @@ _n_kind_score = {2: 2, 3: 6, 4: 12}
 card_names = {
     'ace': ('ace', 'aces'),
     '2': ('deuce', 'dueces'),
-    '3': ('three', 'three'),
+    '3': ('three', 'threes'),
     '4': ('four', 'fours'),
     '5': ('five', 'fives'),
     '6': ('six', 'sixes'),
@@ -320,3 +320,4 @@ if __name__ == '__main__':
             print('Double Skunk!')
         elif game.player.score < 91:
             print('Skunk!')
+    print('')
