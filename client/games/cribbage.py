@@ -147,16 +147,13 @@ def count_hand(hand, crib_card, is_crib=False):
             subset = frozenset(sublist)
             if subset in n_kind_exclusion:
                 continue
-            rankset = set()
-            for card in subset:
-                rankset.add(card.rank)
-            if len(rankset) == 1:
+            if is_n_kind(subset):
                 score =  _n_kind_score[sublist_size]
                 count += score
                 if sublist_size == 2:
-                    msgs.append(('pair', card_names[str(rankset.pop())][1], 2))
+                    msgs.append(('pair', card_names[sublist[0].rank][1], 2))
                 else:
-                    msgs.append(('{} of a kind'.format(sublist_size), card_names[str(rankset.pop())][1], score))
+                    msgs.append(('{} of a kind'.format(sublist_size), card_names[sublist[0].rank][1], score))
                     # Now prevent subsets 
                     for size_prime in range(sublist_size-1, 1, -1):
                         for sublist_prime in sublists(sublist, size_prime):

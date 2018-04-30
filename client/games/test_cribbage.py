@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     crib_card = Card(1, 'hearts')
     hand = Hand([Card(2, 'spades'), Card(3, 'spades'), Card(5, 'spades'), Card(4, 'clubs')])
-    dump(hand, crib_card, correct_score=5)
+    dump(hand, crib_card, correct_score=7)
 
     print('')
 
