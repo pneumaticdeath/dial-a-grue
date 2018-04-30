@@ -336,7 +336,8 @@ if __name__ == '__main__':
             print('It\'s {}\'s crib.'.format(crib_player.name))
 
             game.dealHands()
-            print('You got {:s}'.format(game.player.hand))
+            game.player.hand.sortByRank()
+            print('You got {}'.format(game.player.hand))
 
             # player_discards = random.sample(game.player.hand, 2)
             player_discards = pick_best_discards(game.player.hand, game.players_crib)
@@ -367,8 +368,9 @@ if __name__ == '__main__':
             while game.player.pegging_hand or game.ai.pegging_hand:
                 while game.pegging_count < 31 and (not game.player.go or not game.ai.go):
                     if game.pegging_turn.pegging_hand:
-                        card = game.pegging_turn.pegging_hand[0]
-                        if card_value(card) + game.pegging_count <= 31:
+                        playable = Hand(filter(lambda x: card_value(x) + game.pegging_count <= 31, game.pegging_turn.pegging_hand))
+                        if playable:
+                            card = random.choice(playable)
                             who, score, msgs = game.peg(game.pegging_turn.pegging_hand.discard(card))
                             print('{} plays {} for a count of {}'.format(who.name.capitalize(), card, game.pegging_count))
                             for m in msgs:
