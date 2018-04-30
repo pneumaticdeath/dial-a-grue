@@ -205,17 +205,16 @@ class Cribbage(object):
 
 def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_size=10, full_deck=cards.Deck()):
     deck = filter(lambda x: x not in hand, full_deck.cards)
-    sample_crib_cards = random.sample(deck, sample_size+2)
-    crib_extras = sample_crib_cards[sample_size:]
-    sample_cirb_cards = sample_crib_cards[:sample_size]
+    sample_crib_cards = random.sample(deck, sample_size*3)
     for card1, card2 in sublists(hand, 2):
         new_score=0
-        for tmp_crib in sample_crib_cards:
+        for index in xrange(0,sample_size*3,3):
+            tmp_crib, crib3, crib4 = sample_crib_cards[index:index+3]
             tmp_hand = Hand(hand[:])
             tmp_hand.discard(card1)
             tmp_hand.discard(card2)
             score, msgs = count_hand(tmp_hand, tmp_crib, False)
-            crib_score, msgs = count_hand(Hand([card1, card2] + crib_extras), tmp_crib, True)
+            crib_score, msgs = count_hand(Hand([card1, card2, crib3, crib4]), tmp_crib, True)
             if my_crib:
                 new_score += score + crib_score
             else:
