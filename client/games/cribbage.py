@@ -258,7 +258,7 @@ if __name__ == '__main__':
                 noncrib_player = game.ai
             else:
                 crib_player = game.ai
-                noncrib_player = game.ai
+                noncrib_player = game.player
 
             game.dealHands()
             print('You got {:s}'.format(game.player.hand))
@@ -284,26 +284,17 @@ if __name__ == '__main__':
                 print('{} scores 2 for his heels'.format('Player' if game.players_crib else 'Computer'))
 
             print('')
-            if game.players_crib:
-                print('Computer hand:')
-                ai_score = dump(game.ai.hand, game.crib_card, False)
-                game.ai.scores(ai_score)
-                print('')
-                print('Player hand:')
-                player_score = dump(game.player.hand, game.crib_card, False)
-                game.player.scores(player_score)
-            else:
-                print('Player hand:')
-                player_score = dump(game.player.hand, game.crib_card, False)
-                game.player.scores(player_score)
-                print('')
-                print('Computer hand:')
-                ai_score = dump(game.ai.hand, game.crib_card, False)
-                game.ai.scores(ai_score)
+            print('{}\'s hand:'.format('Computer' if game.players_crib else 'Player'))
+            score = dump(noncrib_player.hand, game.crib_card, False)
+            noncrib_player.scores(score)
+            print('')
+            print('{}\'s hand:'.format('Computer' if not game.players_crib else 'Player'))
+            score = dump(crib_player.hand, game.crib_card, False)
+            crib_player.scores(score)
             print('')
             print('Crib:')
-            crib_score = dump(game.crib, game.crib_card, True)
-            crib_player.scores(crib_score)
+            score = dump(game.crib, game.crib_card, True)
+            crib_player.scores(score)
 
             game.switchCrib()
 
