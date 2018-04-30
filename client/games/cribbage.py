@@ -23,13 +23,22 @@ class Hand(list):
                 return card
         return None
 
+class GameOver(Exception):
+    pass
+
 class Player(object):
-    def __init__(self):
+    def __init__(self, winning_score=121):
+        self.winning_score = winning_score
         self.reset()
 
     def reset(self):
         self.score = 0
         self.hand = Hand()
+
+    def scores(self, amount):
+        self.score += amount
+        if self.score >= self.winning_score:
+            raise GameOver()
 
 class AIPlayer(Player):
     pass
@@ -236,69 +245,78 @@ if __name__ == '__main__':
     player_card, ai_card = game.chooseFirstCrib()
     print('Player cuts a {} and computer cuts a {}'.format(player_card, ai_card))
 
-    hand_num = 0
-    while game.player.score < 121 and game.ai.score < 121:
-        hand_num += 1
-        print('')
-        print('Hand #{}'.format(hand_num))
-
-        print('It\'s {}\'s crib.'.format('player' if game.players_crib else 'computer'))
-        game.dealHands()
-        print('You got {:s}'.format(game.player.hand))
-
-        # player_discards = random.sample(game.player.hand, 2)
-        player_discards = pick_best_discards(game.player.hand, game.players_crib)
-
-        ai_discards = pick_best_discards(game.ai.hand, not game.players_crib)
-
-        print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
-        for card in player_discards:
-            game.crib.append(game.player.hand.discard(card))
-        print('Leaving you with {}'.format(game.player.hand))
-
-        for card in ai_discards:
-            game.crib.append(game.ai.hand.discard(card))
-
-        game.pickCribCard()
-
-        print('crib card: {:s}'.format(game.crib_card))
-        print('')
-        if game.players_crib:
-            print('Computer hand:')
-            ai_score = dump(game.ai.hand, game.crib_card, False)
+    try:
+        hand_num = 0
+        while game.player.score < 121 and game.ai.score < 121:
+            hand_num += 1
             print('')
-            print('Player hand:')
-            player_score = dump(game.player.hand, game.crib_card, False)
-        else:
-            print('Player hand:')
-            player_score = dump(game.player.hand, game.crib_card, False)
+            print('Hand #{}'.format(hand_num))
+
+            print('It\'s {}\'s crib.'.format('player' if game.players_crib else 'computer'))
+            if game.players_crib:
+                crib_player = game.player
+                noncrib_player = game.ai
+            else:
+                crib_player = game.ai
+                noncrib_player = game.ai
+
+            game.dealHands()
+            print('You got {:s}'.format(game.player.hand))
+
+            # player_discards = random.sample(game.player.hand, 2)
+            player_discards = pick_best_discards(game.player.hand, game.players_crib)
+
+            ai_discards = pick_best_discards(game.ai.hand, not game.players_crib)
+
+            print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
+            for card in player_discards:
+                game.crib.append(game.player.hand.discard(card))
+            print('Leaving you with {}'.format(game.player.hand))
+
+            for card in ai_discards:
+                game.crib.append(game.ai.hand.discard(card))
+
             print('')
-            print('Computer hand:')
-            ai_score = dump(game.ai.hand, game.crib_card, False)
-        print('')
-        print('Crib:')
-        crib_score = dump(game.crib, game.crib_card, True)
+            game.pickCribCard()
+            print('crib card: {:s}'.format(game.crib_card))
+            if game.crib_card.rank == 'jack':
+                crib_player.scores(2)
+                print('{} scores 2 for his heels'.format('Player' if game.players_crib else 'Computer'))
 
-        if game.players_crib:
-            player_score += crib_score
-        else:
-            ai_score += crib_score
+            print('')
+            if game.players_crib:
+                print('Computer hand:')
+                ai_score = dump(game.ai.hand, game.crib_card, False)
+                game.ai.scores(ai_score)
+                print('')
+                print('Player hand:')
+                player_score = dump(game.player.hand, game.crib_card, False)
+                game.player.scores(player_score)
+            else:
+                print('Player hand:')
+                player_score = dump(game.player.hand, game.crib_card, False)
+                game.player.scores(player_score)
+                print('')
+                print('Computer hand:')
+                ai_score = dump(game.ai.hand, game.crib_card, False)
+                game.ai.scores(ai_score)
+            print('')
+            print('Crib:')
+            crib_score = dump(game.crib, game.crib_card, True)
+            crib_player.scores(crib_score)
 
-        if game.players_crib:
-            game.ai.score += ai_score
-            if game.ai.score < 121:
-                game.player.score += player_score
-        else:
-            game.player.score += player_score
-            if game.player.score < 121:
-                game.ai.score += ai_score
+            game.switchCrib()
 
-        print('')
-        print('scores: player {} computer {}'.format(game.player.score, game.ai.score))
+            print('')
+            print('Scores: player {} computer {}'.format(game.player.score, game.ai.score))
 
-        game.switchCrib()
+    except GameOver:
+        pass
+
+    print('Final scores: player {} computer {}'.format(game.player.score, game.ai.score))
 
     if game.player.score == game.ai.score:
+        # impossible
         print('Tie')
     elif game.player.score > game.ai.score:
         print('Player wins')
