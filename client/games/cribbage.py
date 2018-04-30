@@ -57,19 +57,19 @@ def sublists(input_list, size):
 _n_kind_score = {2: 2, 3: 6, 4: 12}
 
 card_names = {
-    'ace': 'ace',
-    '2': 'deuce',
-    '3': 'three',
-    '4': 'four',
-    '5': 'five',
-    '6': 'six',
-    '7': 'seven',
-    '8': 'eight',
-    '9': 'nine',
-    '10': 'ten',
-    'jack': 'jack',
-    'queen': 'queen',
-    'king': 'king',
+    'ace': ('ace', 'aces'),
+    '2': ('deuce', 'dueces'),
+    '3': ('three', 'three'),
+    '4': ('four', 'fours'),
+    '5': ('five', 'fives'),
+    '6': ('six', 'sixes'),
+    '7': ('seven', 'sevens'),
+    '8': ('eight', 'eights'),
+    '9': ('nine', 'nines'),
+    '10': ('ten', 'tens'),
+    'jack': ('jack', 'jacks'),
+    'queen': ('queen', 'queens'),
+    'king': ('king', 'kings'),
 }
 
 def is_run(cardlist):
@@ -132,9 +132,9 @@ def count_hand(hand, crib_card, is_crib=False):
                 score =  _n_kind_score[sublist_size]
                 count += score
                 if sublist_size == 2:
-                    msgs.append(('pair', card_names[str(rankset.pop())] + 's', 2))
+                    msgs.append(('pair', card_names[str(rankset.pop())][1], 2))
                 else:
-                    msgs.append(('{} of a kind'.format(sublist_size), card_names[str(rankset.pop())] + 's', score))
+                    msgs.append(('{} of a kind'.format(sublist_size), card_names[str(rankset.pop())][1], score))
                     # Now prevent subsets 
                     for size_prime in range(sublist_size-1, 1, -1):
                         for sublist_prime in sublists(sublist, size_prime):
@@ -150,7 +150,7 @@ def count_hand(hand, crib_card, is_crib=False):
                 continue
             if is_run(sublist):
                 count += sublist_size
-                msgs.append(('run of {}'.format(sublist_size), '{} to {}'.format(card_names[sublist[0].rank],card_names[sublist[-1].rank]), sublist_size))
+                msgs.append(('run of {}'.format(sublist_size), '{} to {}'.format(card_names[sublist[0].rank][0],card_names[sublist[-1].rank][0]), sublist_size))
                 if sublist_size > 3:
                     for x in range(3,sublist_size):
                         for y in range(sublist_size-x+1):
