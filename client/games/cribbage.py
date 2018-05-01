@@ -230,10 +230,10 @@ class Cribbage(object):
         return self.ai if self.players_crib else self.player
 
     def startPegging(self):
-        self.resetPegging()
         self.player.startPegging()
         self.ai.startPegging()
         self.pegging_turn, self.non_pegging_turn = (self.ai, self.player) if self.players_crib else (self.player, self.ai)
+        self.resetPegging()
 
     def resetPegging(self):
         self.pegging_count = 0
@@ -287,16 +287,15 @@ class Cribbage(object):
 
 def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_size=10, full_deck=cards.Deck()):
     deck = filter(lambda x: x not in hand, full_deck.cards)
-    sample_crib_cards = random.sample(deck, sample_size*3)
+    sample_crib_cards = random.sample(deck, sample_size)
     for card1, card2 in sublists(hand, 2):
         new_score=0
-        for index in xrange(0,sample_size*3,3):
-            tmp_crib, crib3, crib4 = sample_crib_cards[index:index+3]
+        for tmp_crib in sample_crib_cards:
             tmp_hand = Hand(hand[:])
             tmp_hand.discard(card1)
             tmp_hand.discard(card2)
             score, msgs = count_hand(tmp_hand, tmp_crib, False)
-            crib_score, msgs = count_hand(Hand([card1, card2, crib3, crib4]), tmp_crib, True)
+            crib_score = discard_value([card1, card2])
             if my_crib:
                 new_score += score + crib_score
             else:
@@ -306,6 +305,20 @@ def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_siz
             best_score = new_score
     return discards
             
+def discard_value(card_pair):
+    value = 0
+    if is_n_kind(card_pair):
+        value += 2
+    if card_value(card_pair[0]) + card_value(card_pair[1]) == 15:
+        value += 2
+    if abs(card_pair[0]._rank - card_pair[1]._rank) == 1:
+        value += 1
+    for card in card_pair:
+        if card.rank == 'jack':
+            value += 0.25
+        elif card.rank == '5':
+            value += 0.5
+    return value
 
 if __name__ == '__main__':
 
