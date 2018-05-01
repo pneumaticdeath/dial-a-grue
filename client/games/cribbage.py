@@ -211,8 +211,8 @@ class Cribbage(object):
         self.crib_card = None
         self.deck.shuffle()
         for _ in xrange(6):
-            self.player.hand.append(self.deck.deal())
-            self.ai.hand.append(self.deck.deal())
+            self.noncrib_player.hand.append(self.deck.deal())
+            self.crib_player.hand.append(self.deck.deal())
 
     def pickCribCard(self):
         self.crib_card = self.deck.deal()
@@ -237,8 +237,10 @@ class Cribbage(object):
 
     def resetPegging(self):
         self.pegging_count = 0
-        self.player.go = False
-        self.ai.go = False
+        if self.player.pegging_hand:
+            self.player.go = False
+        if self.ai.pegging_hand:
+            self.ai.go = False
         self.pegging_stack = Hand()
 
     def peg(self, card):
@@ -308,7 +310,7 @@ def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_siz
 if __name__ == '__main__':
 
     def dump(hand, crib_card, is_crib=False):
-        print(str(hand))
+        print(hand)
         s, m = count_hand(hand, crib_card, is_crib)
         print('Score: {}'.format(s))
         for x, y, z in m:
@@ -337,7 +339,6 @@ if __name__ == '__main__':
             game.player.hand.sortByRank()
             print('You got {}'.format(game.player.hand))
 
-            # player_discards = random.sample(game.player.hand, 2)
             player_discards = pick_best_discards(game.player.hand, game.players_crib)
 
             print('You discarded {} and {}'.format(player_discards[0], player_discards[1]))
