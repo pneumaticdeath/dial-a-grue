@@ -301,12 +301,12 @@ def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_siz
     sample_crib_cards = random.sample(deck, sample_size)
     for card1, card2 in sublists(hand, 2):
         new_score=0
+        crib_score = discard_value([card1, card2])
         for tmp_crib in sample_crib_cards:
             tmp_hand = Hand(hand[:])
             tmp_hand.discard(card1)
             tmp_hand.discard(card2)
             score, msgs = count_hand(tmp_hand, tmp_crib, False)
-            crib_score = discard_value([card1, card2])
             if my_crib:
                 new_score += score + crib_score
             else:
@@ -315,7 +315,7 @@ def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_siz
             discards = [card1, card2]
             best_score = new_score
     return discards
-            
+
 def discard_value(card_pair):
     value = 0
     if is_n_kind(card_pair):
@@ -325,11 +325,47 @@ def discard_value(card_pair):
     if abs(card_pair[0]._rank - card_pair[1]._rank) == 1:
         value += 1
     for card in card_pair:
-        if card.rank == 'jack':
+        if card.rank == 'jack':  # Heuristic for nobs
             value += 0.25
-        elif card.rank == '5':
+        elif card.rank == '5':  # Heuristic for 15
             value += 0.5
     return value
+
+def pick_best_pegging_card(choices, pegging_stack, pegging_count):
+    if len(choices) == 1:
+        return choices[0]
+    values = {}
+    for choice in choices:
+        value = 0
+        new_count = card_value(choice) + pegging_count
+        if new_count == 31:
+            value += 2
+        elif new_count == 15:
+            value += 2
+        elif new_count == 21:  # Heuristic to avoid 31
+            value -= 0.5
+        elif new_count == 10:  # Heuristic to avoid 15
+            value -= 0.5
+        elif new_count == 5:   # Heuristic to avoid 15
+            value -= 0.5
+        new_stack = pegging_stack + [choice]
+        if len(new_stack) >= 3:
+            for index in range(len(new_stack)-2):
+                substack = new_stack[index:]
+                if is_run(substack):
+                    value += len(substack)
+                    break
+        if len(new_stack) >= 2:
+            for index in range(len(new_stack)-1):
+                substack = new_stack[index:]
+                if is_n_kind(substack):
+                    value += _n_kind_score[len(substack)]
+                    break
+        values[choice] = value
+    # print(' '.join(['{}=={}'.format(k,v) for k,v in values.items()]))
+    best = sorted(values.values())[-1]
+    best_choice = random.choice(filter(lambda x: values[x] == best, choices))
+    return best_choice
 
 if __name__ == '__main__':
 
@@ -393,7 +429,8 @@ if __name__ == '__main__':
                     if game.pegging_turn.pegging_hand:
                         playable = Hand(filter(lambda x: card_value(x) + game.pegging_count <= 31, game.pegging_turn.pegging_hand))
                         if playable:
-                            card = random.choice(playable)
+                            # card = random.choice(playable)
+                            card = pick_best_pegging_card(playable, game.pegging_stack, game.pegging_count)
                             who, score, msgs = game.peg(game.pegging_turn.pegging_hand.discard(card))
                             print('{} plays {} for a count of {}'.format(who.name.capitalize(), card, game.pegging_count))
                             for m in msgs:
@@ -419,6 +456,8 @@ if __name__ == '__main__':
                 print('')
 
             # Count hands
+            print('')
+            print('Crib card again: {}'.format(game.crib_card))
             print('')
             print('{}\'s hand:'.format('Computer' if game.players_crib else 'Player'))
             score = dump(game.noncrib_player.hand, game.crib_card, False)
