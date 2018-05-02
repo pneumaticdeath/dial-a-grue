@@ -111,13 +111,21 @@ card_rank_mapping = {
     '13':    13,
 }
 
+def card_suit_lookup(word):
+    if word in cards.Card.suits:
+        return word
+    for suit in cards.Card.suits:
+        if suit.startswith(word):
+            return suit
+    return None
+
 def input_card(possibilities, input_func=sys.stdin.readline):
     parsed_card = None
     while parsed_card is None:
         input_words = input_func().strip().lower().split()
         rank = input_words[1] if input_words[0] in ['a', 'an'] else input_words[0]
-        suit = input_words[-1]
-        if rank in card_rank_mapping and suit in cards.Card.suits:
+        suit = card_suit_lookup(input_words[-1])
+        if rank in card_rank_mapping and suit is not None:
             try:
                 parsed_card = cards.Card(card_rank_mapping[rank], suit)
             except Exception:
