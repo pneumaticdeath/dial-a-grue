@@ -56,7 +56,18 @@ class Player(object):
 class AIPlayer(Player):
     name = 'computer'
 
+global __sublist_index_cache 
+__sublist_index_cache = dict()
+
 def sublists(input_list, size):
+    key = (len(input_list), size)
+    if key not in __sublist_index_cache:
+        __sublist_index_cache[key] = expensive_sublists(range(len(input_list)), size)
+
+    return [[input_list[ind] for ind in ind_subl]
+            for ind_subl in __sublist_index_cache[key]]
+
+def expensive_sublists(input_list, size):
     if not input_list or size <= 0:
         return [[],]
     if size >= len(input_list):
