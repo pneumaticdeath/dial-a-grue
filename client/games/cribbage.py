@@ -77,7 +77,7 @@ class HumanPlayer(Player):
 
     def pickPeggingCard(self, choices, pegging_stack, pegging_count):
         if len(choices) == 1:
-            print('Choosing {} for you, since it\'s the only card left'.format(choices[0]))
+            print('Choosing {} for you, since it\'s the only card that you can play'.format(choices[0]))
             return choices[0]
         print('What do you want to play for pegging? {}'.format(mk_print_list(choices, conjunction='or')))
         return input_card(choices)
