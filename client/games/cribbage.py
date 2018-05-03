@@ -67,16 +67,19 @@ class HumanPlayer(Player):
 
     def pickDiscards(self, my_crib):
         discards = Hand()
-        print('What would you like to discard first?')
+        print('What would you like to discard first? {}'.format(mk_print_list(self.hand, conjunction='or')))
         discards.append(input_card(self.hand))
         remaining_hand = Hand(self.hand)
         remaining_hand.discard(discards[0])
-        print('What else would you like to discard?')
+        print('What else would you like to discard? {}'.format(mk_print_list(remaining_hand, conjunction='or')))
         discards.append(input_card(remaining_hand))
         return discards
 
     def pickPeggingCard(self, choices, pegging_stack, pegging_count):
-        print('What do you want to play for pegging?')
+        if len(choices) == 1:
+            print('Choosing {} for you, since it\'s the only card left'.format(choices[0]))
+            return choices[0]
+        print('What do you want to play for pegging? {}'.format(mk_print_list(choices, conjunction='or')))
         return input_card(choices)
 
 card_rank_mapping = {
@@ -119,17 +122,37 @@ def card_suit_lookup(word):
             return suit
     return None
 
-def input_card(possibilities, input_func=sys.stdin.readline):
+def input_words():
+    return sys.stdin.readline().strip().lower().split()
+
+def input_card(possibilities, word_func=input_words):
     parsed_card = None
     while parsed_card is None:
-        input_words = input_func().strip().lower().split()
-        rank = input_words[1] if input_words[0] in ['a', 'an'] else input_words[0]
+        input_words = word_func()
+        rank = input_words[1] if input_words[0] in ['a', 'an', 'the'] else input_words[0]
         suit = card_suit_lookup(input_words[-1])
         if rank in card_rank_mapping and suit is not None:
             try:
                 parsed_card = cards.Card(card_rank_mapping[rank], suit)
             except Exception:
                 print('Failed to parse {} of {}'.format(rank, suit))
+        elif rank in card_rank_mapping:
+            possible_rank = card_rank_mapping[rank]
+            matches = list(filter(lambda x: x._rank == possible_rank, possibilities))
+            if not matches:
+                print('None of your choices match that')
+                continue
+            elif len(matches) == 1:
+                parsed_card = matches[0]
+            else:
+                print('Which suit? {}?'.format(mk_print_list([c.suit for c in matches], conjunction='or')))
+                input_words = word_func()
+                if not input_words or input_words[0] == 'cancel':
+                    continue
+                elif card_suit_lookup(input_words[0]) in [c.suit for c in matches]:
+                    parsed_card = cards.Card(possible_rank, card_suit_lookup(input_words[0]))
+                else:
+                    print('Didn\'t get that, let\'s start over')
         else:
             print('Did\'t understand "{}"'.format(' '.join(input_words)))
         if parsed_card is not None and parsed_card not in possibilities:
@@ -452,6 +475,7 @@ def pick_best_pegging_card(choices, pegging_stack, pegging_count):
     return best_choice
 
 if __name__ == '__main__':
+    import argparse
 
     def dump(hand, crib_card, is_crib=False):
         print(hand)
@@ -464,9 +488,14 @@ if __name__ == '__main__':
                 print('{} for {}'.format(x, z))
         return s
 
+    parser = argparse.ArgumentParser('Cribbage')
+    parser.add_argument('--interactive', action='store_true', default=False, help='Play an interactive game')
+    args = parser.parse_args()
 
-    game = Cribbage(playerclass=HumanPlayer)
-    # game = Cribbage()
+    if args.interactive:
+        game = Cribbage(playerclass=HumanPlayer)
+    else:
+        game = Cribbage()
 
     player_card, ai_card = game.chooseFirstCrib()
     print('{} cuts a {} and {} cuts a {}'.format(game.player.name.capitalize(), player_card, game.ai.name, ai_card))
