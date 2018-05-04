@@ -122,10 +122,10 @@ def card_suit_lookup(word):
             return suit
     return None
 
-def input_words():
+def read_words():
     return sys.stdin.readline().strip().lower().split()
 
-def input_card(possibilities, word_func=input_words):
+def input_card(possibilities, word_func=read_words):
     parsed_card = None
     while parsed_card is None:
         input_words = word_func()
@@ -413,6 +413,17 @@ class Cribbage(object):
     def swapPeggers(self):
         self.non_pegging_turn, self.pegging_turn = self.pegging_turn, self.non_pegging_turn
 
+    def printHand(self, hand, is_crib=False):
+        print(hand)
+        s, m = count_hand(hand, self.crib_card, is_crib)
+        for x, y, z in m:
+            if y is not None:
+                print('{} of {} for {}'.format(x, y, z))
+            else:
+                print('{} for {}'.format(x, z))
+        print('Score: {}'.format(s))
+        return s
+
     def play(self):
         player_card, ai_card = self.chooseFirstCrib()
         print('{} cuts a {} and {} cuts a {}'.format(self.player.name.capitalize(), player_card, self.ai.name, ai_card))
@@ -446,8 +457,8 @@ class Cribbage(object):
                 self.pickCribCard()
                 print('crib card: {:s}'.format(self.crib_card))
                 if self.crib_card.rank == 'jack':
-                    self.crib_player.scores(2)
                     print('{} scores 2 for his heels'.format(self.crib_player.name.capitalize()))
+                    self.crib_player.scores(2)
 
                 # Pegging
                 print('')
@@ -478,7 +489,7 @@ class Cribbage(object):
                             print('{} says "I\'m out"'.format(self.pegging_turn.name.capitalize()))
                             self.go()
                     if self.pegging_count == 31:
-                        print('{} gets 2'.format(self.last_pegger.name.capitalize()))
+                        print('{} gets 2 for 31'.format(self.last_pegger.name.capitalize()))
                         self.last_pegger.scores(2)
                     else:
                         print('{} gets 1 for last card'.format(self.last_pegger.name.capitalize()))
@@ -491,15 +502,15 @@ class Cribbage(object):
                 print('Crib card again: {}'.format(self.crib_card))
                 print('')
                 print('{}\'s hand:'.format('Computer' if self.players_crib else 'Player'))
-                score = dump(self.noncrib_player.hand, self.crib_card, False)
+                score = self.printHand(self.noncrib_player.hand, False)
                 self.noncrib_player.scores(score)
                 print('')
                 print('{}\'s hand:'.format('Computer' if not self.players_crib else 'Player'))
-                score = dump(self.crib_player.hand, self.crib_card, False)
+                score = self.printHand(self.crib_player.hand, False)
                 self.crib_player.scores(score)
                 print('')
                 print('Crib:')
-                score = dump(self.crib, self.crib_card, True)
+                score = self.printHand(self.crib, True)
                 self.crib_player.scores(score)
 
                 self.switchCrib()
@@ -602,17 +613,6 @@ def pick_best_pegging_card(choices, pegging_stack, pegging_count):
 
 if __name__ == '__main__':
     import argparse
-
-    def dump(hand, crib_card, is_crib=False):
-        print(hand)
-        s, m = count_hand(hand, crib_card, is_crib)
-        print('Score: {}'.format(s))
-        for x, y, z in m:
-            if y is not None:
-                print('{} of {} for {}'.format(x, y, z))
-            else:
-                print('{} for {}'.format(x, z))
-        return s
 
     parser = argparse.ArgumentParser('Cribbage')
     parser.add_argument('--interactive', action='store_true', default=False, help='Play an interactive game')
