@@ -129,6 +129,8 @@ def input_card(possibilities, word_func=input_words):
     parsed_card = None
     while parsed_card is None:
         input_words = word_func()
+        if not input_words:
+            continue
         rank = input_words[1] if input_words[0] in ['a', 'an', 'the'] else input_words[0]
         suit = card_suit_lookup(input_words[-1])
         if rank in card_rank_mapping and suit is not None:
@@ -474,29 +476,7 @@ def pick_best_pegging_card(choices, pegging_stack, pegging_count):
     best_choice = random.choice(filter(lambda x: values[x] == best, choices))
     return best_choice
 
-if __name__ == '__main__':
-    import argparse
-
-    def dump(hand, crib_card, is_crib=False):
-        print(hand)
-        s, m = count_hand(hand, crib_card, is_crib)
-        print('Score: {}'.format(s))
-        for x, y, z in m:
-            if y is not None:
-                print('{} of {} for {}'.format(x, y, z))
-            else:
-                print('{} for {}'.format(x, z))
-        return s
-
-    parser = argparse.ArgumentParser('Cribbage')
-    parser.add_argument('--interactive', action='store_true', default=False, help='Play an interactive game')
-    args = parser.parse_args()
-
-    if args.interactive:
-        game = Cribbage(playerclass=HumanPlayer)
-    else:
-        game = Cribbage()
-
+def play(game):
     player_card, ai_card = game.chooseFirstCrib()
     print('{} cuts a {} and {} cuts a {}'.format(game.player.name.capitalize(), player_card, game.ai.name, ai_card))
 
@@ -593,11 +573,12 @@ if __name__ == '__main__':
     except GameOver:
         pass
 
+    print('')
     print('Final scores: player {} computer {}'.format(game.player.score, game.ai.score))
 
     if game.player.score == game.ai.score:
         # impossible
-        print('Tie')
+        print('Somehow it\'s a tie!')
     elif game.player.score > game.ai.score:
         print('Player wins')
         if game.ai.score < 61:
@@ -611,3 +592,29 @@ if __name__ == '__main__':
         elif game.player.score < 91:
             print('Skunk!')
     print('')
+
+if __name__ == '__main__':
+    import argparse
+
+    def dump(hand, crib_card, is_crib=False):
+        print(hand)
+        s, m = count_hand(hand, crib_card, is_crib)
+        print('Score: {}'.format(s))
+        for x, y, z in m:
+            if y is not None:
+                print('{} of {} for {}'.format(x, y, z))
+            else:
+                print('{} for {}'.format(x, z))
+        return s
+
+    parser = argparse.ArgumentParser('Cribbage')
+    parser.add_argument('--interactive', action='store_true', default=False, help='Play an interactive game')
+    args = parser.parse_args()
+
+    if args.interactive:
+        game = Cribbage(playerclass=HumanPlayer)
+    else:
+        game = Cribbage()
+
+    play(game)
+
