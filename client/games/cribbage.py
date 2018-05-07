@@ -3,6 +3,7 @@
 # Cribbage game
 # Copyright 2018, Mitch Patenaude
 
+from __future__ import print_function
 import cards
 import logging
 import random
@@ -122,10 +123,13 @@ def card_suit_lookup(word):
             return suit
     return None
 
+def my_print(s):
+    print(s)
+
 def read_words():
     return sys.stdin.readline().strip().lower().split()
 
-def input_card(possibilities, word_func=read_words):
+def input_card(possibilities, word_func=read_words, output=my_print):
     parsed_card = None
     while parsed_card is None:
         input_words = word_func()
@@ -137,28 +141,28 @@ def input_card(possibilities, word_func=read_words):
             try:
                 parsed_card = cards.Card(card_rank_mapping[rank], suit)
             except Exception:
-                print('Failed to parse {} of {}'.format(rank, suit))
+                output('Failed to parse {} of {}'.format(rank, suit))
         elif rank in card_rank_mapping:
             possible_rank = card_rank_mapping[rank]
             matches = list(filter(lambda x: x._rank == possible_rank, possibilities))
             if not matches:
-                print('None of your choices match that')
+                output('None of your choices match that')
                 continue
             elif len(matches) == 1:
                 parsed_card = matches[0]
             else:
-                print('Which suit? {}?'.format(mk_print_list([c.suit for c in matches], conjunction='or')))
+                output('Which suit? {}?'.format(mk_print_list([c.suit for c in matches], conjunction='or')))
                 input_words = word_func()
                 if not input_words or input_words[0] == 'cancel':
                     continue
                 elif card_suit_lookup(input_words[0]) in [c.suit for c in matches]:
                     parsed_card = cards.Card(possible_rank, card_suit_lookup(input_words[0]))
                 else:
-                    print('Didn\'t get that, let\'s start over')
+                    output('Didn\'t get that, let\'s start over')
         else:
-            print('Did\'t understand "{}"'.format(' '.join(input_words)))
+            output('Did\'t understand "{}"'.format(' '.join(input_words)))
         if parsed_card is not None and parsed_card not in possibilities:
-            print('"{}" isn\'t a legal play at this point.'.format(parsed_card))
+            output('"{}" isn\'t a legal play at this point.'.format(parsed_card))
             parsed_card = None
     return parsed_card
 
@@ -413,56 +417,56 @@ class Cribbage(object):
     def swapPeggers(self):
         self.non_pegging_turn, self.pegging_turn = self.pegging_turn, self.non_pegging_turn
 
-    def printHand(self, hand, is_crib=False):
-        print(hand)
+    def printHand(self, hand, is_crib=False, output=my_print):
+        output(hand)
         s, m = count_hand(hand, self.crib_card, is_crib)
         for x, y, z in m:
             if y is not None:
-                print('{} of {} for {}'.format(x, y, z))
+                output('{} of {} for {}'.format(x, y, z))
             else:
-                print('{} for {}'.format(x, z))
-        print('Score: {}'.format(s))
+                output('{} for {}'.format(x, z))
+        output('Score: {}'.format(s))
         return s
 
-    def play(self):
+    def play(self, output=my_print):
         player_card, ai_card = self.chooseFirstCrib()
-        print('{} cuts a {} and {} cuts a {}'.format(self.player.name.capitalize(), player_card, self.ai.name, ai_card))
+        output('{} cuts a {} and {} cuts a {}'.format(self.player.name.capitalize(), player_card, self.ai.name, ai_card))
 
         try:
             hand_num = 0
             while self.player.score < 121 and self.ai.score < 121:
                 hand_num += 1
-                print('')
-                print('Hand #{}'.format(hand_num))
+                output('')
+                output('Hand #{}'.format(hand_num))
 
-                print('It\'s {}\'s crib.'.format(self.crib_player.name))
+                output('It\'s {}\'s crib.'.format(self.crib_player.name))
 
                 self.dealHands()
                 self.player.hand.sortByRank()
-                print('{} got {}'.format(self.player.name.capitalize(), self.player.hand))
+                output('{} got {}'.format(self.player.name.capitalize(), self.player.hand))
 
                 player_discards = self.player.pickDiscards(self.players_crib)
 
-                print('{} discarded {} and {}'.format(self.player.name.capitalize(), player_discards[0], player_discards[1]))
+                output('{} discarded {} and {}'.format(self.player.name.capitalize(), player_discards[0], player_discards[1]))
                 for card in player_discards:
                     self.crib.append(self.player.hand.discard(card))
-                print('Leaving {} with {}'.format(self.player.name, self.player.hand))
+                output('Leaving {} with {}'.format(self.player.name, self.player.hand))
 
                 ai_discards = self.ai.pickDiscards(not self.players_crib)
 
                 for card in ai_discards:
                     self.crib.append(self.ai.hand.discard(card))
 
-                print('')
+                output('')
                 self.pickCribCard()
-                print('crib card: {:s}'.format(self.crib_card))
+                output('crib card: {:s}'.format(self.crib_card))
                 if self.crib_card.rank == 'jack':
-                    print('{} scores 2 for his heels'.format(self.crib_player.name.capitalize()))
+                    output('{} scores 2 for his heels'.format(self.crib_player.name.capitalize()))
                     self.crib_player.scores(2)
 
                 # Pegging
-                print('')
-                print('Start of pegging')
+                output('')
+                output('Start of pegging')
                 self.startPegging()
                 self.player.pegging_hand.sortByRank()
                 self.ai.pegging_hand.sortByRank()
@@ -474,71 +478,71 @@ class Cribbage(object):
                                 # card = random.choice(playable)
                                 card = self.pegging_turn.pickPeggingCard(playable, self.pegging_stack, self.pegging_count)
                                 who, score, msgs = self.peg(self.pegging_turn.pegging_hand.discard(card))
-                                print('{} plays {} for a count of {}'.format(who.name.capitalize(), card, self.pegging_count))
+                                output('{} plays {} for a count of {}'.format(who.name.capitalize(), card, self.pegging_count))
                                 for m in msgs:
                                     if m[1] is not None:
-                                        print('{} of {} for {}'.format(m[0], m[1], m[2]))
+                                        output('{} of {} for {}'.format(m[0], m[1], m[2]))
                                     else:
-                                        print('{} for {}'.format(m[0], m[2]))
+                                        output('{} for {}'.format(m[0], m[2]))
                                 if score:
                                     who.scores(score)
                             else:
-                                print('{} says "Go!"'.format(self.pegging_turn.name.capitalize()))
+                                output('{} says "Go!"'.format(self.pegging_turn.name.capitalize()))
                                 self.go()
                         else:
-                            print('{} says "I\'m out"'.format(self.pegging_turn.name.capitalize()))
+                            output('{} says "I\'m out"'.format(self.pegging_turn.name.capitalize()))
                             self.go()
                     if self.pegging_count == 31:
-                        print('{} gets 2 for 31'.format(self.last_pegger.name.capitalize()))
+                        output('{} gets 2 for 31'.format(self.last_pegger.name.capitalize()))
                         self.last_pegger.scores(2)
                     else:
-                        print('{} gets 1 for last card'.format(self.last_pegger.name.capitalize()))
+                        output('{} gets 1 for last card'.format(self.last_pegger.name.capitalize()))
                         self.last_pegger.scores(1)
                     self.resetPegging()
-                    print('')
+                    output('')
 
                 # Count hands
-                print('')
-                print('Crib card again: {}'.format(self.crib_card))
-                print('')
-                print('{}\'s hand:'.format('Computer' if self.players_crib else 'Player'))
-                score = self.printHand(self.noncrib_player.hand, False)
+                output('')
+                output('Crib card again: {}'.format(self.crib_card))
+                output('')
+                output('{}\'s hand:'.format(self.noncrib_player.name.capitalize()))
+                score = self.printHand(self.noncrib_player.hand, False, output=output)
                 self.noncrib_player.scores(score)
-                print('')
-                print('{}\'s hand:'.format('Computer' if not self.players_crib else 'Player'))
-                score = self.printHand(self.crib_player.hand, False)
+                output('')
+                output('{}\'s hand:'.format(self.crib_player.name.capitalize()))
+                score = self.printHand(self.crib_player.hand, False, output=output)
                 self.crib_player.scores(score)
-                print('')
-                print('Crib:')
-                score = self.printHand(self.crib, True)
+                output('')
+                output('Crib:')
+                score = self.printHand(self.crib, True, output=output)
                 self.crib_player.scores(score)
 
                 self.switchCrib()
 
-                print('')
-                print('Scores: player {} computer {}'.format(self.player.score, self.ai.score))
+                output('')
+                output('Scores: player {} computer {}'.format(self.player.score, self.ai.score))
 
         except GameOver:
             pass
 
-        print('')
-        print('Final scores: player {} computer {}'.format(self.player.score, self.ai.score))
+        output('')
+        output('Final scores: player {} computer {}'.format(self.player.score, self.ai.score))
 
         if self.player.score == self.ai.score:
             # impossible
-            print('Somehow it\'s a tie!')
+            output('Somehow it\'s a tie!')
             self.loosing_score = None
         elif self.player.score > self.ai.score:
-            print('Player wins')
+            output('Player wins')
             loosing_score = self.ai.score
         else:
-            print('Computer wins')
+            output('Computer wins')
             loosing_score = self.player.score
         if loosing_score < self.double_skunk_threshold:
-            print('Double Skunk!')
+            output('Double Skunk!')
         elif loosing_score < self.skunk_threshold:
-            print('Skunk!')
-        print('')
+            output('Skunk!')
+        output('')
 
 def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_size=10, full_deck=cards.Deck()):
     deck = filter(lambda x: x not in hand, full_deck.cards)
@@ -606,7 +610,6 @@ def pick_best_pegging_card(choices, pegging_stack, pegging_count):
                     value += _n_kind_score[len(substack)]
                     break
         values[choice] = value
-    # print(' '.join(['{}=={}'.format(k,v) for k,v in values.items()]))
     best = sorted(values.values())[-1]
     best_choice = random.choice(filter(lambda x: values[x] == best, choices))
     return best_choice
