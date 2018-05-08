@@ -22,6 +22,9 @@ def handle(text, mic, profile):
         print(string)
         mic.say(string)
      
+    class GruePlayer(cribbage.AIPlayer):
+        name = 'the grue'
+
     class PhonePlayer(cribbage.Player):
 
         def pickDiscards(self, my_crib):
@@ -36,7 +39,7 @@ def handle(text, mic, profile):
 
         def pickPeggingCard(self, choices, pegging_stack, pegging_count):
             if len(choices) == 1:
-                out_func('Choosing {} for you, since it\'s the only card you can plan.'.foramt(choices[0]))
+                out_func('Choosing {} for you, since it\'s the only card you can plan.'.format(choices[0]))
                 return choices[0]
     
             out_func('What would you like to play for pegging? {}'.format(mk_print_list(choices, conjunction='or')))
@@ -46,7 +49,7 @@ def handle(text, mic, profile):
     logging.info('Starting the Cribbage module')
     mic.say('Let\'s play some Cribbage!')
 
-    game = cribbage.Cribbage(playerclass=PhonePlayer)
+    game = cribbage.Cribbage(playerclass=PhonePlayer, aiclass=GruePlayer)
 
     game.play(output=out_func)
 
