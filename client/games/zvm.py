@@ -7,7 +7,7 @@ import re
 import threading
 import time
 from client import jasperpath
-from client.phone import Phone
+# from client.phone import Phone
 
 logger = logging.getLogger(__name__)
 
@@ -93,9 +93,9 @@ class ZorkPhone(object):
                     self.zvm.kill()
                     logger.debug('listen thread killed zvm')
                 except Exception as e:
-                    logger.debug('listen thread killing zvm caught {0}'.format(str(e)))
+                    logger.debug('listen thread killing zvm caught {0}'.format(repr(e)))
         except Exception as e:
-            logger.warning('listen thread caught {0}'.format(str(e)))
+            logger.warning('listen thread caught {0}'.format(repr(e)))
 
         self.running = False
         logger.debug('listen thread exiting')
@@ -117,9 +117,9 @@ class ZorkPhone(object):
                     self.zvm.kill()
                     logger.debug('talk thread killed zvm')
                 except Exception as e:
-                    logger.debug('talk thread killing zvm caught {0}'.format(str(e)))
+                    logger.debug('talk thread killing zvm caught {0}'.format(repr(e)))
         except Exception as e:
-            logger.warning('talk thread caught {0}'.format(str(e)))
+            logger.warning('talk thread caught {0}'.format(repr(e)))
 
         self.running = False
         logger.debug('talk thread exiting')
