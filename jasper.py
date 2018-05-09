@@ -26,6 +26,7 @@ parser.add_argument('--no-network-check', action='store_true',
 parser.add_argument('--diagnose', action='store_true',
                     help='Run diagnose and exit')
 parser.add_argument('--debug', action='store_true', help='Show debug messages')
+parser.add_argument('--echo', action='store_true', help='Echo back what was recorded')
 args = parser.parse_args()
 
 if args.local:
@@ -107,7 +108,8 @@ class Jasper(object):
         # Initialize Mic
         self.mic = Mic(tts_engine_class.get_instance(),
                        stt_passive_engine_class.get_passive_instance(),
-                       stt_engine_class.get_active_instance())
+                       stt_engine_class.get_active_instance(),
+                       echo=args.echo)
 
         # Squirell away stt_engine_class
         self.stt_engine_class = stt_engine_class

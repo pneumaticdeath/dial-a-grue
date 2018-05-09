@@ -23,7 +23,7 @@ class Mic:
     speechRec = None
     speechRec_persona = None
 
-    def __init__(self, speaker, passive_stt_engine, active_stt_engine):
+    def __init__(self, speaker, passive_stt_engine, active_stt_engine, echo=False):
         """
         Initiates the pocketsphinx instance.
 
@@ -44,7 +44,7 @@ class Mic:
                           "can usually be safely ignored.")
         self._audio = pyaudio.PyAudio()
         self._logger.info("Initialization of PyAudio completed.")
-        self._echo = False  # whether to play back what it heard
+        self._echo = echo # whether to play back what it heard
 
     def __del__(self):
         self._audio.terminate()
