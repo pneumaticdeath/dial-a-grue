@@ -434,7 +434,7 @@ class Cribbage(object):
 
         try:
             hand_num = 0
-            while self.player.score < 121 and self.ai.score < 121:
+            while self.player.score < self.winning_score and self.ai.score < self.winning_score:
                 hand_num += 1
                 output('')
                 output('Hand #{}'.format(hand_num))
@@ -443,7 +443,7 @@ class Cribbage(object):
 
                 self.dealHands()
                 self.player.hand.sortByRank()
-                output('{} got {}'.format(self.player.name.capitalize(), self.player.hand))
+                # output('{} got {}'.format(self.player.name.capitalize(), self.player.hand))
 
                 player_discards = self.player.pickDiscards(self.players_crib)
 
