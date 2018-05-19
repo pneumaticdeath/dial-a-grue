@@ -50,7 +50,15 @@ class AbstractTTSEngine(object):
 
     @classmethod
     def get_config(cls):
-        return {}
+        config = {}
+        profile_path = jasperpath.config('profile.yml')
+        if os.path.exists(profile_path):
+            with open(profile_path, 'r') as f:
+                profile = yaml.safe_load(f)
+                if 'audio_dev' in profile and 'speaker' in profile['audio_dev']:
+                    config['device'] = profile['audio_dev']['speaker']
+
+        return config
 
     @classmethod
     def get_instance(cls):
@@ -65,6 +73,7 @@ class AbstractTTSEngine(object):
 
     def __init__(self, **kwargs):
         self._logger = logging.getLogger(__name__)
+	self.device = kwargs.get('device', 0)
 
     @abstractmethod
     def say(self, phrase, *args):
@@ -73,7 +82,7 @@ class AbstractTTSEngine(object):
     def play(self, filename):
         # FIXME: Use platform-independent audio-output here
         # See issue jasperproject/jasper-client#188
-        cmd = ['aplay', '-D', 'plughw:1,0', str(filename)]
+        cmd = ['aplay', '-D', 'plughw:{},0'.format(self.device), str(filename)]
         self._logger.debug('Executing %s', ' '.join([pipes.quote(arg)
                                                      for arg in cmd]))
         with tempfile.TemporaryFile() as f:
@@ -124,8 +133,8 @@ class DummyTTS(AbstractTTSEngine):
     def say(self, phrase):
         self._logger.info(phrase)
 
-    def play(self, filename):
-        self._logger.debug("Playback of file '%s' requested")
+    def play(self, filename, device=0):
+        self._logger.debug("Playback of file '%s' requested", filename)
         pass
 
 
@@ -138,16 +147,16 @@ class EspeakTTS(AbstractTTSEngine):
     SLUG = "espeak-tts"
 
     def __init__(self, voice='default+m3', pitch_adjustment=40,
-                 words_per_minute=160):
-        super(self.__class__, self).__init__()
+                 words_per_minute=160, **kwargs):
+        super(EspeakTTS, self).__init__(**kwargs)
         self.voice = voice
         self.pitch_adjustment = pitch_adjustment
         self.words_per_minute = words_per_minute
 
     @classmethod
     def get_config(cls):
-        # FIXME: Replace this as soon as we have a config module
-        config = {}
+	config = super(EspeakTTS, cls).get_config()
+
         # HMM dir
         # Try to get hmm_dir from config
         profile_path = jasperpath.config('profile.yml')
@@ -167,7 +176,7 @@ class EspeakTTS(AbstractTTSEngine):
 
     @classmethod
     def is_available(cls):
-        return (super(cls, cls).is_available() and
+        return (super(EspeakTTS, cls).is_available() and
                 diagnose.check_executable('espeak'))
 
     def say(self, phrase):
@@ -202,7 +211,7 @@ class FestivalTTS(AbstractTTSEngine):
 
     @classmethod
     def is_available(cls):
-        if (super(cls, cls).is_available() and
+        if (super(FestivalTTS, cls).is_available() and
            diagnose.check_executable('text2wave') and
            diagnose.check_executable('festival')):
 
@@ -249,8 +258,8 @@ class FliteTTS(AbstractTTSEngine):
 
     SLUG = 'flite-tts'
 
-    def __init__(self, voice=''):
-        super(self.__class__, self).__init__()
+    def __init__(self, voice='', **kwargs):
+        super(FliteTTS, self).__init__(**kwargs)
         self.voice = voice if voice and voice in self.get_voices() else ''
 
     @classmethod
@@ -268,8 +277,7 @@ class FliteTTS(AbstractTTSEngine):
 
     @classmethod
     def get_config(cls):
-        # FIXME: Replace this as soon as we have a config module
-        config = {}
+        config = super(FliteTTS, cls).get_config()
         # HMM dir
         # Try to get hmm_dir from config
         profile_path = jasperpath.config('profile.yml')
@@ -283,7 +291,7 @@ class FliteTTS(AbstractTTSEngine):
 
     @classmethod
     def is_available(cls):
-        return (super(cls, cls).is_available() and
+        return (super(FliteTTS, cls).is_available() and
                 diagnose.check_executable('flite') and
                 len(cls.get_voices()) > 0)
 
@@ -354,19 +362,18 @@ class PicoTTS(AbstractTTSEngine):
 
     SLUG = "pico-tts"
 
-    def __init__(self, language="en-US"):
-        super(self.__class__, self).__init__()
+    def __init__(self, language="en-US", **kwargs):
+        super(PicoTTS, self).__init__(**kwargs)
         self.language = language
 
     @classmethod
     def is_available(cls):
-        return (super(cls, cls).is_available() and
+        return (super(PicoTTS, cls).is_available() and
                 diagnose.check_executable('pico2wave'))
 
     @classmethod
     def get_config(cls):
-        # FIXME: Replace this as soon as we have a config module
-        config = {}
+        config = super(PicoTTS, cls).get_config()
         # HMM dir
         # Try to get hmm_dir from config
         profile_path = jasperpath.config('profile.yml')
@@ -425,20 +432,19 @@ class GoogleTTS(AbstractMp3TTSEngine):
 
     SLUG = "google-tts"
 
-    def __init__(self, language='en'):
-        super(self.__class__, self).__init__()
+    def __init__(self, language='en', **kwargs):
+        super(GoogleTTS, self).__init__(**kwargs)
         self.language = language
 
     @classmethod
     def is_available(cls):
-        return (super(cls, cls).is_available() and
+        return (super(GoogleTTS, cls).is_available() and
                 diagnose.check_python_import('gtts') and
                 diagnose.check_network_connection())
 
     @classmethod
     def get_config(cls):
-        # FIXME: Replace this as soon as we have a config module
-        config = {}
+        config = super(GoogleTTS, cls).get_config()
         # HMM dir
         # Try to get hmm_dir from config
         profile_path = jasperpath.config('profile.yml')
@@ -485,8 +491,8 @@ class MaryTTS(AbstractTTSEngine):
     SLUG = "mary-tts"
 
     def __init__(self, server="mary.dfki.de", port="59125", language="en_GB",
-                 voice="dfki-spike"):
-        super(self.__class__, self).__init__()
+                 voice="dfki-spike", **kwargs):
+        super(MaryTTS, self).__init__(**kwargs)
         self.server = server
         self.port = port
         self.netloc = '{server}:{port}'.format(server=self.server,
@@ -514,8 +520,7 @@ class MaryTTS(AbstractTTSEngine):
 
     @classmethod
     def get_config(cls):
-        # FIXME: Replace this as soon as we have a config module
-        config = {}
+        config = super(MaryTTS, cls).get_config()
         # HMM dir
         # Try to get hmm_dir from config
         profile_path = jasperpath.config('profile.yml')
@@ -536,7 +541,7 @@ class MaryTTS(AbstractTTSEngine):
 
     @classmethod
     def is_available(cls):
-        return (super(cls, cls).is_available() and
+        return (super(MaryTTS, cls).is_available() and
                 diagnose.check_network_connection())
 
     def _makeurl(self, path, query={}):
@@ -578,8 +583,8 @@ class IvonaTTS(AbstractMp3TTSEngine):
     SLUG = "ivona-tts"
 
     def __init__(self, access_key='', secret_key='', region=None,
-                 voice=None, speech_rate=None, sentence_break=None):
-        super(self.__class__, self).__init__()
+                 voice=None, speech_rate=None, sentence_break=None, **kwargs):
+        super(IvonaTTS, self).__init__(**kwargs)
         self._pyvonavoice = pyvona.Voice(access_key, secret_key)
         self._pyvonavoice.codec = "mp3"
         if region:
@@ -593,8 +598,7 @@ class IvonaTTS(AbstractMp3TTSEngine):
 
     @classmethod
     def get_config(cls):
-        # FIXME: Replace this as soon as we have a config module
-        config = {}
+        config = super(IvonaTTS, cls).get_config()
         # HMM dir
         # Try to get hmm_dir from config
         profile_path = jasperpath.config('profile.yml')
@@ -622,7 +626,7 @@ class IvonaTTS(AbstractMp3TTSEngine):
 
     @classmethod
     def is_available(cls):
-        return (super(cls, cls).is_available() and
+        return (super(IvonaTTS, cls).is_available() and
                 diagnose.check_python_import('pyvona') and
                 diagnose.check_network_connection())
 

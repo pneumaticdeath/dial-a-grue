@@ -23,7 +23,7 @@ class Mic:
     speechRec = None
     speechRec_persona = None
 
-    def __init__(self, speaker, passive_stt_engine, active_stt_engine, echo=False):
+    def __init__(self, speaker, passive_stt_engine, active_stt_engine, echo=False, audio_dev=0):
         """
         Initiates the pocketsphinx instance.
 
@@ -45,6 +45,7 @@ class Mic:
         self._audio = pyaudio.PyAudio()
         self._logger.info("Initialization of PyAudio completed.")
         self._echo = echo # whether to play back what it heard
+        self._audio_dev = audio_dev
 
     def __del__(self):
         self._audio.terminate()
@@ -72,7 +73,7 @@ class Mic:
                                   channels=1,
                                   rate=RATE,
                                   input=True,
-                                  input_device_index=1,
+                                  input_device_index=self._audio_dev,
                                   frames_per_buffer=CHUNK)
 
         # stores the audio data
@@ -84,7 +85,8 @@ class Mic:
         # calculate the long run average, and thereby the proper threshold
         for i in range(0, int(RATE / CHUNK * THRESHOLD_TIME + 0.5)):
 
-            data = stream.read(CHUNK, False)
+            # data = stream.read(CHUNK, False)
+            data = stream.read(CHUNK)
             frames.append(data)
 
             # save this data point as a score
@@ -121,7 +123,7 @@ class Mic:
                                   channels=1,
                                   rate=RATE,
                                   input=True,
-                                  input_device_index=1,
+                                  input_device_index=self._audio_dev,
                                   frames_per_buffer=CHUNK)
 
         # stores the audio data
@@ -218,6 +220,7 @@ class Mic:
         """
 
         TARGET_RATE = 16000
+        # RATE = 16000
         RATE = 44100
         # CHUNK = 1024
         CHUNK = 32
@@ -246,7 +249,7 @@ class Mic:
                                   channels=1,
                                   rate=RATE,
                                   input=True,
-                                  input_device_index=1,
+                                  input_device_index=self._audio_dev,
                                   frames_per_buffer=CHUNK)
 
         frames = []
@@ -256,7 +259,8 @@ class Mic:
 
         for i in range(0, RATE / CHUNK * LISTEN_TIME):
 
-            data = stream.read(CHUNK, False)
+            # data = stream.read(CHUNK, False)
+            data = stream.read(CHUNK)
             frames.append(data)
             score = self.getScore(data)
 
