@@ -3,20 +3,9 @@
 
 import jasperpath
 import logging
-from gpio_switch import Switch
+from gpio_switch import Switch, CompoundSwitch
 import os
 import yaml
-
-class CompoundSwitch(object):
-    def __init__(self, pattern, switches):
-        self._pattern = pattern
-        self._switches = switches
-
-    def is_closed(self):
-        for switch, value in self._pattern.items():
-            if self._switches[switch].is_closed() != value:
-                return False
-        return True
 
 touchtone_defs = {
     '1': {'col1':  True, 'col2': False, 'col3': False, 'row1':  True, 'row2': False, 'row3': False, 'row4': False},
@@ -114,3 +103,6 @@ if __name__ == '__main__':
         print('PTT pressed')
     else:
         print('PTT not pressed')
+
+    for name, sw in phone._switches.items():
+        print('{0} is {1}'.format(name, 'closed' if sw.is_closed() else 'open'))
