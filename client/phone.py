@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # vim: sw=4 ai expandtab
 
+from gpio_switch import Switch, CompoundSwitch
 import jasperpath
 import logging
-from gpio_switch import Switch, CompoundSwitch
 import os
+import threading
+import time
 import yaml
 
 touchtone_defs = {
@@ -38,7 +40,9 @@ class Phone(object):
         if profile is None:
             profile = jasperpath.config('phone.yml')
         self.load_profile(profile)
-        self._monitor()
+        self._monitor_thread = threading.Thread(target=self._monitor)
+        self._monitor_thread.setDaemon(True)
+        self._monitor_thread.start()
 
     def load_profile(self, filename):
         with open(filename, 'r') as f:
@@ -63,7 +67,14 @@ class Phone(object):
         for switch, pin in self.profile['touchtone'].items():
             self._switches[switch] = Switch(pin)
         for button, button_pattern in touchtone_defs.items():
+            def on_close(interval):
+                logging.info('{} button pressed'.format(button))
+            def on_open(interval):
+                logging.info('{} button released after {} seconds'.format(button, interval))
+                self._dial_stack.append(button)
             self._switches[button] = CompoundSwitch(button_pattern, self._switches)
+            self._switches[button].on_open(on_open)
+            self._switches[button].on_close(on_close)
         self._monitor = self._touchtone_monitor
 
     def _rotary_init(self):
@@ -71,7 +82,15 @@ class Phone(object):
         self._monitor = self._rotary_monitor
 
     def _touchtone_monitor(self):
-        pass
+        while True:
+            for button in touchtone_defs.keys():
+                self._switches[button].is_closed()
+            time.sleep(0.02)
+
+    def dial_stack(self):
+        stack = self._dial_stack
+        self._dial_stack = []
+        return stack
 
     def _rotary_monitor(self):
         pass 
@@ -106,3 +125,9 @@ if __name__ == '__main__':
 
     for name, sw in phone._switches.items():
         print('{0} is {1}'.format(name, 'closed' if sw.is_closed() else 'open'))
+
+    while True:
+        stack = phone.dial_stack()
+        if stack:
+            print('Pressed: {}'.format(', '.join(stack)))
+        time.sleep(0.5)
