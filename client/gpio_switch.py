@@ -40,10 +40,10 @@ class AbstractSwitch(object):
                 self._value = new_value
                 if self._value:
                     for cb in self._onopen_cb:
-                        cb(self._closed, self._interval)
+                        cb(not self._value, self._interval)
                 else:
                     for cb in self._onclose_cb:
-                        cb(self._closed, self._interval)
+                        cb(not self._value, self._interval)
 
         return not self._value
 

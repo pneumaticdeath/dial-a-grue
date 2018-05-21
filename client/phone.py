@@ -9,7 +9,7 @@ import threading
 import time
 import yaml
 
-touchtone_defs = {
+_touchtone_defs = {
     '1': {'col1':  True, 'col2': False, 'col3': False, 'row1':  True, 'row2': False, 'row3': False, 'row4': False},
     '2': {'col1': False, 'col2':  True, 'col3': False, 'row1':  True, 'row2': False, 'row3': False, 'row4': False},
     '3': {'col1': False, 'col2': False, 'col3':  True, 'row1':  True, 'row2': False, 'row3': False, 'row4': False},
@@ -23,6 +23,8 @@ touchtone_defs = {
     '0': {'col1': False, 'col2':  True, 'col3': False, 'row1': False, 'row2': False, 'row3': False, 'row4':  True},
     '#': {'col1': False, 'col2': False, 'col3':  True, 'row1': False, 'row2': False, 'row3': False, 'row4':  True},
 }
+
+_rotary_map = { 1: '1', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '0' }
 
 class Phone(object):
     _PHONE = None
@@ -66,34 +68,71 @@ class Phone(object):
     def _touchtone_init(self):
         for switch, pin in self.profile['touchtone'].items():
             self._switches[switch] = Switch(pin)
-        for button, button_pattern in touchtone_defs.items():
-            def on_close(interval):
-                logging.info('{} button pressed'.format(button))
-            def on_open(interval):
-                logging.info('{} button released after {} seconds'.format(button, interval))
-                self._dial_stack.append(button)
+        for button, button_pattern in _touchtone_defs.items():
+            def on_close(is_closed, interval, switch=button):
+                # the third argument with the default value is a bit of a hack
+                # to make a copy of current value of 'button' at def time.
+                logging.info('{} button pressed'.format(switch))
+            def on_open(is_closed, interval, switch=button):
+                # the third argument with the default value is a bit of a hack
+                # to make a copy of current value of 'button' at def time.
+                logging.info('{} button released after {} seconds'.format(switch, interval))
+                self._dial_stack.append(switch)
             self._switches[button] = CompoundSwitch(button_pattern, self._switches)
             self._switches[button].on_open(on_open)
             self._switches[button].on_close(on_close)
         self._monitor = self._touchtone_monitor
 
-    def _rotary_init(self):
-        self._switches['pulse'] = Switch(self.profile['rotary']['pulse'])
-        self._monitor = self._rotary_monitor
-
     def _touchtone_monitor(self):
         while True:
-            for button in touchtone_defs.keys():
+            for button in _touchtone_defs.keys():
                 self._switches[button].is_closed()
-            time.sleep(0.02)
+            time.sleep(0.01)
+
+    def _rotary_init(self):
+        self._pulse_counter = 0
+        self._last_pulse_time = time.time()
+
+        def catch_pulse_start(is_closed, interval):
+            pulse_interval = time.time()-self._last_pulse_time
+            if pulse_interval <= 0.12 and pulse_interval >= 0.08:
+                self._pulse_counter += 1
+            elif pulse_interval < 0.08:
+                logging.warn('Got too short rotary pulse of {} seconds'.format(pulse_interval))
+            else:
+                if self._pulse_counter > 0:
+                    # edge case where the monitor didn't catch the interval
+                    logging.debug('Last ditch effort to count pulses')
+                    self._interpret_pulses()
+                self._pulse_counter = 1
+            self._last_pulse_time = time.time()
+
+        self._switches['pulse'] = Switch(self.profile['rotary']['pulse'])
+        self._switches['pulse'].on_close(catch_pulse_start)
+        self._monitor = self._rotary_monitor
+
+    def _rotary_monitor(self):
+        while True:
+            time.sleep(0.01)
+            self._switches['pulse'].is_closed()
+            if time.time()-self._last_pulse_time >= 0.15 and self._pulse_counter > 0:
+                logging.debug('Counting pulses')
+                self._interpret_pulses()
+
+    def _interpret_pulses(self):
+        if self._pulse_counter in _rotary_map:
+            self._dial_stack.append(_rotary_map[self._pulse_counter])
+            logging.debug('Counted {0} pulses yielding a {1}'.format(self._pulse_counter, _rotary_map[self._pulse_counter]))
+        elif self._pulse_counter == 0:
+            logging.warn('Tried to interpret no pulses')
+        else:
+            logging.error('Got too many pulses: {}'.format(self.pulse_counter))
+        self._pulse_counter = 0
 
     def dial_stack(self):
         stack = self._dial_stack
         self._dial_stack = []
         return stack
-
-    def _rotary_monitor(self):
-        pass 
 
     def off_hook(self):
         return self._switches['hook'].is_closed()
