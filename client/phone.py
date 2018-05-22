@@ -4,7 +4,6 @@
 from gpio_switch import Switch, CompoundSwitch
 import jasperpath
 import logging
-import os
 import threading
 import time
 import yaml
@@ -147,6 +146,7 @@ class Phone(object):
 class Hangup(Exception):
     pass
 
+
 def get_phone():
     return Phone.get_phone()
 
@@ -168,5 +168,5 @@ if __name__ == '__main__':
     while True:
         stack = phone.dial_stack()
         if stack:
-            print('Pressed: {}'.format(', '.join(stack)))
+            print('Dialed: {}'.format(', '.join(stack)))
         time.sleep(0.5)
