@@ -8,7 +8,7 @@ import phone
 
 class Brain(object):
 
-    def __init__(self, mic, profile, active_stt_engine=None):
+    def __init__(self, mic, profile, active_stt_engine=None, echo=False):
         """
         Instantiates a new Brain object, which cross-references user
         input with a list of modules. Note that the order of brain.modules
@@ -27,6 +27,7 @@ class Brain(object):
         self.modules = self.get_modules()
         self.module_mics = dict()
         self._logger = logging.getLogger(__name__)
+        self._echo = echo
 
     @classmethod
     def get_modules(cls):
@@ -81,7 +82,8 @@ class Brain(object):
                                 self.module_mics[module.__name__] = client.mic.Mic(
                                     self.mic.speaker,
                                     self.mic.passive_stt_engine,
-                                    self.active_stt_engine.get_module_instance(module)
+                                    self.active_stt_engine.get_module_instance(module),
+                                    echo=self._echo
                                 )
                             mic = self.module_mics[module.__name__]
                         else:
