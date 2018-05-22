@@ -13,6 +13,7 @@ import os
 import subprocess
 import threading
 import time
+import yaml
 
 import phone
 # import local_phone as phone
@@ -23,7 +24,7 @@ class Mic:
     speechRec = None
     speechRec_persona = None
 
-    def __init__(self, speaker, passive_stt_engine, active_stt_engine, echo=False, audio_dev=0):
+    def __init__(self, speaker, passive_stt_engine, active_stt_engine, echo=False):
         """
         Initiates the pocketsphinx instance.
 
@@ -45,7 +46,16 @@ class Mic:
         self._audio = pyaudio.PyAudio()
         self._logger.info("Initialization of PyAudio completed.")
         self._echo = echo # whether to play back what it heard
-        self._audio_dev = audio_dev
+
+        self._audio_dev = None
+        profile_path = jasperpath.config('profile.yml')
+        if os.path.exists(profile_path):
+            with open(profile_path, 'r') as f:
+                profile = yaml.safe_load(f)
+                if 'audio_dev' in profile and 'speaker' in profile['audio_dev']:
+                    self._audio_dev = profile['audio_dev']['mic']
+        if self._audio_dev is None:
+            self._audio_dev = 0
 
     def __del__(self):
         self._audio.terminate()
@@ -85,8 +95,10 @@ class Mic:
         # calculate the long run average, and thereby the proper threshold
         for i in range(0, int(RATE / CHUNK * THRESHOLD_TIME + 0.5)):
 
-            # data = stream.read(CHUNK, False)
-            data = stream.read(CHUNK)
+            # This is a poorly documentd hack to avoid buffer overflows on some platforms
+            # Only works with pyaudio 0.2.11 and up
+            data = stream.read(CHUNK, False)
+            # data = stream.read(CHUNK)
             frames.append(data)
 
             # save this data point as a score
@@ -259,8 +271,9 @@ class Mic:
 
         for i in range(0, RATE / CHUNK * LISTEN_TIME):
 
-            # data = stream.read(CHUNK, False)
-            data = stream.read(CHUNK)
+            # Only works with pyaudio 0.2.11 and up
+            data = stream.read(CHUNK, False)
+            # data = stream.read(CHUNK)
             frames.append(data)
             score = self.getScore(data)
 

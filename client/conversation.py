@@ -13,7 +13,7 @@ class Conversation(object):
         self.persona = persona
         self.mic = mic
         self.profile = profile
-        self.brain = Brain(mic, profile, active_stt_engine)
+        self.brain = Brain(mic, profile, active_stt_engine, echo=mic._echo)
         # self.notifier = Notifier(profile)
         self.phone = mic.phone
 

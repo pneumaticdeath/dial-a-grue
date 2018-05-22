@@ -109,8 +109,7 @@ class Jasper(object):
         self.mic = Mic(tts_engine_class.get_instance(),
                        stt_passive_engine_class.get_passive_instance(),
                        stt_engine_class.get_active_instance(),
-                       echo=args.echo,
-                       audio_dev=self.config['audio_dev']['mic'])
+                       echo=args.echo)
 
         # Squirell away stt_engine_class
         self.stt_engine_class = stt_engine_class
