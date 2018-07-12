@@ -1,7 +1,10 @@
 # vim: ai sw=4 expandtab:
 import logging
+import os
 import pkgutil
+import random
 import re
+import tempfile
 import time
 from client import jasperpath
 
@@ -10,6 +13,7 @@ WORDS = [ 'REPEAT', 'AFTER', 'ME' ]
 INSTANCE_WORDS = [
         'QUIT',
         'HELLO',
+        'TRAIN',
     ]
 
 INSTANCE_WORDS.extend(WORDS)
@@ -45,6 +49,30 @@ def handle(text, mic, profile):
         if text:
             print text
             mic.say(text.lower())
+            if re.search(r'\btrain\b', text, re.IGNORECASE):
+                mic.keep_files = True
+                done = False
+                test_data = tempfile.NamedTemporaryFile(prefix='test_', suffix='.txt', delete=False)
+                print('Training mode!')
+                mic.say('Entering training mode')
+                print('Trainning data in {0}'.format(test_data.name))
+                while not done:
+                    target_word = random.choice(INSTANCE_WORDS)
+                    print('Target word: {0}'.format(target_word))
+                    mic.say('Please say {0}'.format(target_word.lower()))
+                    text = mic.activeListen()
+                    if re.search(r'\bquit\b', text, re.IGNORECASE) and target_word != 'QUIT':
+                        done = True
+                    else:
+                        test_data.write('{0},{1},{2}\n'.format(target_word, text, mic.last_file_recorded))
+                        if text.lower() == target_word.lower():
+                            print('Matched')
+                            mic.say('Understood')
+                        else:
+                            print('Got {0} instead'.format(text))
+                            mic.say('I heard you say {0}'.format(text.lower()))
+                mic.keep_files = False
+                os.remove(mic.last_file_recorded)
         else:
             print "Got nothing"
 

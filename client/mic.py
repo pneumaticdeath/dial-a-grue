@@ -56,6 +56,8 @@ class Mic:
                     self._audio_dev = profile['audio_dev']['mic']
         if self._audio_dev is None:
             self._audio_dev = 0
+        self.keep_files = False
+        self.last_file_recorded = None
 
     def __del__(self):
         self._audio.terminate()
@@ -295,7 +297,7 @@ class Mic:
 
         self.lock.release()
 
-        with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=True) as f:
+        with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=not self.keep_files) as f:
             wav_fp = wave.open(f, 'wb')
             wav_fp.setnchannels(1)
             wav_fp.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
@@ -307,6 +309,8 @@ class Mic:
                 candidates = self.active_stt_engine.transcribe(f)
                 if self._echo:
                     self.speaker.play(f.name)
+                if self.keep_files:
+                    self.last_file_recorded = f.name
             else:
                 resampled_file = resample(f.name, TARGET_RATE)
                 f_prime = open(resampled_file)
@@ -314,7 +318,11 @@ class Mic:
                 f_prime.close()
                 if self._echo:
                     self.speaker.play(resampled_file)
-                os.remove(resampled_file)
+                if self.keep_files:
+                    self.last_file_recorded = resampled_file
+                    os.remove(f.name)
+                else:
+                    os.remove(resampled_file)
 
             if candidates:
                 self._logger.info('Got the following possible transcriptions:')
