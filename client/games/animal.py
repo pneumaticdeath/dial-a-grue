@@ -32,17 +32,17 @@ class Node(object):
     def create(cls, node_text, connection, node_id = None):
         if node_id is None:
             cursor = connection.cursor()
-            result = cursor.execute('INSERT INTO animals (node_text) values (?);', (node_text,))
+            cursor.execute('INSERT INTO animals (node_text) values (?);', (node_text,))
             node_id = cursor.lastrowid
         else:
-            result = connection.execute('INSERT INTO animals (rowid, node_text) values (?,?);',
+            connection.execute('INSERT INTO animals (rowid, node_text) values (?,?);',
                                         (node_id, node_text))
         connection.commit()        
         return cls.find(node_id, connection)
 
     @classmethod
     def _create_db(cls, conn):
-        res = conn.execute('CREATE TABLE animals (node_text TEXT NOT NULL, yes_node INT, no_node INT);')
+        conn.execute('CREATE TABLE animals (node_text TEXT NOT NULL, yes_node INT, no_node INT);')
 	conn.commit()
         return cls.create('Horse', conn, 1)
 
@@ -75,7 +75,7 @@ class Animal(object):
     def reset(self):
         try:
             self._current_node = Node.find(1, self._conn)
-        except sqlite3.OperationalError as e:
+        except sqlite3.OperationalError:
             self._current_node = Node._create_db(self._conn)
 
     def current_node(self):

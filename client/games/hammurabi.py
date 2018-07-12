@@ -4,9 +4,7 @@
 # published in "Basic Computer Games" (C) 1978)
 # Copyright 2018, Mitch Patenaude
 
-import logging
 import random
-import sys
 
 class Hammurabi(object):
 

@@ -3,9 +3,7 @@
 # Card library
 # Copyright 2018, Mitch Patenaude
 
-import logging
 import random
-import sys
 
 
 class Card(object):

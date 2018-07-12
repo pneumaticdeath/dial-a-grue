@@ -4,8 +4,6 @@
 # Copyright 2018, Mitch Patenaude
 
 import cards
-import logging
-import random
 import sys
 from utils import mk_print_list
 

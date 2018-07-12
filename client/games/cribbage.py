@@ -5,7 +5,6 @@
 
 from __future__ import print_function
 import cards
-import logging
 import random
 import sys
 from utils import mk_print_list

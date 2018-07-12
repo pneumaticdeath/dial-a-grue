@@ -5,7 +5,6 @@
 # Copyright 2018, Mitch Patenaude
 
 import random
-import sys
 from utils import mk_print_list
 
 dodecahedron_map = {

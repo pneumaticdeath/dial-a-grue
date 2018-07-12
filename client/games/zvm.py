@@ -3,7 +3,6 @@ import fcntl
 import logging
 import os
 import pty
-import re
 import threading
 import time
 from client import jasperpath

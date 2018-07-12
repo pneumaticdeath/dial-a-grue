@@ -1,5 +1,5 @@
 from cribbage import count_hand, Hand
-from cards import Card, Deck
+from cards import Card
 
 def dump(hand, crib_card, is_crib=False, correct_score=None):
     print('crib card: {:20s} {}: {:60s}'.format(
