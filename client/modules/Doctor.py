@@ -1,7 +1,5 @@
 # vim: ai sw=4 expandtab:
 import re
-import time
-from client import jasperpath
 from client.utils.eliza import eliza
 
 INSTANCE_WORDS = [ 

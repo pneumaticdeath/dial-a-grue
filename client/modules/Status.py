@@ -1,6 +1,5 @@
 # vim: ai sw=4 expandtab:
 import logging
-import os
 import re
 import subprocess
 

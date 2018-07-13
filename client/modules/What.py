@@ -1,5 +1,6 @@
 # vim: ai sw=4 expandtab:
 import re
+import logging
 import pkgutil
 from client import jasperpath
 

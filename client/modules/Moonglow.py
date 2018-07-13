@@ -1,8 +1,6 @@
 # vim: ai sw=4 expandtab:
 import logging
 import re
-import time
-from client import jasperpath
 from client.games.zvm import ZorkMachine, ZorkPhone
 
 logger = logging.getLogger(__name__)

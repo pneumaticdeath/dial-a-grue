@@ -6,7 +6,6 @@ import pty
 import re
 import time
 from client import jasperpath
-from client.phone import Phone
 
 
 WORDS = ['GRUE']

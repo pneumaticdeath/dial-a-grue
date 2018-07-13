@@ -5,7 +5,6 @@ import pkgutil
 import random
 import re
 import tempfile
-import time
 from client import jasperpath
 
 WORDS = [ 'REPEAT', 'AFTER', 'ME' ]
