@@ -92,7 +92,7 @@ def handle(text, mic, profile):
     logging.info('Starting the Wumpus module')
     map_name = random.choice(wumpus.maps.keys())
     wumpus_map = wumpus.maps[map_name]
-    mic.say('Let\'s Hunt the Wumpus on the {} map!'.format(map_name))
+    output('Let\'s Hunt the Wumpus on the {} map!'.format(map_name))
 
     game = wumpus.Wumpus(wumpus_map)
 
