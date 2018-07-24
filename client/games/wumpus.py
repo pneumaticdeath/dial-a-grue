@@ -117,8 +117,8 @@ torroid_map = {
 maps = {
   'dodecahedron': dodecahedron_map,
   'icosahedron': icosahedron_map,
-  'mobius strip': mobius_strip_map,
-  'string of pearls': pearls_map,
+  'mobius': mobius_strip_map,
+  'pearls': pearls_map,
   'torroid': torroid_map,
 }
 
