@@ -30,7 +30,99 @@ dodecahedron_map = {
     20: (11, 18, 19),
 }
 
-def test_adjancency(test_map):
+icosahedron_map = {
+    1: (2, 3, 4, 5, 6),
+    2: (1, 3, 6, 7, 11),
+    3: (1, 2, 4, 7, 8),
+    4: (1, 3, 5, 8, 9),
+    5: (1, 4, 6, 9, 10),
+    6: (1, 2, 5, 10, 11),
+    7: (2, 3, 8, 11, 12),
+    8: (3, 4, 7, 9, 12),
+    9: (4, 5, 8, 10, 12),
+    10: (5, 6, 9, 11, 12),
+    11: (2, 6, 7, 10, 12),
+    12: (7, 8, 9, 10, 11),
+}
+
+mobius_strip_map = {
+    1: (2, 11, 20),
+    2: (1, 3, 12),
+    3: (2, 4, 13),
+    4: (3, 5, 14),
+    5: (4, 6, 15),
+    6: (5, 7, 16),
+    7: (6, 8, 17),
+    8: (7, 9, 18),
+    9: (8, 10, 19),
+    10: (9, 11, 20),
+    11: (1, 10, 12),
+    12: (2, 11, 13),
+    13: (3, 12, 14),
+    14: (4, 13, 15),
+    15: (5, 14, 16),
+    16: (6, 15, 17),
+    17: (7, 16, 18),
+    18: (8, 17, 19),
+    19: (9, 18, 20),
+    20: (1, 10, 19),
+}
+
+pearls_map = {
+    1: (2, 3, 20),
+    2: (1, 3, 4),
+    3: (1, 2, 4),
+    4: (2, 3, 5),
+    5: (4, 6, 7),
+    6: (5, 7, 8),
+    7: (5, 6, 8),
+    8: (6, 7, 9),
+    9: (8, 10, 11),
+    10: (9, 11, 12),
+    11: (9, 10, 12),
+    12: (10, 11, 13),
+    13: (12, 14, 15),
+    14: (13, 15, 16),
+    15: (13, 14, 16),
+    16: (14, 15, 17),
+    17: (16, 18, 19),
+    18: (17, 19, 20),
+    19: (17, 18, 20),
+    20: (1, 18, 19),
+}
+
+torroid_map = {
+    1: (2, 10, 11),
+    2: (1, 3, 14),
+    3: (2, 4, 13),
+    4: (3, 5, 16),
+    5: (4, 6, 15),
+    6: (5, 7, 18),
+    7: (6, 8, 17),
+    8: (7, 9, 20),
+    9: (8, 10, 19),
+    10: (1, 9, 12),
+    11: (1, 12, 20),
+    12: (10, 11, 13),
+    13: (3, 12, 14),
+    14: (2, 13, 15),
+    15: (5, 14, 16),
+    16: (4, 15, 17),
+    17: (7, 16, 18),
+    18: (6, 17, 19),
+    19: (9, 18, 20),
+    20: (8, 11, 19),
+}
+
+maps = {
+  'dodecahedron': dodecahedron_map,
+  'icosahedron': icosahedron_map,
+  'mobius strip': mobius_strip_map,
+  'string of pearls': pearls_map,
+  'torroid': torroid_map,
+}
+
+def test_adjacency(test_map):
     'Make sure the graph is bidirectional'
     for room, neighbors in test_map.items():
         for adj_room in neighbors:
@@ -173,17 +265,19 @@ class Wumpus(object):
         self.wumpus = random.choice(wumpus_move_choices)
 
 if __name__ == '__main__':
-    test_adjancency(dodecahedron_map)
+    for name, m in maps.items():
+        print('\nXXX {} XXX'.format(name))
+        test_adjacency(m)
 
-    wumpus = Wumpus()
-    while not wumpus.game_over:
-        look = wumpus.look()
-        print(look)
-        dest = random.choice(wumpus.map[wumpus.player])
-        if ' smell the wumpus' in look and random.randint(1,3) != 1:
-            print('shooting at {0}'.format(dest))
-            print(wumpus.shoot([dest]))
-        else:
-            # print('moving to {0}'.format(dest))
-            print(wumpus.move(dest))
-    print(wumpus.look())
+        wumpus = Wumpus(m)
+        while not wumpus.game_over:
+            look = wumpus.look()
+            print(look)
+            dest = random.choice(wumpus.map[wumpus.player])
+            if ' smell the wumpus' in look and random.randint(1,3) != 1:
+                print('shooting at {0}'.format(dest))
+                print(wumpus.shoot([dest]))
+            else:
+                # print('moving to {0}'.format(dest))
+                print(wumpus.move(dest))
+        print(wumpus.look())
