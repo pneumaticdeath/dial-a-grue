@@ -1,5 +1,6 @@
 # vim: ai sw=4 expandtab:
 import logging
+import random
 import re
 from client.games import wumpus
 
@@ -34,8 +35,8 @@ PRIORITY = 50
 instructions = [
     'Welcome to Hunt the Wumpus!',
     'In this game you are hunting the wiley (and smelly) wumpus.',
-    'It is in one of the twenty rooms in this cave system.',
-    'In two other rooms exist deep pits where you would fall to your death',
+    'It is in one of the rooms in this cave system.',
+    'In two rooms exist deep pits where you would fall to your death',
     'You can detect the presence of a pit by the breeze is causes in nearby rooms.',
     'In two other rooms reside bats, which if disturbed, will carry you off to another room.',
     'In order to kill the wumpus you must shoot it with one of your very crooked arrows.',
@@ -89,9 +90,11 @@ def handle(text, mic, profile):
         return answer
 
     logging.info('Starting the Wumpus module')
-    mic.say('Let\'s Hunt the Wumpus!')
+    map_name = random.choice(wumpus.maps.keys())
+    wumpus_map = wumpus.maps[map_name]
+    mic.say('Let\'s Hunt the Wumpus on the {} map!'.format(map_name))
 
-    game = wumpus.Wumpus()
+    game = wumpus.Wumpus(wumpus_map)
 
     answer = ask_y_n('Would you like instructions?')
     if answer == 'YES':
