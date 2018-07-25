@@ -4,7 +4,10 @@ import random
 import re
 from client.games import wumpus
 
-WORDS = [ 'HUNT', 'THE', 'WUMPUS'  ]
+MAPS = [name.upper() for name in wumpus.maps.keys()]
+
+WORDS = [ 'HUNT', 'THE', 'WUMPUS'  ] + MAPS
+
 NUMBERS = [
   'ZERO',
   'ONE',
@@ -28,6 +31,7 @@ NUMBERS = [
   'NINETEEN',
   'TWENTY',
 ]
+
 INSTANCE_WORDS = [ 'LOOK', 'FIRE', 'SHOOT', 'MOVE', 'GO', 'YES', 'NO' ] + NUMBERS
 
 PRIORITY = 50
@@ -90,7 +94,13 @@ def handle(text, mic, profile):
         return answer
 
     logging.info('Starting the Wumpus module')
-    map_name = random.choice(wumpus.maps.keys())
+    map_name = None
+    for word in text.split():
+        if word in MAPS:
+            map_name = word.lower()
+            break
+    if map_name is None:
+        map_name = random.choice(wumpus.maps.keys())
     wumpus_map = wumpus.maps[map_name]
     output('Let\'s Hunt the Wumpus on the {} map!'.format(map_name))
 
