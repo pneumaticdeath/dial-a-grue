@@ -39,7 +39,7 @@ def handle(text, mic, profile):
 
         def pickPeggingCard(self, choices, pegging_stack, pegging_count):
             if len(choices) == 1:
-                out_func('Choosing {} for you, since it\'s the only card you can plan.'.format(choices[0]))
+                out_func('Choosing {} for you, since it\'s the only card you can play.'.format(choices[0]))
                 return choices[0]
     
             out_func('What would you like to play for pegging? {}'.format(mk_print_list(choices, conjunction='or')))

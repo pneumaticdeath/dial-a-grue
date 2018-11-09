@@ -145,7 +145,7 @@ def input_card(possibilities, word_func=read_words, output=my_print):
             possible_rank = card_rank_mapping[rank]
             matches = list(filter(lambda x: x._rank == possible_rank, possibilities))
             if not matches:
-                output('None of your choices match that')
+                output('None of your choices match {}'.format(' '.join(input_words)))
                 continue
             elif len(matches) == 1:
                 parsed_card = matches[0]
@@ -159,7 +159,7 @@ def input_card(possibilities, word_func=read_words, output=my_print):
                 else:
                     output('Didn\'t get that, let\'s start over')
         else:
-            output('Did\'t understand "{}"'.format(' '.join(input_words)))
+            output('Didn\'t understand "{}"'.format(' '.join(input_words)))
         if parsed_card is not None and parsed_card not in possibilities:
             output('"{}" isn\'t a legal play at this point.'.format(parsed_card))
             parsed_card = None
@@ -191,7 +191,7 @@ _n_kind_score = {2: 2, 3: 6, 4: 12}
 
 card_names = {
     'ace': ('ace', 'aces'),
-    '2': ('deuce', 'dueces'),
+    '2': ('deuce', 'deuces'),
     '3': ('three', 'threes'),
     '4': ('four', 'fours'),
     '5': ('five', 'fives'),
@@ -417,7 +417,7 @@ class Cribbage(object):
         self.non_pegging_turn, self.pegging_turn = self.pegging_turn, self.non_pegging_turn
 
     def printHand(self, hand, is_crib=False, output=my_print):
-        output(hand)
+        output(str(hand))
         s, m = count_hand(hand, self.crib_card, is_crib)
         for x, y, z in m:
             if y is not None:
