@@ -28,6 +28,7 @@ class Conversation(object):
                 time.sleep(1)
 
             try:
+                print('Welcome grue fodder!')
                 self.mic.say("How can I be of service? Please hold down the "
                              "PTT button to talk.")
             except phone.Hangup:
