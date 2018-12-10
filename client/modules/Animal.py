@@ -36,7 +36,12 @@ def handle(text, mic, profile):
 
     game = Animal(dbfile=dbpath)
     
-    keep_playing = 'YES'
+    keep_playing = ask_yes_no('Are you thinking of an animal?', mic);
+    if keep_playing != 'YES':
+        print('Not ready? later!')
+        mic.say('Okay, come back when you\'ve thought of one!')
+        return
+
     while keep_playing == 'YES':
         game.reset()
         questions_asked = 0

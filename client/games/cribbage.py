@@ -417,7 +417,7 @@ class Cribbage(object):
         self.non_pegging_turn, self.pegging_turn = self.pegging_turn, self.non_pegging_turn
 
     def printHand(self, hand, is_crib=False, output=my_print):
-        output(str(hand))
+        output(hand)
         s, m = count_hand(hand, self.crib_card, is_crib)
         for x, y, z in m:
             if y is not None:

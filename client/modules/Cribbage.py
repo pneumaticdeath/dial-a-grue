@@ -19,6 +19,8 @@ def handle(text, mic, profile):
         return mic.activeListen().lower().split()
 
     def out_func(string):
+        if type(string) is not str:
+            string = str(string)
         print(string)
         mic.say(string)
      
@@ -39,7 +41,7 @@ def handle(text, mic, profile):
 
         def pickPeggingCard(self, choices, pegging_stack, pegging_count):
             if len(choices) == 1:
-                out_func('Choosing {} for you, since it\'s the only card you can play.'.format(choices[0]))
+                out_func('Your only play is {}.'.format(choices[0]))
                 return choices[0]
     
             out_func('What would you like to play for pegging? {}'.format(mk_print_list(choices, conjunction='or')))
