@@ -6,18 +6,20 @@ from client import jasperpath
 from client.games.animal import Animal
 
 WORDS = [ 'PLAY', 'ANIMAL'  ]
-INSTANCE_WORDS = [ 'YES', 'NO', 'QUIT' ]
+INSTANCE_WORDS = [ 'YES', 'NO', 'REPEAT' ]
 
 PRIORITY = 50
 
 def ask_yes_no(prompt, mic):
-    valid_choices = ['YES', 'NO', 'QUIT']
+    valid_choices = ['YES', 'NO']
     print('Prompting with "{0}"'.format(prompt))
     answer = None
     while answer not in valid_choices:
         mic.say(prompt)
         answer = mic.activeListen().upper()
         answer = answer.split(' ')[0]
+        if answer == 'REPEAT':
+            continue
         if answer not in valid_choices:
             print('Didn\'t like {0}, reprompting'.format(answer))
             mic.say('Sorry, I didn\'t catch that. Please answer yes or no.')
@@ -52,11 +54,6 @@ def handle(text, mic, profile):
                 game.answer_no()
             elif answer == 'YES':
                 game.answer_yes()
-            elif answer == 'QUIT':
-                keep_playing = 'NO'
-                break;
-        if keep_playing != 'YES':
-            break
         answer = ask_yes_no('I think it\'s a {0}. Is that right?'.format(game.current_node()), mic)
         questions_asked += 1
         if answer == 'NO':
@@ -65,8 +62,6 @@ def handle(text, mic, profile):
         elif answer == 'YES':
             print('Guessed {0} correctly in {1} questions'.format(game.current_node(), questions_asked))
             mic.say('Cool, I figured out it was a {0} in {1} questions!'.format(game.current_node(), questions_asked))
-        elif answer == 'QUIT':
-            break
         keep_playing = ask_yes_no('Play again?', mic)
     mic.say('Thanks for playing Guess the Animal with me!')
     logging.info('Leaving Animal module')
