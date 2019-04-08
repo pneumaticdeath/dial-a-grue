@@ -2,7 +2,7 @@
 import logging
 import re
 import time
-from client.games.zvm import ZorkMachine, ZorkPhone
+from client.games.zvm import ZorkMachine, ZorkPhone, StopGame
 
 logger = logging.getLogger(__name__)
 
@@ -211,7 +211,7 @@ def quit_confirm(text, match, phone):
         phone.running = False
         phone.zvm.write(text+'\n');
         phone.mic.say('That was a good game');
-        raise phone.StopGame()
+        raise StopGame()
 
 listen_handlers = [
     (re.compile(r'quit', re.IGNORECASE), quit_handler),
@@ -239,8 +239,6 @@ def handle(text, mic, profile):
     zorkphone = ZorkPhone(zvm, mic, 
                           munger=textmunge,
                           listen_handlers=listen_handlers)
-    zorkphone.talker.join()
-    zorkphone.listener.join()
 
     mic.say('Thank you for making an old grue very happy.')
 

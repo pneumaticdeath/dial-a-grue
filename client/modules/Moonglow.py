@@ -110,8 +110,6 @@ def handle(text, mic, profile):
     zorkphone = ZorkPhone(zvm, mic, 
                           munger=textmunge,
                           listen_handlers=listen_handlers)
-    zorkphone.talker.join()
-    zorkphone.listener.join()
 
     mic.say('Thank you for making an old grue very happy.')
 
