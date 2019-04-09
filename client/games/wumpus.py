@@ -178,7 +178,7 @@ class Wumpus(object):
             return 'Your game is over because {0}'.format(self.game_over_msg)
 
         if destination not in self.map[self.player]:
-            return 'That room isn\'t connected to this one.'
+            return 'Room {} isn\'t connected to this one.'.formast(destination)
 
         self.player = destination
         msgs = ['You move to room {0}'.format(destination)]

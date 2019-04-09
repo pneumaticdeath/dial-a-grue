@@ -21,6 +21,8 @@ class Conversation(object):
         """
         Delegates user input to the handling function when activated.
         """
+
+        greeting = self.profile['greeting']
         self._logger.info("Starting to handle conversation with keyword '%s'.",
                           self.persona)
         while True:
@@ -29,8 +31,7 @@ class Conversation(object):
 
             try:
                 print('Welcome grue fodder!')
-                self.mic.say("How can I be of service? Please hold down the "
-                             "white button to talk.")
+                self.mic.say(greeting)
             except phone.Hangup:
                 print('Got HUP')
 
