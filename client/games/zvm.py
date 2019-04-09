@@ -82,6 +82,7 @@ class ZorkPhone(object):
                 time.sleep(0.1)
                 logger.debug('Starting listen phase')
                 self.listen()
+                time.sleep(0.1)
         except StopGame as e:
             print('ZorkPhone caught: {}'.format(repr(e)))
 
