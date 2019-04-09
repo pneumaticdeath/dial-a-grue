@@ -89,7 +89,7 @@ def handle(text, mic, profile):
                 words = input()
             answer = words[0]
             if answer not in ['YES', 'NO']:
-                output('{0} wasn\'t a yes or no'.format(answer))
+                output('{0} wasn\'t a yes or no'.format(answer.lower()))
                 answer = None
         return answer
 
