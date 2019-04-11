@@ -1,8 +1,16 @@
 #!/bin/bash
 
-cmd="screen -D -m -S jasper sudo bash -c 'cd /home/chip/jasper; /home/chip/jasper/jasper.py'"
+source /etc/default/jasper
+
+if [[ "${JASPER_SUDO}" == "yes" ]]; then
+    SUDO=sudo
+else
+    SUDO=""
+fi
+
+cmd="screen -D -m -S jasper ${SUDO} bash -c 'cd ${JASPER_DIR}; ${JASPER_DIR}/jasper.py'"
 if [[ "$(whoami)" == "root" ]] ; then 
-    exec su - chip -c "${cmd}"
+    exec su - ${JASPER_USER} -c "${cmd}"
 else
     eval ${cmd}
 fi
