@@ -8,7 +8,7 @@ else
     SUDO=""
 fi
 
-cmd="screen -D -m -S jasper ${SUDO} bash -c 'cd ${JASPER_DIR}; ${JASPER_DIR}/jasper.py'"
+cmd="screen -D -m -S jasper ${SUDO} bash -c 'cd ${JASPER_DIR}; ${JASPER_DIR}/jasper.py ${JASPER_OPTS}'"
 if [[ "$(whoami)" == "root" ]] ; then 
     exec su - ${JASPER_USER} -c "${cmd}"
 else
