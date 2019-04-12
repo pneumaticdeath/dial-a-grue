@@ -23,6 +23,7 @@ class Mic:
 
     speechRec = None
     speechRec_persona = None
+    speaker = None
 
     def __init__(self, speaker, passive_stt_engine, active_stt_engine, echo=False):
         """
@@ -36,7 +37,7 @@ class Mic:
         """
         self._logger = logging.getLogger(__name__)
         self.lock = threading.Lock()
-        self.speaker = speaker
+        self.setSpeaker(speaker)
         self.passive_stt_engine = passive_stt_engine
         self.active_stt_engine = active_stt_engine
         self.phone = phone.get_phone()
@@ -61,6 +62,10 @@ class Mic:
 
     def __del__(self):
         self._audio.terminate()
+
+    @classmethod
+    def setSpeaker(cls, speaker):
+        cls.speaker = speaker
 
     def getScore(self, data):
         rms = audioop.rms(data, 2)
