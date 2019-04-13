@@ -11,7 +11,7 @@ PRIORITY = 101
 
 def handle(text, mic, profile):
     """
-    Check the battery status
+    Check the phone status
     """
 
     def output(string):
@@ -23,7 +23,7 @@ def handle(text, mic, profile):
     status_output = subprocess.check_output('../bin/status')
     for line in status_output.split('\n'):
         output(line)
-    logging.info('Done checking batter status')
+    logging.info('Done checking phone status')
 
 def isValid(text):
     """
