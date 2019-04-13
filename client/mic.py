@@ -60,6 +60,12 @@ class Mic:
         self.keep_files = False
         self.last_file_recorded = None
 
+        self._last_threshold = None
+        self._background_threshold_thread = threading.Thread(target=self.backgroundThreshold)
+        self._background_threshold_thread.setDaemon(True)
+        self._background_threshold_thread.setName('noise_threadhold_monitor')
+        self._background_threshold_thread.start()
+
     def __del__(self):
         self._audio.terminate()
 
@@ -72,7 +78,21 @@ class Mic:
         score = rms / 3
         return score
 
+    def backgroundThreshold(self):
+        while True:
+            try:
+                self._last_threshold = self.fetchThresholdInBackground()
+            except IOError as e:
+                self._logger.warning('backgroundThreshold got exception: {}'.format(repr(e)))
+
+            time.sleep(15)
+
     def fetchThreshold(self):
+        if self._last_threshold is None:
+            self._last_threshold = self.fetchThresholdInBackground()
+        return self._last_threshold
+
+    def fetchThresholdInBackground(self):
 
         # TODO: Consolidate variables from the next three functions
         THRESHOLD_MULTIPLIER = 1.8
@@ -85,36 +105,43 @@ class Mic:
         # number of seconds to allow to establish threshold
         THRESHOLD_TIME = 1
 
-        # prepare recording stream
-        stream = self._audio.open(format=pyaudio.paInt16,
-                                  channels=1,
-                                  rate=RATE,
-                                  input=True,
-                                  input_device_index=self._audio_dev,
-                                  frames_per_buffer=CHUNK)
+        stream = None
+        self.lock.acquire()
+        try:
 
-        # stores the audio data
-        frames = []
+            # prepare recording stream
+            stream = self._audio.open(format=pyaudio.paInt16,
+                                    channels=1,
+                                    rate=RATE,
+                                    input=True,
+                                    input_device_index=self._audio_dev,
+                                    frames_per_buffer=CHUNK)
 
-        # stores the lastN score values
-        lastN = [i for i in range(int(20480/CHUNK))]
+            # stores the audio data
+            frames = []
 
-        # calculate the long run average, and thereby the proper threshold
-        for i in range(0, int(RATE / CHUNK * THRESHOLD_TIME + 0.5)):
+            # stores the lastN score values
+            lastN = [i for i in range(int(20480/CHUNK))]
 
-            # This is a poorly documentd hack to avoid buffer overflows on some platforms
-            # Only works with pyaudio 0.2.11 and up
-            data = stream.read(CHUNK, False)
-            # data = stream.read(CHUNK)
-            frames.append(data)
+            # calculate the long run average, and thereby the proper threshold
+            for i in range(0, int(RATE / CHUNK * THRESHOLD_TIME + 0.5)):
 
-            # save this data point as a score
-            lastN.pop(0)
-            lastN.append(self.getScore(data))
-            average = sum(lastN) / len(lastN)
+                # This is a poorly documentd hack to avoid buffer overflows on some platforms
+                # Only works with pyaudio 0.2.11 and up
+                data = stream.read(CHUNK, False)
+                # data = stream.read(CHUNK)
+                frames.append(data)
 
-        stream.stop_stream()
-        stream.close()
+                # save this data point as a score
+                lastN.pop(0)
+                lastN.append(self.getScore(data))
+                average = sum(lastN) / len(lastN)
+
+        finally :
+            if stream is not None:
+                stream.stop_stream()
+                stream.close()
+            self.lock.release()
 
         # this will be the benchmark to cause a disturbance over!
         THRESHOLD = average * THRESHOLD_MULTIPLIER
@@ -261,46 +288,50 @@ class Mic:
 
         self.lock.acquire()
 
+        stream = None
         self.speaker.play(jasperpath.data('audio', 'beep_hi.wav'))
 
-        # prepare recording stream
-        stream = self._audio.open(format=pyaudio.paInt16,
-                                  channels=1,
-                                  rate=RATE,
-                                  input=True,
-                                  input_device_index=self._audio_dev,
-                                  frames_per_buffer=CHUNK)
+        try:
+            # prepare recording stream
+            stream = self._audio.open(format=pyaudio.paInt16,
+                                    channels=1,
+                                    rate=RATE,
+                                    input=True,
+                                    input_device_index=self._audio_dev,
+                                    frames_per_buffer=CHUNK)
 
-        frames = []
-        # increasing the range # results in longer pause after command
-        # generation
-        lastN = [THRESHOLD * 1.2 for i in range(int(30720/CHUNK))]
+            frames = []
+            # increasing the range # results in longer pause after command
+            # generation
+            lastN = [THRESHOLD * 1.2 for i in range(int(30720/CHUNK))]
 
-        for i in range(0, RATE / CHUNK * LISTEN_TIME):
+            for i in range(0, RATE / CHUNK * LISTEN_TIME):
 
-            # Only works with pyaudio 0.2.11 and up
-            data = stream.read(CHUNK, False)
-            # data = stream.read(CHUNK)
-            frames.append(data)
-            score = self.getScore(data)
+                # Only works with pyaudio 0.2.11 and up
+                data = stream.read(CHUNK, False)
+                # data = stream.read(CHUNK)
+                frames.append(data)
+                score = self.getScore(data)
 
-            lastN.pop(0)
-            lastN.append(score)
+                lastN.pop(0)
+                lastN.append(score)
 
-            average = sum(lastN) / float(len(lastN))
+                average = sum(lastN) / float(len(lastN))
 
-            # TODO: 0.8 should not be a MAGIC NUMBER!
-            # if average < THRESHOLD * 0.8:
-            if not self.phone.ptt_pressed() and average < THRESHOLD * 0.8:
-                break
+                # TODO: 0.8 should not be a MAGIC NUMBER!
+                # if average < THRESHOLD * 0.8:
+                if not self.phone.ptt_pressed() and average < THRESHOLD * 0.8:
+                    break
 
-        self.speaker.play(jasperpath.data('audio', 'beep_lo.wav'))
+            self.speaker.play(jasperpath.data('audio', 'beep_lo.wav'))
 
         # save the audio data
-        stream.stop_stream()
-        stream.close()
+        finally: 
+            if stream is not None:
+                stream.stop_stream()
+                stream.close()
 
-        self.lock.release()
+            self.lock.release()
 
         with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=not self.keep_files) as f:
             wav_fp = wave.open(f, 'wb')
@@ -341,8 +372,10 @@ class Mic:
         # alter phrase before speaking
         phrase = alteration.clean(phrase)
         self.lock.acquire()
-        self.speaker.say(phrase)
-        self.lock.release()
+        try:
+            self.speaker.say(phrase)
+        finally:
+            self.lock.release()
         if self.phone.on_hook():
             raise phone.Hangup()
 
