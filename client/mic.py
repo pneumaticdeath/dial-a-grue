@@ -81,7 +81,9 @@ class Mic:
     def backgroundThreshold(self):
         while True:
             try:
+                self._logger.debug('Starting background sound threshold run')
                 self._last_threshold = self.fetchThresholdInBackground()
+                self._logger.debug('Finsihed background sound threshold run')
             except IOError as e:
                 self._logger.warning('backgroundThreshold got exception: {}'.format(repr(e)))
 
