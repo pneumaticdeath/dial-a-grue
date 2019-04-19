@@ -61,6 +61,7 @@ class Mic:
         self.last_file_recorded = None
 
         self._last_threshold = None
+        self._last_threshold_time = None
         self._background_threshold_thread = threading.Thread(target=self.backgroundThreshold)
         self._background_threshold_thread.setDaemon(True)
         self._background_threshold_thread.setName('noise_threadhold_monitor')
@@ -84,14 +85,22 @@ class Mic:
                 self._logger.debug('Starting background sound threshold run')
                 self._last_threshold = self.fetchThresholdInBackground()
                 self._logger.debug('Finsihed background sound threshold run')
+                self._last_threshold_time = time.time()
             except IOError as e:
                 self._logger.warning('backgroundThreshold got exception: {}'.format(repr(e)))
 
-            time.sleep(15)
+            time.sleep(300)
 
     def fetchThreshold(self):
-        if self._last_threshold is None:
-            self._last_threshold = self.fetchThresholdInBackground()
+        if self._last_threshold is None or time.time() - self._last_threshold_time > 900:
+            try:
+                self._logger.debug('Starting foreground sound threshold run')
+                self._last_threshold = self.fetchThresholdInBackground()
+                self._logger.debug('Finsihed foreground sound threshold run')
+                self._last_threshold_time = time.time()
+            except IOError as e:
+                self._logger.warning('FetchThreshold got exception: {}'.format(repr(e)))
+        self._logger.debug('returned threshold is {}'.format(self._last_threshold))
         return self._last_threshold
 
     def fetchThresholdInBackground(self):

@@ -30,6 +30,7 @@ class Conversation(object):
                 time.sleep(1)
 
             try:
+                time.sleep(1)
                 print('Welcome grue fodder!')
                 self.mic.say(greeting)
             except phone.Hangup:
