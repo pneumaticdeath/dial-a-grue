@@ -34,6 +34,8 @@ def handle(text, mic, profile):
             if phrase and result:
                 print('{0} -> {1}'.format(phrase.strip(), result.strip()))
                 mic.say('If you say {0} then you can {1}.'.format(phrase, result))
+        print('That\'s all folks!')
+        mic.say('And that\'s it... have fun!')
 
 def isValid(text):
     return bool(re.search(r'\bwhat\b', text, re.IGNORECASE))
