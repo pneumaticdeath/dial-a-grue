@@ -24,6 +24,10 @@ class Mic:
     speechRec = None
     speechRec_persona = None
     speaker = None
+    _last_threshold = None
+    _last_threshold_time = None
+    _background_threshold_thread = None
+    lock = threading.Lock()
 
     def __init__(self, speaker, passive_stt_engine, active_stt_engine, echo=False):
         """
@@ -36,7 +40,6 @@ class Mic:
         acive_stt_engine -- performs STT while Jasper is in active listen mode
         """
         self._logger = logging.getLogger(__name__)
-        self.lock = threading.Lock()
         self.setSpeaker(speaker)
         self.passive_stt_engine = passive_stt_engine
         self.active_stt_engine = active_stt_engine
@@ -60,12 +63,16 @@ class Mic:
         self.keep_files = False
         self.last_file_recorded = None
 
-        self._last_threshold = None
-        self._last_threshold_time = None
-        self._background_threshold_thread = threading.Thread(target=self.backgroundThreshold)
-        self._background_threshold_thread.setDaemon(True)
-        self._background_threshold_thread.setName('noise_threadhold_monitor')
-        self._background_threshold_thread.start()
+        self.start_background_threshold_thread()
+
+    def start_background_threshold_thread(self):
+        cls = self.__class__
+        if cls._background_threshold_thread is None:
+            self._logger.info("Starting background threshold monitoring")
+            cls._background_threshold_thread = threading.Thread(target=self.backgroundThreshold)
+            cls._background_threshold_thread.setDaemon(True)
+            cls._background_threshold_thread.setName('noise_threadhold_monitor')
+            cls._background_threshold_thread.start()
 
     def __del__(self):
         self._audio.terminate()
@@ -80,30 +87,33 @@ class Mic:
         return score
 
     def backgroundThreshold(self):
+        cls = self.__class__
         while True:
             try:
                 self._logger.debug('Starting background sound threshold run')
-                self._last_threshold = self.fetchThresholdInBackground()
+                cls._last_threshold = self.fetchThresholdInBackground()
+                cls._last_threshold_time = time.time()
                 self._logger.debug('Finsihed background sound threshold run')
-                self._last_threshold_time = time.time()
             except IOError as e:
                 self._logger.warning('backgroundThreshold got exception: {}'.format(repr(e)))
 
             time.sleep(300)
 
     def fetchThreshold(self):
-        if self._last_threshold is None or time.time() - self._last_threshold_time > 900:
+        cls = self.__class__
+        if cls._last_threshold is None or time.time() - cls._last_threshold_time > 900:
             try:
                 self._logger.debug('Starting foreground sound threshold run')
-                self._last_threshold = self.fetchThresholdInBackground()
+                cls._last_threshold = self.fetchThresholdInBackground()
+                cls._last_threshold_time = time.time()
                 self._logger.debug('Finsihed foreground sound threshold run')
-                self._last_threshold_time = time.time()
             except IOError as e:
                 self._logger.warning('FetchThreshold got exception: {}'.format(repr(e)))
-        self._logger.debug('returned threshold is {}'.format(self._last_threshold))
-        return self._last_threshold
+        self._logger.debug('returned threshold is {}'.format(cls._last_threshold))
+        return cls._last_threshold
 
     def fetchThresholdInBackground(self):
+        cls = self.__class__
 
         # TODO: Consolidate variables from the next three functions
         THRESHOLD_MULTIPLIER = 1.8
@@ -117,7 +127,7 @@ class Mic:
         THRESHOLD_TIME = 1
 
         stream = None
-        self.lock.acquire()
+        cls.lock.acquire()
         try:
 
             # prepare recording stream
@@ -152,7 +162,7 @@ class Mic:
             if stream is not None:
                 stream.stop_stream()
                 stream.close()
-            self.lock.release()
+            cls.lock.release()
 
         # this will be the benchmark to cause a disturbance over!
         THRESHOLD = average * THRESHOLD_MULTIPLIER
@@ -276,6 +286,7 @@ class Mic:
             Returns a list of the matching options or None
         """
 
+        cls = self.__class__
         TARGET_RATE = 16000
         # RATE = 16000
         RATE = 44100
@@ -297,7 +308,7 @@ class Mic:
         if not self.phone.ptt_pressed():
             return ['',]
 
-        self.lock.acquire()
+        cls.lock.acquire()
 
         stream = None
         self.speaker.play(jasperpath.data('audio', 'beep_hi.wav'))
@@ -342,7 +353,7 @@ class Mic:
                 stream.stop_stream()
                 stream.close()
 
-            self.lock.release()
+            cls.lock.release()
 
         with tempfile.NamedTemporaryFile(mode='w+b', suffix='.wav', delete=not self.keep_files) as f:
             wav_fp = wave.open(f, 'wb')
@@ -380,13 +391,14 @@ class Mic:
 
     def say(self, phrase,
             OPTIONS=" -vdefault+m3 -p 40 -s 160 --stdout > say.wav"):
+        cls = self.__class__
         # alter phrase before speaking
         phrase = alteration.clean(phrase)
-        self.lock.acquire()
+        cls.lock.acquire()
         try:
             self.speaker.say(phrase)
         finally:
-            self.lock.release()
+            cls.lock.release()
         if self.phone.on_hook():
             raise phone.Hangup()
 
