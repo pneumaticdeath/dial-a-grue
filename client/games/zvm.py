@@ -41,12 +41,20 @@ class ZorkMachine(object):
         return os.write(self._fd, str)
     
     def kill(self):
-        os.kill(self._pid, 1)
-        pid, status = os.waitpid(self._pid, os.WNOHANG)
-        if pid != 0 and os.WIFEXITED(status):
-            logger.debug('zvm with pid {0} exited with status {1}'.format(pid, os.WEXITSTATUS(status)))
-        else:
-            logger.info('zvm with pid {0} did not exit'.format(self._pid))
+        wait_count = 0
+        try:
+            os.kill(self._pid, 1)
+            pid, status = os.waitpid(self._pid, os.WNOHANG)
+            while wait_count < 10 and (pid == 0 or not os.WIFEXITED(status)):
+                wait_count += 1
+                time.sleep(0.1)
+                pid, status = os.waitpid(self._pid, os.WNOHANG)
+            if pid != 0 and os.WIFEXITED(status):
+                logger.debug('zvm with pid {0} exited with status {1}'.format(pid, os.WEXITSTATUS(status)))
+            else:
+                logger.warn('zvm with pid {0} did not exit'.format(self._pid))
+        except OSError as e:
+            logger.warn('Got error trying to kill zvm with pid {0}: {1}'.format(self._pid, repr(e)))
 
     def is_running(self):
         try:
@@ -85,13 +93,8 @@ class ZorkPhone(object):
                 time.sleep(0.1)
         except StopGame as e:
             print('ZorkPhone caught: {}'.format(repr(e)))
-
-        # self.listener = threading.Thread(target=self.listen)
-        # self.talker = threading.Thread(target=self.talk)
-        # self.listener.setDaemon(True)
-        # self.talker.setDaemon(True)
-        # self.listener.start()
-        # self.talker.start()
+        finally:
+            self.zvm.kill()
 
     def listen(self):
         if not self.zvm.is_running():
