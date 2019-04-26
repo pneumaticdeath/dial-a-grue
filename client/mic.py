@@ -71,7 +71,7 @@ class Mic:
             self._logger.info("Starting background threshold monitoring")
             cls._background_threshold_thread = threading.Thread(target=self.backgroundThreshold)
             cls._background_threshold_thread.setDaemon(True)
-            cls._background_threshold_thread.setName('noise_threadhold_monitor')
+            cls._background_threshold_thread.setName('noise_threshold_monitor')
             cls._background_threshold_thread.start()
 
     def __del__(self):
@@ -93,7 +93,7 @@ class Mic:
                 self._logger.debug('Starting background sound threshold run')
                 cls._last_threshold = self.fetchThresholdInBackground()
                 cls._last_threshold_time = time.time()
-                self._logger.debug('Finsihed background sound threshold run')
+                self._logger.debug('Finsihed background threshold run, new threshold {}'.format(cls._last_threshold))
             except IOError as e:
                 self._logger.warning('backgroundThreshold got exception: {}'.format(repr(e)))
 

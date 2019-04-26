@@ -137,7 +137,7 @@ if __name__ == "__main__":
     print("* (c) 2015 Shubhro Saha, Charlie Marsh & Jan Holthuis *")
     print("*******************************************************")
 
-    logging.basicConfig()
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s(%(threadName)s) %(message)s')
     logger = logging.getLogger()
     logger.getChild("client.stt").setLevel(logging.INFO)
 

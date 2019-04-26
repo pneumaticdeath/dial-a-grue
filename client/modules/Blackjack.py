@@ -15,6 +15,8 @@ def handle(text, mic, profile):
     Play Blackjack
     """
 
+    logger = logging.getLogger(__name__)
+
     def in_func():
         retval = mic.activeListen().upper().split(' ')[0]
         if retval in NUMBERS:
@@ -29,13 +31,13 @@ def handle(text, mic, profile):
         print(string)
         mic.say(string)
      
-    logging.info('Starting the Blackjack module')
+    logger.info('Starting the Blackjack module')
     mic.say('Let\'s play Blackjack!')
 
     blackjack.play(input_func=in_func, output_func=out_func)
 
     mic.say('Thanks for playing Blackjack!')
-    logging.info('Leaving Blackjack module')
+    logger.info('Leaving Blackjack module')
 
 def isValid(text):
     """
