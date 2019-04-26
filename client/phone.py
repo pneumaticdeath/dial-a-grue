@@ -38,11 +38,13 @@ class Phone(object):
     def __init__(self, profile=None):
         self._switches = {}
         self._dial_stack = []
+        self._logger = logging.getLogger(__name__)
         if profile is None:
             profile = jasperpath.config('phone.yml')
         self.load_profile(profile)
         self._monitor_thread = threading.Thread(target=self._monitor)
         self._monitor_thread.setDaemon(True)
+        self._monitor_thread.setName('phone_dial_monitor')
         self._monitor_thread.start()
 
     def load_profile(self, filename):
@@ -55,7 +57,7 @@ class Phone(object):
         deferred_defs = []
         for button in self.profile['buttons']:
             if button not in self.profile:
-                logging.error('Button {0} not defined in profile'.format(button))
+                self._logger.error('Button {0} not defined in profile'.format(button))
                 continue
             if self.profile[button]['class'] == 'physical':
                 self._switches[button] = Switch(self.profile[button]['pin'])
@@ -71,11 +73,11 @@ class Phone(object):
             def on_close(is_closed, interval, switch=button):
                 # the third argument with the default value is a bit of a hack
                 # to make a copy of current value of 'button' at def time.
-                logging.info('{} button pressed'.format(switch))
+                self._logger.info('{} button pressed'.format(switch))
             def on_open(is_closed, interval, switch=button):
                 # the third argument with the default value is a bit of a hack
                 # to make a copy of current value of 'button' at def time.
-                logging.info('{} button released after {} seconds'.format(switch, interval))
+                self._logger.info('{} button released after {} seconds'.format(switch, interval))
                 self._dial_stack.append(switch)
             self._switches[button] = CompoundSwitch(button_pattern, self._switches)
             self._switches[button].on_open(on_open)
@@ -97,11 +99,11 @@ class Phone(object):
             if pulse_interval <= 0.12 and pulse_interval >= 0.08:
                 self._pulse_counter += 1
             elif pulse_interval < 0.08:
-                logging.warn('Got too short rotary pulse of {} seconds'.format(pulse_interval))
+                self._logger.warn('Got too short rotary pulse of {} seconds'.format(pulse_interval))
             else:
                 if self._pulse_counter > 0:
                     # edge case where the monitor didn't catch the interval
-                    logging.debug('Last ditch effort to count pulses')
+                    self._logger.debug('Last ditch effort to count pulses')
                     self._interpret_pulses()
                 self._pulse_counter = 1
             self._last_pulse_time = time.time()
@@ -115,17 +117,17 @@ class Phone(object):
             time.sleep(0.01)
             self._switches['pulse'].is_closed()
             if time.time()-self._last_pulse_time >= 0.15 and self._pulse_counter > 0:
-                logging.debug('Counting pulses')
+                self._logger.debug('Counting pulses')
                 self._interpret_pulses()
 
     def _interpret_pulses(self):
         if self._pulse_counter in _rotary_map:
             self._dial_stack.append(_rotary_map[self._pulse_counter])
-            logging.debug('Counted {0} pulses yielding a {1}'.format(self._pulse_counter, _rotary_map[self._pulse_counter]))
+            self._logger.debug('Counted {0} pulses yielding a {1}'.format(self._pulse_counter, _rotary_map[self._pulse_counter]))
         elif self._pulse_counter == 0:
-            logging.warn('Tried to interpret no pulses')
+            self._logger.warn('Tried to interpret no pulses')
         else:
-            logging.error('Got too many pulses: {}'.format(self.pulse_counter))
+            self._logger.error('Got too many pulses: {}'.format(self.pulse_counter))
         self._pulse_counter = 0
 
     def dial_stack(self):
