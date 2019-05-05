@@ -71,7 +71,7 @@ class Mic:
             self._logger.info("Starting background threshold monitoring")
             cls._background_threshold_thread = threading.Thread(target=self.backgroundThreshold)
             cls._background_threshold_thread.setDaemon(True)
-            cls._background_threshold_thread.setName('noise_threshold_monitor')
+            cls._background_threshold_thread.setName('noise threshold monitor')
             cls._background_threshold_thread.start()
 
     def __del__(self):

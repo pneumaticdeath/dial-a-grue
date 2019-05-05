@@ -44,7 +44,7 @@ class Phone(object):
         self.load_profile(profile)
         self._monitor_thread = threading.Thread(target=self._monitor)
         self._monitor_thread.setDaemon(True)
-        self._monitor_thread.setName('phone_dial_monitor')
+        self._monitor_thread.setName('phone dial monitor')
         self._monitor_thread.start()
 
     def load_profile(self, filename):
