@@ -29,6 +29,8 @@ def handle(text, mic, profile):
     for name, count in counter.items():
         output('{0} thread{1} named {2}'.format(count, "s" if count != 1 else "", name))
 
+    output('noise threshold is {0}'.format(mic.fetchThreshold()))
+
     status_output = subprocess.check_output('../bin/status')
     for line in status_output.split('\n'):
         output(line)
