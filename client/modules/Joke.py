@@ -32,15 +32,7 @@ def getRandomJoke(filename=jasperpath.data('text', 'JOKES.txt')):
 
 
 def handle(text, mic, profile):
-    """
-        Responds to user-input, typically speech text, by telling a joke.
-
-        Arguments:
-        text -- user-input, typically transcribed speech
-        mic -- used to interact with the user (for both input and output)
-        profile -- contains information related to the user (e.g., phone
-                   number)
-    """
+    """Hear a knock-knock joke"""
     joke = getRandomJoke()
 
     mic.say("Knock knock")
@@ -57,10 +49,5 @@ def handle(text, mic, profile):
 
 
 def isValid(text):
-    """
-        Returns True if the input is related to jokes/humor.
-
-        Arguments:
-        text -- user-input, typically transcribed speech
-    """
+    """Tell me a joke"""
     return bool(re.search(r'\bjoke\b', text, re.IGNORECASE))
