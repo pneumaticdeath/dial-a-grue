@@ -5,11 +5,11 @@ import re
 import subprocess
 import threading
 
-WORDS = [ 'CHECK', 'STATUS'  ]
+WORDS = [ 'CHECK', 'STATUS', 'THREADS'  ]
 
 INSTANCE_WORDS = WORDS
 
-PRIORITY = 101
+PRIORITY = 99
 
 def handle(text, mic, profile):
     """
@@ -23,11 +23,15 @@ def handle(text, mic, profile):
     output('Checking phone status')
 
     threads = threading.enumerate()
-    counter = collections.Counter()
-    for t in threads:
-        counter[t.name] += 1
-    for name, count in counter.items():
-        output('{0} thread{1} named {2}'.format(count, "s" if count != 1 else "", name))
+    if bool(re.search(r'\bthreads\b', text, re.IGNORECASE)):
+        counter = collections.Counter()
+        for t in threads:
+            counter[t.name] += 1
+        for name, count in counter.items():
+            output('{0} thread{1} named {2}'.format(count, "s" if count != 1 else "", name))
+    else:
+        thread_count = len(threads)
+        output('{0} thread{1} running'.format(thread_count, "s" if thread_count != 1 else ""))
 
     output('noise threshold is {0}'.format(mic.fetchThreshold()))
 

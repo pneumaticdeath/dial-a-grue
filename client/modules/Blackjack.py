@@ -8,7 +8,7 @@ NUMBERS = ['ZERO', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT
 INSTANCE_WORDS = [ 'HIT', 'STAND', 'DOUBLE', 'SPLIT', 'YES', 'NO', 'QUIT' ] + NUMBERS
 
 
-PRIORITY = 50
+PRIORITY = 100
 
 def handle(text, mic, profile):
     """

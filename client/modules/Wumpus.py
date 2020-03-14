@@ -34,7 +34,7 @@ NUMBERS = [
 
 INSTANCE_WORDS = [ 'LOOK', 'FIRE', 'SHOOT', 'MOVE', 'GO', 'YES', 'NO' ] + NUMBERS
 
-PRIORITY = 50
+PRIORITY = 100
 
 instructions = [
     'Welcome to Hunt the Wumpus!',

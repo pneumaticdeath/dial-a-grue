@@ -8,7 +8,7 @@ from client.games.animal import Animal
 WORDS = [ 'PLAY', 'ANIMAL'  ]
 INSTANCE_WORDS = [ 'YES', 'NO', 'REPEAT' ]
 
-PRIORITY = 50
+PRIORITY = 100
 
 def ask_yes_no(prompt, mic):
     valid_choices = ['YES', 'NO']
