@@ -156,12 +156,13 @@ class Mic:
                 # save this data point as a score
                 lastN.pop(0)
                 lastN.append(self.getScore(data))
-                average = sum(lastN) / len(lastN)
+            average = sum(lastN) / len(lastN)
 
         finally :
             if stream is not None:
                 stream.stop_stream()
                 stream.close()
+                stream = None
             cls.lock.release()
 
         # this will be the benchmark to cause a disturbance over!
