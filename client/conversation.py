@@ -38,9 +38,9 @@ class Conversation(object):
 
             while self.phone.off_hook():
 
-                if not self.phone.ptt_pressed():
-                    time.sleep(0.1)
-                    continue
+                #if not self.phone.ptt_pressed():
+                    #time.sleep(0.1)
+                    #continue
 
                 try:
                     input = self.mic.activeListenToAllOptions()

@@ -299,15 +299,15 @@ class Mic:
         if THRESHOLD is None:
             THRESHOLD = self.fetchThreshold()
 
-        wait_count = 0
-        while not self.phone.ptt_pressed() and wait_count < 120:
-            wait_count += 1
-            time.sleep(0.1)
-            if self.phone.on_hook():
-                raise phone.Hangup()
+        #wait_count = 0
+        #while not self.phone.ptt_pressed() and wait_count < 120:
+            #wait_count += 1
+            #time.sleep(0.1)
+            #if self.phone.on_hook():
+                #raise phone.Hangup()
 
-        if not self.phone.ptt_pressed():
-            return ['',]
+        #if not self.phone.ptt_pressed():
+            #return ['',]
 
         cls.lock.acquire()
 
@@ -327,6 +327,14 @@ class Mic:
             # increasing the range # results in longer pause after command
             # generation
             lastN = [THRESHOLD * 1.2 for i in range(int(30720/CHUNK))]
+            # States:
+            # 0 -- before utterance
+            # 1 -- during utterance
+            # 2 -- after utterance
+            state = 0
+            utterances = 0
+            post_utterance_frames = 0
+            silence_frames_threshold = int(0.25*RATE/CHUNK) # 1/4 of a second
 
             for i in range(0, RATE / CHUNK * LISTEN_TIME):
 
@@ -342,8 +350,19 @@ class Mic:
                 average = sum(lastN) / float(len(lastN))
 
                 # TODO: 0.8 should not be a MAGIC NUMBER!
-                # if average < THRESHOLD * 0.8:
-                if not self.phone.ptt_pressed() and average < THRESHOLD * 0.8:
+                # if not self.phone.ptt_pressed() and average < THRESHOLD * 0.8:
+                if average > THRESHOLD * 1.25:
+                    if state != 1:
+                        self._logger.debug('Begin utterance')
+                        utterances += 1
+                        state = 1
+                elif state > 0 and average < THRESHOLD * 0.8:
+                    if state != 2:
+                        self._logger.debug('End utterance')
+                    post_utterance_frames += 1
+                    state = 2
+                if state == 2 and post_utterance_frames >= silence_frames_threshold:
+                    self._logger.debug('Enough post-utterance silnce')
                     break
 
             self.speaker.play(jasperpath.data('audio', 'beep_lo.wav'))
