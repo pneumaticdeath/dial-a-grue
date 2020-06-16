@@ -23,31 +23,23 @@ class Conversation(object):
         """
 
         greeting = self.profile['greeting']
-        self._logger.info("Starting to handle conversation with keyword '%s'.",
-                          self.persona)
+        self._logger.info("Starting to handle conversation")
         while True:
             while self.phone.on_hook():
                 time.sleep(1)
 
             try:
-                time.sleep(1)
-                print('Welcome grue fodder!')
-                self.mic.say(greeting)
+                while self.phone.off_hook():
+                    time.sleep(1)
+                    print('Welcome grue fodder!')
+                    self.mic.say(greeting)
+                    input = self.mic.activeListenToAllOptions()
+
+                    if input:
+                        self.brain.query(input)
+                    else:
+                        self.mic.say("Pardon?")
+
             except phone.Hangup:
                 print('Got HUP')
 
-            while self.phone.off_hook():
-
-                #if not self.phone.ptt_pressed():
-                    #time.sleep(0.1)
-                    #continue
-
-                try:
-                    input = self.mic.activeListenToAllOptions()
-                except phone.Hangup:
-                    print('Got HUP')
-
-                if input:
-                    self.brain.query(input)
-                else:
-                    self.mic.say("Pardon?")
