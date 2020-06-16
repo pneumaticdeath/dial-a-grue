@@ -141,8 +141,11 @@ class Phone(object):
     def on_hook(self):
         return not self.off_hook()
 
+    def pressed(self, switch):
+        return self._switches[switch].is_closed() if switch in self._switches else False
+
     def ptt_pressed(self):
-        return self._switches['ptt'].is_closed()
+        return self.pressed('ptt')
 
 
 class Hangup(Exception):
