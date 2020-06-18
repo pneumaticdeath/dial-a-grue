@@ -324,6 +324,8 @@ class Mic:
             silence_frames_threshold = int(0.25*self.RATE/self.CHUNK) # 1/4 of a second
 
             for i in range(0, self.RATE / self.CHUNK * LISTEN_TIME):
+                if self.phone.on_hook():
+                    raise phone.Hangup()
 
                 # Only works with pyaudio 0.2.11 and up
                 data = stream.read(self.CHUNK, False)
