@@ -144,9 +144,6 @@ class Phone(object):
     def pressed(self, switch):
         return self._switches[switch].is_closed() if switch in self._switches else False
 
-    def ptt_pressed(self):
-        return self.pressed('ptt')
-
 
 class Hangup(Exception):
     pass
@@ -161,11 +158,6 @@ if __name__ == '__main__':
         print('The phone is off hook')
     else:
         print('The phone is on hook')
-
-    if phone.ptt_pressed():
-        print('PTT pressed')
-    else:
-        print('PTT not pressed')
 
     for name, sw in phone._switches.items():
         print('{0} is {1}'.format(name, 'closed' if sw.is_closed() else 'open'))

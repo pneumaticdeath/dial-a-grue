@@ -27,7 +27,7 @@ def handle(text, mic, profile):
         logging.info('Forked pid {0}'.format(pid))
         try:
             logger.debug(os.read(fd, 3000))
-            while phone.off_hook() and not phone.ptt_pressed():
+            while phone.off_hook():
                 time.sleep(0.1)
                 os.kill(pid, 0)
             logger.debug('phone hung up')
