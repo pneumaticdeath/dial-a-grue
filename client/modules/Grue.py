@@ -2,9 +2,7 @@
 
 import logging
 import os
-import pty
 import re
-import time
 from client import jasperpath
 from client.utils.run_while import run_while
 
