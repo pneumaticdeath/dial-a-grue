@@ -40,6 +40,8 @@ except ImportError:
 
 import diagnose
 import jasperpath
+import phone
+from utils.run_while import run_while
 
 
 class AbstractTTSEngine(object):
@@ -82,15 +84,11 @@ class AbstractTTSEngine(object):
     def play(self, filename):
         # FIXME: Use platform-independent audio-output here
         # See issue jasperproject/jasper-client#188
-        cmd = ['aplay', '-D', 'plughw:{},0'.format(self.device), str(filename)]
+        gruephone = phone.get_phone()
+        cmd = ['/usr/bin/aplay', '-D', 'plughw:{},0'.format(self.device), str(filename)]
         self._logger.debug('Executing %s', ' '.join([pipes.quote(arg)
                                                      for arg in cmd]))
-        with tempfile.TemporaryFile() as f:
-            subprocess.call(cmd, stdout=f, stderr=f)
-            f.seek(0)
-            output = f.read()
-            if output:
-                self._logger.debug("Output was: '%s'", output)
+        run_while(gruephone.off_hook, cmd[0], cmd)
 
 
 class AbstractMp3TTSEngine(AbstractTTSEngine):

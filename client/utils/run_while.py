@@ -12,7 +12,7 @@ def run_while(cond, cmd, args):
     try:
         pid, fd = pty.fork()
         if pid == 0:
-            time.sleep(0.5)
+            time.sleep(0.1)
             os.execv(cmd, args)
         elif pid < 0:
             logger.warning('pty.fork() returned status {0}'.format(pid))
@@ -44,5 +44,5 @@ def run_while(cond, cmd, args):
                     logger.warning('Wait returned pid {0} when expecting {1} (status {2})'
                                    .format(wait_pid, pid, status))
     except OSError as e:
-        logger.warning('Got OSError "{0}"'.str(e))
+        logger.warning('Got OSError "{0}"'.format(str(e)))
 
