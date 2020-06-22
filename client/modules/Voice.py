@@ -1,8 +1,6 @@
 # vim: ai sw=4 expandtab:
 import logging
-import os
 import re
-from client import jasperpath
 from client import tts
 
 WORDS = [ 'CHANGE', 'VOICE'  ]

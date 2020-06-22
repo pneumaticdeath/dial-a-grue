@@ -235,9 +235,9 @@ class Mic:
 
         # otherwise, let's keep recording for few seconds and save the file
         DELAY_MULTIPLIER = 1
-        for i in range(0, RATE / CHUNK * DELAY_MULTIPLIER):
+        for i in range(0, self.RATE / self.CHUNK * DELAY_MULTIPLIER):
 
-            data = stream.read(CHUNK)
+            data = stream.read(self.CHUNK)
             frames.append(data)
 
         # save the audio data

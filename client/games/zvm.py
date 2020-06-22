@@ -3,7 +3,6 @@ import fcntl
 import logging
 import os
 import pty
-import threading
 import time
 from client import jasperpath
 # from client.phone import Phone
@@ -160,9 +159,6 @@ class ZorkPhone(object):
         for line in lines:
             line = line.strip()
             logger.debug('starting processing of line "{}"'.format(line))
-            if self.phone.ptt_pressed():
-                logger.info('PTT pressed-bailing out early')
-                break
             if '?' in line:
                 question_last = True
             elif '.' in line or '!' in line:
