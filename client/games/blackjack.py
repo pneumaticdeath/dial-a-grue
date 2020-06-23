@@ -145,7 +145,7 @@ def read_answer(valid, input_func=read_line, output_func=myprint):
 
 ordinal = {1: 'first', 2: 'second', 3: 'third', 4: 'fourth'}
 
-def play(input_func=read_line, output_func=myprint, min_players=1, max_players=7):
+def play(input_func=read_line, output_func=myprint, min_players=1, max_players=5):
     '''
 plays a game of blackjack with up to 10 players.
 Pass input_func and output_func with appropriate vectors for other implementations.
