@@ -308,15 +308,15 @@ Pass input_func and output_func with appropriate vectors for other implementatio
 
         output_func("Play again?")
         keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func, output_func=output_func)
-    house_net = dealer.bank.balance(0) - dealer.initial_balance*100
+        house_net = dealer.bank.balance(0) - dealer.initial_balance*100
 
-    if abs(house_net) > 0.01:
-        output_func('House is {0} ${1:.2f}'.format('down' if house_net < 0 else 'up', abs(house_net)))
-    else:
-        output_func('House broke even')
+        if abs(house_net) > 0.01:
+            output_func('House is {0} ${1:.2f}'.format('down' if house_net < 0 else 'up', abs(house_net)))
+        else:
+            output_func('House broke even')
 
-    for player in range(1, n+1):
-        output_func('Player {0} has a balance of ${1:.2f}'.format(player, dealer.bank.balance(player)))
+        for player in range(1, n+1):
+            output_func('Player {0} has a balance of ${1:.2f}'.format(player, dealer.bank.balance(player)))
 
 
 if __name__ == '__main__':
