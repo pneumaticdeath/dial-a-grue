@@ -39,7 +39,9 @@ class InsufficientFunds(Exception):
 
 class Bank(object):
     def __init__(self, num, initial_balance=100):
+        self.initial_balance = 100
         self.balances = [initial_balance for _ in range(num+1)]
+        self.atm_visits = [0 for _ in range(num+1)]
 
     def withdraw(self, player, amount):
         if self.balances[player] < amount:
@@ -51,6 +53,10 @@ class Bank(object):
 
     def balance(self, player):
         return self.balances[player]
+
+    def visitATM(self, player):
+        self.balances[player] += self.initial_balance
+        self.atm_visits[player] += 1
 
 
 class Dealer(object):
@@ -167,7 +173,10 @@ Pass input_func and output_func with appropriate vectors for other implementatio
         output_func('Dealer has a face down card and {0}'.format(str(dealer.hand(0)[1])))
         for player in range(1, n+1):
             if player not in players:
-                output_func('Player {0} has insufficient funds to play this round'.format(player))
+                output_func('Player {0} has insufficient funds to play this round, would you like to visit the ATM?'.format(player))
+                ans = read_answer(['yes','no'], input_func=input_func, output_func=output_func)
+                if ans == 'yes':
+                    dealer.bank.visitATM(player)
                 continue
             hand_num = 0
             while hand_num < dealer.num_hands(player):
@@ -306,8 +315,6 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             elif len(pushers) > 1:
                 output_func('Players {0} pushed.'.format(mk_print_list(pushers)))
 
-        output_func("Play again?")
-        keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func, output_func=output_func)
         house_net = dealer.bank.balance(0) - dealer.initial_balance*100
 
         if abs(house_net) > 0.01:
@@ -316,8 +323,10 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             output_func('House broke even')
 
         for player in range(1, n+1):
-            output_func('Player {0} has a balance of ${1:.2f}'.format(player, dealer.bank.balance(player)))
+            output_func('Player {0} has a balance of ${1:.2f}{2}'.format(player, dealer.bank.balance(player), ", and has visited the ATM {0} time{1}".format(dealer.bank.atm_visits[player], "" if dealer.bank.atm_visits[player] == 1 else "s") if dealer.bank.atm_visits[player] > 0 else ""))
 
+        output_func("Play again?")
+        keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func, output_func=output_func)
 
 if __name__ == '__main__':
     play(max_players=10)
