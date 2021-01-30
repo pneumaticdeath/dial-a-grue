@@ -43,7 +43,7 @@ class Node(object):
     @classmethod
     def _create_db(cls, conn):
         conn.execute('CREATE TABLE animals (node_text TEXT NOT NULL, yes_node INT, no_node INT);')
-	conn.commit()
+        conn.commit()
         return cls.create('Horse', conn, 1)
 
     def __init__(self, connection, node_id, node_text, yes_node, no_node):
