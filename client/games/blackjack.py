@@ -320,7 +320,7 @@ Pass input_func and output_func with appropriate vectors for other implementatio
         if abs(house_net) > 0.01:
             output_func('House is {0} ${1:.2f}'.format('down' if house_net < 0 else 'up', abs(house_net)))
         else:
-            output_func('House broke even')
+            output_func('House is breaking even')
 
         for player in range(1, n+1):
             output_func('Player {0} has a balance of ${1:.2f}{2}'.format(player, dealer.bank.balance(player), ", and has visited the ATM {0} time{1}".format(dealer.bank.atm_visits[player], "" if dealer.bank.atm_visits[player] == 1 else "s") if dealer.bank.atm_visits[player] > 0 else ""))
