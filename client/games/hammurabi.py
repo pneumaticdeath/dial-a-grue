@@ -80,6 +80,9 @@ class Hammurabi(object):
         if self.overthrown:
             raise ValueError('You have been impeached,')
 
+        if type(land_bought) is not int or type(food) is not int or type(planted) is not int:
+            raise ValueError('Only integer values are accepted for land, food or planting.')
+
         grain_used = land_bought*self.land_price + food + int(planted*self.seed_per_acre)
         if grain_used > self.grain:
            raise ValueError('Think again Hammurabi, you only have {0} bushels of grain.'.format(self.grain))
@@ -133,7 +136,7 @@ class Hammurabi(object):
         # Has there been a plague?
         self.plague = (random.randint(1,20) <= 3) # 15% chance of plague
         if self.plague:
-            self.population /= 2
+            self.population = int(self.population/2)
 
         # Set the new price for land
         self.land_price = self.newLandPrice()
