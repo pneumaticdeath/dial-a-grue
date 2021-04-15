@@ -156,7 +156,7 @@ if __name__ == '__main__':
                         help='How many acres can each person till')
     parser.add_argument('--food-per-person', default=Hammurabi.food_per_person, type=int,
                         help='How much does each person need to eat')
-    parser.add_argument('--seed-per-acre', default=Hammurabi.seed_per_acre, type=int,
+    parser.add_argument('--seed-per-acre', default=Hammurabi.seed_per_acre, type=float,
                         help='How much grain is needed to seed an acre of land')
     args = parser.parse_args()
 
