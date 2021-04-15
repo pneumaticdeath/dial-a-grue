@@ -176,7 +176,7 @@ if __name__ == '__main__':
             else:
                 print('Bountiful harvests!')
                 food = int(game.population*game.food_per_person)
-            land = max(int(game.grain-food-plantable*game.seed_per_acre)/game.land_price, int(-0.5*game.acreage))
+            land = max(int((game.grain-food-plantable*game.seed_per_acre)/game.land_price), int(-0.5*game.acreage))
             plantable = min(plantable, game.acreage+land)
             food = min(food, int(game.grain - plantable*game.seed_per_acre - land*game.land_price))
             print('land bought: {0}     food: {1}      acreage planted: {2}'.format(land, food, plantable))
