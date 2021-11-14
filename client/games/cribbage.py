@@ -436,7 +436,7 @@ class Cribbage(object):
             while self.player.score < self.winning_score and self.ai.score < self.winning_score:
                 hand_num += 1
                 output('')
-                output('Hand #{}'.format(hand_num))
+                output('Hand number {}'.format(hand_num))
 
                 output('It\'s {}\'s crib.'.format(self.crib_player.name))
 
