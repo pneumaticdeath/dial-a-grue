@@ -8,6 +8,24 @@ INSTANCE_WORDS = [ 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT
 
 PRIORITY = 45
 
+def get_answer(mic):
+    ds = mic.phone.dial_stack() # this just clears any old dial-stack
+    answer = ''
+    while answer not in INSTANCE_WORDS:
+        mic.say("Which voice would you like? from one through nine")
+        answer = mic.activeListen()
+        ds = mic.phone.dial_stack()
+        if len(ds) > 0:
+            num = ds[-1]
+            if num.isdigit():
+                num = int(num)
+                if num >= 1 and num <= 9:
+                    return INSTANCE_WORDS[num-1]
+        if answer not in INSTANCE_WORDS:
+            mic.say('I don\'t know voice {}'.format(answer))
+            print('Don\'t know {}'.format(answer))
+    return answer
+
 def handle(text, mic, profile):
     """
     Change the voice I use
@@ -15,14 +33,8 @@ def handle(text, mic, profile):
      
     logging.info('Changing voice')
     mic.say('Let\'s change my voice')
-    
-    mic.say('Which voice would you like? from one through nine')
-    answer = mic.activeListen()
-    while answer not in INSTANCE_WORDS:
-        mic.say('I don\'t know voice {}'.format(answer))
-        print('Don\'t know {}'.format(answer))
-        mic.say('Which voice would you like?')
-        answer = mic.activeListen()
+
+    answer = get_answer(mic)
 
     if answer == 'ONE':
         new_tts_engine = tts.get_engine_by_slug('espeak-tts')
