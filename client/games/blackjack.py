@@ -161,7 +161,7 @@ Pass input_func and output_func with appropriate vectors for other implementatio
     n = read_int(low_limit=min_players, high_limit=max_players, input_func=input_func, output_func=output_func)
     dealer = Dealer(n)
     output_func('Starting with {0} {1}.'.format(n, 'player' if n == 1 else 'players'))
-    output_func('Everybody starts with ${0}.  Standard bet is ${1}'.format(dealer.initial_balance, dealer.min_bet))
+    output_func('Everybody starts with {0} dollars.  Standard bet is {1} dollars'.format(dealer.initial_balance, dealer.min_bet))
 
     keep_playing = 'yes'
     while keep_playing == 'yes':
@@ -318,12 +318,12 @@ Pass input_func and output_func with appropriate vectors for other implementatio
         house_net = dealer.bank.balance(0) - dealer.initial_balance*100
 
         if abs(house_net) > 0.01:
-            output_func('House is {0} ${1:.2f}'.format('down' if house_net < 0 else 'up', abs(house_net)))
+            output_func('House is {0} {1} dollars'.format('down' if house_net < 0 else 'up', int(abs(house_net))))
         else:
             output_func('House is breaking even')
 
         for player in range(1, n+1):
-            output_func('Player {0} has a balance of ${1:.2f}{2}'.format(player, dealer.bank.balance(player), ", and has visited the ATM {0} time{1}".format(dealer.bank.atm_visits[player], "" if dealer.bank.atm_visits[player] == 1 else "s") if dealer.bank.atm_visits[player] > 0 else ""))
+            output_func('Player {0} has a balance of {1} dollars{2}'.format(player, int(dealer.bank.balance(player)), ", and has visited the ATM {0} time{1}".format(dealer.bank.atm_visits[player], "" if dealer.bank.atm_visits[player] == 1 else "s") if dealer.bank.atm_visits[player] > 0 else ""))
 
         output_func("Play again?")
         keep_playing = read_answer(['yes', 'no', 'quit'], input_func=input_func, output_func=output_func)
