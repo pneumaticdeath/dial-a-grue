@@ -55,7 +55,7 @@ class Switch(AbstractSwitch):
             # TODO(mitch): figure out why this throws exceptions sometimes
             GPIO.setup(self.pin, GPIO.IN, GPIO.PUD_UP)
         except Exception as e:
-            print "Got exception %s when trying to initialize %s" % (str(e), self.pin)
+            print("Got exception {} when trying to initialize {}".format(str(e), self.pin))
             pass
         super(Switch, self).__init__(*args,**kwargs)
 
