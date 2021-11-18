@@ -1,4 +1,5 @@
 # vim: ai sw=4 expandtab:
+from client.games.utils import mk_print_list
 import collections
 import logging
 import re
@@ -34,6 +35,9 @@ def handle(text, mic, profile):
         output('{0} thread{1} running'.format(thread_count, "s" if thread_count != 1 else ""))
 
     output('noise threshold is {0}'.format(int(mic.fetchThreshold())))
+    dial_stack = mic.phone.dial_stack()
+    if dial_stack:
+        output('Dial stack is {}'.format(mk_print_list(dial_stack)))
 
     status_output = subprocess.check_output('../bin/status')
     for line in status_output.split('\n'):
