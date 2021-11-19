@@ -15,6 +15,7 @@ INSTANCE_WORDS = [
     'NONE', 
     'ALL',
 ] + mk_upper(text2int.units) + mk_upper(text2int.tens) + mk_upper(text2int.scales)
+DIAL_NUMBER = '7'
 
 PRIORITY = 50
 

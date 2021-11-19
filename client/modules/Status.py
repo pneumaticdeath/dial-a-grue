@@ -9,6 +9,7 @@ import threading
 WORDS = [ 'CHECK', 'STATUS', 'THREADS'  ]
 
 INSTANCE_WORDS = WORDS
+DIAL_NUMBER = '78'
 
 PRIORITY = 99
 

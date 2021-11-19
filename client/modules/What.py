@@ -7,6 +7,7 @@ from client import jasperpath, phone
 
 WORDS = [ 'WHAT', 'CAN', 'YOU', 'DO' ]
 INSTANCE_WORDS = WORDS
+DIAL_NUMBER = '1'
 
 PRIORITY = 100
 
@@ -22,7 +23,8 @@ def handle(text, mic, profile):
             loader = finder.find_module(name)
             mod = loader.load_module(name)
             if hasattr(mod.handle, '__doc__') and hasattr(mod.isValid, '__doc__'):
-                actions[mod.isValid.__doc__] = mod.handle.__doc__
+                dial_number = mod.DIAL_NUMBER if hasattr(mod, 'DIAL_NUMBER') else None
+                actions[(dial_number, mod.isValid.__doc__)] = mod.handle.__doc__
         except:
             logging.warning('Skipped loading module {0}'.format(name), exc_info=True)
 
@@ -30,10 +32,16 @@ def handle(text, mic, profile):
         print('Didn\'t get anything')
         mic.say('Not much apparently...')
     else:
-        for phrase, result in actions.items():
+        for pair, result in actions.items():
+            number, phrase = pair
             if phrase and result:
-                print('{0} -> {1}'.format(phrase.strip(), result.strip()))
-                mic.say('If you say {0} then you can {1}.'.format(phrase, result))
+                if number is not None:
+                    print('({0}) {1} -> {2}'.format(number, phrase.strip(), result.strip()))
+                    mic.say('If you dial {0}, or say {1}, then you can {2}'
+                            .format(number, phrase, result))
+                else:
+                    print('{0} -> {1}'.format(phrase.strip(), result.strip()))
+                    mic.say('If you say {0} then you can {1}.'.format(phrase, result))
                 if mic.phone.on_hook():
                     raise phone.Hangup()
         print('That\'s all folks!')

@@ -21,12 +21,15 @@ class Brain(object):
                    number)
         """
 
+        self._logger = logging.getLogger(__name__)
         self.mic = mic
         self.profile = profile
         self.active_stt_engine = active_stt_engine
         self.modules = self.get_modules()
+        self.dial_modules = self.get_dial_modules()
+        self._logger.info("Found %s total modules and %s dialable modules",
+                           len(self.modules), len(self.dial_modules))
         self.module_mics = dict()
-        self._logger = logging.getLogger(__name__)
         self._echo = echo
 
     @classmethod
@@ -105,3 +108,28 @@ class Brain(object):
                         return
         self._logger.debug("No module was able to handle any of these " +
                            "phrases: %r", texts)
+
+
+    def get_dial_modules(self):
+        dial_modules = {}
+        for mod in self.modules:
+            if hasattr(mod, 'DIAL_NUMBER'):
+                dial_number = mod.DIAL_NUMBER
+                self._logger.debug("module %s has dial number '%s'",mod.__name__, dial_number)
+                dial_modules[dial_number] = mod
+        return dial_modules
+
+    def dial(self, number, texts):
+        try:
+            if number in self.dial_modules:
+                self.dial_modules[number].handle(texts[0], self.mic, self.profile)
+            else:
+                self._logger.debug("Unable to dial number '%s'")
+                self.mic.say("The extension {} is unknown, please dial 1 for help"
+                             .format(number))
+        except phone.Hangup:
+            self._logger.info("Module got hangup")
+            print("Well, that was rude");
+        except Exception:
+            self._logger.error("Failed to load module", exc_info=True)
+            self.mic.say("I'm sorry, that extension is not available right now")

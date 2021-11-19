@@ -31,11 +31,15 @@ class Conversation(object):
             try:
                 while self.phone.off_hook():
                     time.sleep(1)
+                    self.phone.dial_stack() # clear dial stack
                     print('Welcome grue fodder!')
                     self.mic.say(greeting)
                     input = self.mic.activeListenToAllOptions()
+                    dialed_number = ''.join(self.phone.dial_stack())
 
-                    if input:
+                    if dialed_number != "":
+                        self.brain.dial(dialed_number, input)
+                    elif input:
                         self.brain.query(input)
                     else:
                         self.mic.say("Pardon?")

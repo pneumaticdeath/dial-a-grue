@@ -8,6 +8,7 @@ from client.utils.run_while import run_while
 
 
 WORDS = ['GRUE']
+DIAL_NUMBER = '42'
 
 PRIORITY = 0
 

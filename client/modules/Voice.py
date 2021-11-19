@@ -5,8 +5,9 @@ from client import tts
 
 WORDS = [ 'CHANGE', 'VOICE'  ]
 INSTANCE_WORDS = [ 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE']
+DIAL_NUMBER = '8'
 
-PRIORITY = 45
+PRIORITY = 100
 
 def get_answer(mic):
     ds = mic.phone.dial_stack() # this just clears any old dial-stack

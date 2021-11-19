@@ -4,6 +4,7 @@ import re
 from client import jasperpath
 
 WORDS = ["JOKE", "KNOCK KNOCK"]
+DIAL_NUMBER = '9'
 
 
 def getRandomJoke(filename=jasperpath.data('text', 'JOKES.txt')):

@@ -7,6 +7,7 @@ from client.games.animal import Animal
 
 WORDS = [ 'PLAY', 'ANIMAL'  ]
 INSTANCE_WORDS = [ 'YES', 'NO', 'REPEAT' ]
+DIAL_NUMBER = '4'
 
 PRIORITY = 100
 
