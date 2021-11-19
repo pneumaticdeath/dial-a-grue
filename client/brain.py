@@ -77,38 +77,39 @@ class Brain(object):
                 if module.isValid(text):
                     self._logger.debug("'%s' is a valid phrase for module " +
                                        "'%s'", text, module.__name__)
-                    try:
-                        if self.active_stt_engine is not None and hasattr(module, 'INSTANCE_WORDS'):
-                            self._logger.debug('Finding mic with instance words %s', ', '.join(module.INSTANCE_WORDS))
-                            if module.__name__ not in self.module_mics:
-                                self._logger.debug('creating mic for module %s', module.__name__)
-                                self.module_mics[module.__name__] = client.mic.Mic(
-                                    self.mic.speaker,
-                                    self.mic.passive_stt_engine,
-                                    self.active_stt_engine.get_module_instance(module),
-                                    echo=self._echo
-                                )
-                            mic = self.module_mics[module.__name__]
-                        else:
-                            mic = self.mic
-                        module.handle(text, mic, self.profile)
-                    except phone.Hangup:
-                        self._logger.info('Module got hangup')
-                        print('Well fine! Just hang up on me')
-                    except Exception:
-                        self._logger.error('Failed to execute module',
-                                           exc_info=True)
-                        self.mic.say("I'm sorry. I had some trouble with " +
-                                     "that operation. Please try again later.")
-                    else:
-                        self._logger.debug("Handling of phrase '%s' by " +
-                                           "module '%s' completed", text,
-                                           module.__name__)
-                    finally:
-                        return
+                    self.run_module(text, module)
+                    return
         self._logger.debug("No module was able to handle any of these " +
                            "phrases: %r", texts)
 
+    def run_module(self, text, module):
+        try:
+            if self.active_stt_engine is not None and hasattr(module, 'INSTANCE_WORDS'):
+                self._logger.debug('Finding mic with instance words %s', ', '.join(module.INSTANCE_WORDS))
+                if module.__name__ not in self.module_mics:
+                    self._logger.debug('creating mic for module %s', module.__name__)
+                    self.module_mics[module.__name__] = client.mic.Mic(
+                        self.mic.speaker,
+                        self.mic.passive_stt_engine,
+                        self.active_stt_engine.get_module_instance(module),
+                        echo=self._echo
+                    )
+                mic = self.module_mics[module.__name__]
+            else:
+                mic = self.mic
+            module.handle(text, mic, self.profile)
+        except phone.Hangup:
+            self._logger.info('Module got hangup')
+            print('Well fine! Just hang up on me')
+        except Exception:
+            self._logger.error('Failed to execute module',
+                                exc_info=True)
+            self.mic.say("I'm sorry. I had some trouble with " +
+                            "that operation. Please try again later.")
+        else:
+            self._logger.debug("Handling of phrase '%s' by " +
+                                "module '%s' completed", text,
+                                module.__name__)
 
     def get_dial_modules(self):
         dial_modules = {}
@@ -122,7 +123,7 @@ class Brain(object):
     def dial(self, number, texts):
         try:
             if number in self.dial_modules:
-                self.dial_modules[number].handle(texts[0], self.mic, self.profile)
+                self.run_module(texts[0], self.dial_modules[number])
             else:
                 self._logger.debug("Unable to dial number '%s'")
                 self.mic.say("The extension {} is unknown, please dial 1 for help"

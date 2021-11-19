@@ -338,8 +338,7 @@ class Mic:
 
                 average = sum(lastN) / float(len(lastN))
 
-                # TODO: 0.8 should not be a MAGIC NUMBER!
-                # if not self.phone.ptt_pressed() and average < THRESHOLD * 0.8:
+                # TODO: find appropriate threshold multiplier
                 if average > THRESHOLD * 1.25:
                     if state != 1:
                         self._logger.debug('Begin utterance')
@@ -351,7 +350,7 @@ class Mic:
                     post_utterance_frames += 1
                     state = 2
                 if state == 2 and post_utterance_frames >= silence_frames_threshold:
-                    self._logger.debug('Enough post-utterance silnce')
+                    self._logger.debug('Enough post-utterance silence')
                     break
 
             self.speaker.play(jasperpath.data('audio', 'beep_lo.wav'))
