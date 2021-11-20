@@ -41,7 +41,7 @@ def handle(text, mic, profile):
                             .format(number, phrase, result))
                 else:
                     print('{0} -> {1}'.format(phrase.strip(), result.strip()))
-                    mic.say('If you say {0} then you can {1}.'.format(phrase, result))
+                    mic.say('If you say {0}, then you can {1}.'.format(phrase, result))
                 if mic.phone.on_hook():
                     raise phone.Hangup()
         print('That\'s all folks!')
