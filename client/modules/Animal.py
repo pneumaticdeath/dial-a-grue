@@ -19,11 +19,16 @@ def ask_yes_no(prompt, mic):
         mic.say(prompt)
         answer = mic.activeListen().upper()
         answer = answer.split(' ')[0]
-        if answer == 'REPEAT':
+        dial_stack = mic.phone.dial_stack()
+        if answer == 'REPEAT' or '7' in dial_stack:
             continue
-        if answer not in valid_choices:
+        if '9' in dial_stack and '6' not in dial_stack:
+            answer = "YES"
+        elif '6' in dial_stack and '9' not in dial_stack:
+            answer = "NO"
+        elif answer not in valid_choices:
             print('Didn\'t like {0}, reprompting'.format(answer))
-            mic.say('Sorry, I didn\'t catch that. Please answer yes or no.')
+            mic.say('Sorry, I didn\'t catch that. Please answer yes, no, or ask to repeat the question.')
     return answer
 
 def handle(text, mic, profile):

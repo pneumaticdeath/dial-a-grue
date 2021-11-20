@@ -31,7 +31,7 @@ class Conversation(object):
             try:
                 while self.phone.off_hook():
                     time.sleep(1)
-                    self.phone.dial_stack() # clear dial stack
+                    # self.phone.dial_stack() # clear dial stack
                     print('Welcome grue fodder!')
                     self.mic.say(greeting)
                     input = self.mic.activeListenToAllOptions()
