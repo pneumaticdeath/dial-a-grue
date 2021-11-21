@@ -125,7 +125,7 @@ class Brain(object):
             if number in self.dial_modules:
                 self.run_module(texts[0], self.dial_modules[number])
             else:
-                self._logger.debug("Unable to dial number '%s'")
+                self._logger.debug("Unable to dial number '%s'", number)
                 self.mic.say("The extension {} is unknown, please dial 1 for help"
                              .format(number))
         except phone.Hangup:

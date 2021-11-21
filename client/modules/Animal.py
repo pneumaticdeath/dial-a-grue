@@ -39,6 +39,8 @@ def handle(text, mic, profile):
     logging.info('Starting the Animal module')
     mic.say('Welcome to Guess The Animal.  Please think of an animal ' +
             'and I\'ll ask yes or no questions to try and guess it.')
+    mic.say('You can either say yes or no, or you can dial 9 for yes, ' +
+            'and 6 for no.')
 
     dbpath = os.path.join(jasperpath.APP_PATH, 'static', 'animals.db')
 

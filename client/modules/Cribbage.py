@@ -6,7 +6,7 @@ from client.games.utils import mk_print_list
 
 WORDS = [ 'PLAY', 'CRIBBAGE'  ]
 INSTANCE_WORDS = [ 'ACE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING', 'OF', 'CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES']
-
+DIAL_NUMBER = '27'
 
 PRIORITY = 50
 

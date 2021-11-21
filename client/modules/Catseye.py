@@ -6,6 +6,7 @@ from client.games.zvm import ZorkMachine, ZorkPhone
 
 logger = logging.getLogger(__name__)
 
+DIAL_NUMBER = '22'
 INSTANCE_WORDS = [
         "ASH",
         "BASIN",
