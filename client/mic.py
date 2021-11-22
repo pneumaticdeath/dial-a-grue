@@ -66,6 +66,7 @@ class Mic:
         self.CHUNK = 32
         self.TARGET_RATE = 16000
         self.THRESHOLD_MULTIPLIER = 1.8
+        self.dial_timeout = 1.5
 
         self.start_background_threshold_thread()
 
@@ -351,6 +352,10 @@ class Mic:
                     state = 2
                 if state == 2 and post_utterance_frames >= silence_frames_threshold:
                     self._logger.debug('Enough post-utterance silence')
+                    break
+                elif self.phone.has_dial_stack() and \
+                     self.phone.time_since_last_dial() > self.dial_timeout:
+                    self._logger.debug('Dialed number timeout')
                     break
 
             self.speaker.play(jasperpath.data('audio', 'beep_lo.wav'))

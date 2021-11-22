@@ -39,6 +39,7 @@ class Phone(object):
         self._switches = {}
         self._dial_stack = []
         self._logger = logging.getLogger(__name__)
+        self._last_dial_time = time.time()
         if profile is None:
             profile = jasperpath.config('phone.yml')
         self.load_profile(profile)
@@ -79,6 +80,7 @@ class Phone(object):
                 # to make a copy of current value of 'button' at def time.
                 self._logger.info('{} button released after {} seconds'.format(switch, interval))
                 self._dial_stack.append(switch)
+                self._last_dial_time = time.time()
             self._switches[button] = CompoundSwitch(button_pattern, self._switches)
             self._switches[button].on_open(on_open)
             self._switches[button].on_close(on_close)
@@ -124,6 +126,7 @@ class Phone(object):
         if self._pulse_counter in _rotary_map:
             self._dial_stack.append(_rotary_map[self._pulse_counter])
             self._logger.debug('Counted {0} pulses yielding a {1}'.format(self._pulse_counter, _rotary_map[self._pulse_counter]))
+            self._last_dial_time = time.time()
         elif self._pulse_counter == 0:
             self._logger.warn('Tried to interpret no pulses')
         else:
@@ -134,6 +137,12 @@ class Phone(object):
         stack = self._dial_stack
         self._dial_stack = []
         return stack
+
+    def has_dial_stack(self):
+        return self._dial_stack != []
+
+    def time_since_last_dial(self):
+        return time.time() - self._last_dial_time
 
     def off_hook(self):
         return self._switches['hook'].is_closed()
