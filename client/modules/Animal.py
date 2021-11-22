@@ -19,7 +19,7 @@ def ask_yes_no(prompt, mic):
         mic.say(prompt)
         answer = mic.activeListen().upper()
         answer = answer.split(' ')[0]
-        dial_stack = mic.phone.dial_stack()
+        dial_stack = mic.dial_stack()
         if answer == 'REPEAT' or '7' in dial_stack:
             continue
         if '9' in dial_stack and '6' not in dial_stack:

@@ -66,7 +66,8 @@ class Mic:
         self.CHUNK = 32
         self.TARGET_RATE = 16000
         self.THRESHOLD_MULTIPLIER = 1.8
-        self.dial_timeout = 1.5
+        self.dial_timeout = 2.0
+        self._dial_stack = []
 
         self.start_background_threshold_thread()
 
@@ -323,6 +324,7 @@ class Mic:
             utterances = 0
             post_utterance_frames = 0
             silence_frames_threshold = int(0.25*self.RATE/self.CHUNK) # 1/4 of a second
+            self._dial_stack = []
 
             for i in range(0, self.RATE / self.CHUNK * LISTEN_TIME):
                 if self.phone.on_hook():
@@ -355,6 +357,7 @@ class Mic:
                     break
                 elif self.phone.has_dial_stack() and \
                      self.phone.time_since_last_dial() > self.dial_timeout:
+                    self._dial_stack = self.phone.dial_stack()
                     self._logger.debug('Dialed number timeout')
                     break
 
@@ -402,6 +405,9 @@ class Mic:
                     self._logger.info(c)
             # f.close()
             return candidates
+
+    def dial_stack(self):
+        return self._dial_stack
 
     def say(self, phrase,
             OPTIONS=" -vdefault+m3 -p 40 -s 160 --stdout > say.wav"):

@@ -35,7 +35,7 @@ class Conversation(object):
                     print('Welcome grue fodder!')
                     self.mic.say(greeting)
                     input = self.mic.activeListenToAllOptions()
-                    dialed_number = ''.join(self.phone.dial_stack())
+                    dialed_number = ''.join(self.mic.dial_stack())
 
                     if dialed_number != "":
                         self.brain.dial(dialed_number, input)

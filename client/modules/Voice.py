@@ -4,23 +4,23 @@ import re
 from client import tts
 
 WORDS = [ 'CHANGE', 'VOICE'  ]
-INSTANCE_WORDS = [ 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE']
+INSTANCE_WORDS = [ 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT']
 DIAL_NUMBER = '8'
 
 PRIORITY = 100
 
 def get_answer(mic):
-    ds = mic.phone.dial_stack() # this just clears any old dial-stack
+    # ds = mic.phone.dial_stack() # this just clears any old dial-stack
     answer = ''
     while answer not in INSTANCE_WORDS:
-        mic.say("Which voice would you like? from one through nine")
+        mic.say("Which voice would you like? from one through eight")
         answer = mic.activeListen()
-        ds = mic.phone.dial_stack()
+        ds = mic.dial_stack()
         if len(ds) > 0:
             num = ds[-1]
             if num.isdigit():
                 num = int(num)
-                if num >= 1 and num <= 9:
+                if num >= 1 and num <= len(INSTANCE_WORDS):
                     return INSTANCE_WORDS[num-1]
         if answer not in INSTANCE_WORDS:
             mic.say('I don\'t know voice {}'.format(answer))
@@ -59,6 +59,7 @@ def handle(text, mic, profile):
     elif answer == 'EIGHT':
         new_tts.voice = 'kal16'
 
+    mic.say('Switching to voice {}'.format(answer.lower()))
     mic.setSpeaker(new_tts)
     mic.say('Okay, now I talk like this')
 
