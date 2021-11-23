@@ -399,6 +399,7 @@ class Mic:
                 else:
                     os.remove(resampled_file)
 
+            candidates = ['' if c is None else c for c in candidates]
             if candidates:
                 self._logger.info('Got the following possible transcriptions:')
                 for c in candidates:
