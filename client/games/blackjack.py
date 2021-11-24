@@ -199,7 +199,7 @@ Pass input_func and output_func with appropriate vectors for other implementatio
                 keep_playing = read_answer(['yes','no'], input_func=input_func, output_func=output_func)
                 continue
             else:
-                output_func('Dealer doen\'t have blackjack')
+                output_func('Dealer doesn\'t have blackjack')
         for player in range(1, n+1):
             if player not in players:
                 output_func('Player {0} has insufficient funds to play this round, would you like to visit the ATM?'.format(player))
