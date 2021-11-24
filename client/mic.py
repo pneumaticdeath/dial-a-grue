@@ -66,7 +66,7 @@ class Mic:
         self.CHUNK = 32
         self.TARGET_RATE = 16000
         self.THRESHOLD_MULTIPLIER = 1.8
-        self.dial_timeout = 2.0
+        self.dial_timeout = 2.5
         self._dial_stack = []
 
         self.start_background_threshold_thread()

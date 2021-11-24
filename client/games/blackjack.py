@@ -112,8 +112,8 @@ class Dealer(object):
         self.hands[player].append(new_hand)
         self.hit(player, -1)
 
-def read_line():
-    return sys.stdin.readline()
+def read_line(expected=None):
+    return sys.stdin.readline().strip()
 
 def myprint(str):
     print(str)
@@ -121,7 +121,7 @@ def myprint(str):
 def read_int(low_limit=None, high_limit=None, input_func=read_line, output_func=myprint):
     retval = None
     while retval is None:
-        val = input_func().strip().lower()
+        val = input_func([str(i) for i in range(low_limit, high_limit+1)] if low_limit and high_limit else None).strip().lower()
         try:
             retval = int(val)
             if low_limit is not None and retval < low_limit:
@@ -137,7 +137,7 @@ def read_int(low_limit=None, high_limit=None, input_func=read_line, output_func=
 def read_answer(valid, input_func=read_line, output_func=myprint):
     retval = None
     while retval is None:
-        retval = input_func().strip().lower()
+        retval = input_func(valid).strip().lower()
         if retval in valid:
             return retval
         matches = list(filter(lambda x: x.startswith(retval), valid))
