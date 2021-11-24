@@ -140,12 +140,14 @@ def read_answer(valid, input_func=read_line, output_func=myprint):
         retval = input_func(valid).strip().lower()
         if retval in valid:
             return retval
+        if retval == '':
+            continue
         matches = list(filter(lambda x: x.startswith(retval), valid))
         if len(matches) > 1:
             output_func('{0} is ambiguous, could match {1}'.format(retval, mk_print_list(matches, 'or')))
             retval = None
         elif len(matches) == 0:
-            output_func('{0} isn\'t one of {1}'.format(retval,mk_print_list(valid, 'or')))
+            output_func('{0} isn\'t one of {1}'.format(retval, mk_print_list(valid, 'or')))
             retval = None
     return matches[0]
 

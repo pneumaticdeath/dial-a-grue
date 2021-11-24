@@ -34,8 +34,8 @@ def handle(text, mic, profile):
                         survivors.remove(s)
             if len(survivors) == 1:
                 r = survivors.pop()
+                print('Dialed {}'.format(r))
                 mic.say(r)
-                logger.info('Dialed value matched {}'.format(r))
                 return r
             elif survivors:
                 mic.say('Ambiguous! Dialed value could match {}'.format(' '.join(survivors)))
