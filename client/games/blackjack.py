@@ -67,7 +67,7 @@ class Dealer(object):
         self.initial_balance = initial_balance
         self.min_bet = min_bet
         self.bank = Bank(num_players + 1, initial_balance)
-        self.bank.deposit(0, 99*initial_balance) # house has lots of money
+        self.bank.deposit(0, 9*initial_balance) # house has 10x money
         self.hands = {}
 
     def deal(self, min_bet=10):
@@ -171,6 +171,35 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             output_func('Everybody is broke!')
             break
         output_func('Dealer has a face down card and {0}'.format(str(dealer.hand(0)[1])))
+        insured = [False for _ in range(n+1)]
+        if dealer.hand(0)[1]._rank == 1:
+            # Ask if they want insurance
+            for player in players:
+                output_func('Player {0}, would you like insurance?'.format(player))
+                ans = read_answer(['yes','no'], input_func=input_func, output_func=output_func)
+                if ans == 'yes':
+                    try:
+                        dealer.bank.withdraw(player, dealer.hand(player).bet/2)
+                        dealer.bank.deposit(0, dealer.hand(player).bet/2)
+                        insured[player] = True
+                        output_func('Player {0} takes the insurance.'.format(player))
+                    except InsufficientFunds:
+                        output_func('Player {0} can\'t afford the insurance'.format(player))
+                else:
+                    output_func('Player {0} declines the insurance.'.format(player))
+            if dealer.count(0) == 21:
+                output_func('Dealer has blackjack')
+                for player in players:
+                    if insured[player]:
+                        dealer.bank.withdraw(0, dealer.hand(player).bet)
+                        dealer.bank.deposit(player, dealer.hand(player).bet)
+                    else:
+                        output_func('Player {0} loses their bet'.format(player))
+                output_func('Play again?')
+                keep_playing = read_answer(['yes','no'], input_func=input_func, output_func=output_func)
+                continue
+            else:
+                output_func('Dealer doen\'t have blackjack')
         for player in range(1, n+1):
             if player not in players:
                 output_func('Player {0} has insufficient funds to play this round, would you like to visit the ATM?'.format(player))
@@ -315,7 +344,7 @@ Pass input_func and output_func with appropriate vectors for other implementatio
             elif len(pushers) > 1:
                 output_func('Players {0} pushed.'.format(mk_print_list(pushers)))
 
-        house_net = dealer.bank.balance(0) - dealer.initial_balance*100
+        house_net = dealer.bank.balance(0) - dealer.initial_balance*10
 
         if abs(house_net) > 0.01:
             output_func('House is {0} {1} dollars'.format('down' if house_net < 0 else 'up', int(abs(house_net))))
