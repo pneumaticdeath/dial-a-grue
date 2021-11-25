@@ -27,7 +27,6 @@ def handle(text, mic, profile):
         dial_stack = mic.dial_stack()
         if expected is not None and dial_stack:
             survivors = set(expected)
-            i = 0
             for i, d in enumerate(dial_stack):
                 for s in expected:
                     if s in survivors and (i >= len(s) or not DIAL_CHAR_MAP[d].match(s[i].upper())):
