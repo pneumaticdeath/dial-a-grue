@@ -149,6 +149,9 @@ class Wumpus(object):
         self.game_over = False
         self.game_over_msg = ''
 
+    def adjacent_rooms(self):
+        return self.map[self.player]
+
     def look(self):
         if self.game_over:
             return 'Your game is over because {0}'.format(self.game_over_msg)
