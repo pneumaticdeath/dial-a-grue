@@ -136,7 +136,7 @@ def read_int(low_limit=None, high_limit=None, input_func=read_line, output_func=
 
 def read_answer(valid, input_func=read_line, output_func=myprint):
     retval = None
-    while retval is None:
+    while not retval:
         retval = input_func(valid).strip().lower()
         if retval in valid:
             return retval
