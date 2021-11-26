@@ -362,6 +362,10 @@ class Mic:
                     break
 
             self.speaker.play(jasperpath.data('audio', 'beep_lo.wav'))
+            if self.phone.has_dial_stack():
+                self._dial_stack += self.phone.dial_stack()
+            if self._dial_stack:
+                self._logger.info('Got dialed number {}'.format(''.join(self._dial_stack)))
 
         # save the audio data
         finally: 
