@@ -136,7 +136,7 @@ class Wumpus(object):
 
     def new_game(self):
         # initial rooms are (player, wumpus, 2 bats, 2 pits)
-        self.init_rooms = random.sample(self.map.keys(), 6)
+        self.init_rooms = random.sample(list(self.map.keys()), 6)
         self.restart()
 
     def restart(self):
@@ -188,7 +188,7 @@ class Wumpus(object):
 
         while self.player in self.bats:
             # bat might carry you to the other bat
-            self.player = random.choice(self.map.keys())
+            self.player = random.choice(list(self.map.keys()))
             msgs.append('a bat carries you off to room {0}'.format(self.player))
             
         if self.player == self.wumpus:
