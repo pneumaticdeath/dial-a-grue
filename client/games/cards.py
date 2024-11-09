@@ -39,6 +39,9 @@ class Card(object):
     def __eq__(self, other):
         return self._rank == other._rank and self.suit == other.suit
 
+    def __hash__(self):
+        return hash(str(self))
+
 class Deck(object):
     def __init__(self):
         self.cards = []

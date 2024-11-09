@@ -182,9 +182,9 @@ def expensive_sublists(input_list, size):
     if size >= len(input_list):
         return [input_list,]
     ret_list = []
-    for index in xrange(len(input_list)-size+1):
+    for index in range(len(input_list)-size+1):
         for sublist in sublists(input_list[index+1:], size-1):
-            ret_list.append( input_list[index:index+1] + sublist )
+            ret_list.append( list(input_list[index:index+1]) + sublist )
     return ret_list
 
 _n_kind_score = {2: 2, 3: 6, 4: 12}
@@ -338,7 +338,7 @@ class Cribbage(object):
         self.crib = Hand()
         self.crib_card = None
         self.deck.shuffle()
-        for _ in xrange(6):
+        for _ in range(6):
             self.noncrib_player.hand.append(self.deck.deal())
             self.crib_player.hand.append(self.deck.deal())
 
@@ -458,7 +458,7 @@ class Cribbage(object):
 
                 output('')
                 self.pickCribCard()
-                output('crib card: {:s}'.format(self.crib_card))
+                output('crib card: {}'.format(str(self.crib_card)))
                 if self.crib_card.rank == 'jack':
                     output('{} scores 2 for his heels'.format(self.crib_player.name.capitalize()))
                     self.crib_player.scores(2)
@@ -545,7 +545,7 @@ class Cribbage(object):
 
 def pick_best_discards(hand, my_crib, discards=None, best_score=-100, sample_size=10, full_deck=cards.Deck()):
     deck = filter(lambda x: x not in hand, full_deck.cards)
-    sample_crib_cards = random.sample(deck, sample_size)
+    sample_crib_cards = random.sample(list(deck), sample_size)
     for card1, card2 in sublists(hand, 2):
         new_score=0
         crib_score = discard_value([card1, card2])
@@ -610,7 +610,7 @@ def pick_best_pegging_card(choices, pegging_stack, pegging_count):
                     break
         values[choice] = value
     best = sorted(values.values())[-1]
-    best_choice = random.choice(filter(lambda x: values[x] == best, choices))
+    best_choice = random.choice(list(filter(lambda x: values[x] == best, choices)))
     return best_choice
 
 if __name__ == '__main__':
