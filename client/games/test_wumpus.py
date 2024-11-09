@@ -6,7 +6,7 @@ import random
 def test_map(mp, iterations=10000):
     endings = {}
     game = wumpus.Wumpus(mp)
-    for _ in xrange(iterations):
+    for _ in range(iterations):
         game.new_game()
         result = play_game(game)
         if result in endings:
@@ -27,7 +27,7 @@ def play_game(game):
 
 def print_result(name, result):
     print('    ----     {}     -----'.format(name))
-    endings = result.keys()
+    endings = list(result.keys())
     endings.sort(key=lambda a: result[a])
     for ending in endings:
         print('{}: {}'.format(ending, result[ending]))
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     for name, mp in wumpus.maps.items():
         map_results[name] = test_map(mp)
 
-    names = map_results.keys()
+    names = list(map_results.keys())
     names.sort()
     for name in names:
         print_result(name, map_results[name])

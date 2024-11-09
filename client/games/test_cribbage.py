@@ -2,9 +2,9 @@ from cribbage import count_hand, Hand
 from cards import Card
 
 def dump(hand, crib_card, is_crib=False, correct_score=None):
-    print('crib card: {:20s} {}: {:60s}'.format(
+    print('crib card: {}    {}: {}'.format(
         crib_card,
-        'crib' if is_crib else 'hand',
+        'Crib' if is_crib else 'Hand',
         hand))
     s, m = count_hand(hand, crib_card, is_crib)
     print('Score: {}'.format(s))
