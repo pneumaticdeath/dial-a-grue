@@ -11,7 +11,7 @@ try:
 except ImportError:
     from pip._internal.req import parse_requirements
 
-import jasperpath
+from client import jasperpath
 if sys.version_info < (3, 3):
     from distutils.spawn import find_executable
 else:

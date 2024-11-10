@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # vim: sw=4 ai expandtab
 
-from gpio_switch import Switch, CompoundSwitch
-import jasperpath
+from client.gpio_switch import Switch, CompoundSwitch
+from client import jasperpath
 import logging
 import threading
 import time
